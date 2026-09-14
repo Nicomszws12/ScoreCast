@@ -1,0 +1,6 @@
+{
+  "name": "scorecast",
+  "dependencies": {
+    "firebase": "^12.14.0"
+  }
+}

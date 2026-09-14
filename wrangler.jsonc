@@ -1,0 +1,5 @@
+{
+  "name": "scorecast-proxy",
+  "compatibility_date": "2026-06-11",
+  "main": "proxy/cloudflare-worker.js"
+}

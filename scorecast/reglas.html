@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reglas del Juego — ScoreCast</title>
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0846f0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<header class="barra">
+  <div class="contenedor barra__fila">
+    <a class="logo" href="index.html" id="link-logo"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
+    <nav class="nav" id="nav">
+      <span class="nav__solo">Reglas</span>
+    </nav>
+  </div>
+</header>
+
+<main class="contenedor">
+
+  <section class="heroe" style="padding:44px 0 18px">
+    <div class="heroe__copa">📖</div>
+    <h1>Reglas del juego</h1>
+    <p class="bajada">Cortas, claras y sin VAR. Léelas una vez y a pronosticar.</p>
+  </section>
+
+  <div class="rejilla rejilla--2" style="align-items:start">
+
+    <div class="panel panel--relleno">
+      <h2>⚽ Sistema de Puntuación</h2>
+      <p class="sub">Puntuación justa, dinámica y diferenciada por tipo de fase.</p>
+      <div class="tabla-envoltura" style="margin-top:10px">
+        <table class="tabla" style="min-width:0">
+          <thead><tr><th>Tipo de Acierto</th><th>Fases de Liga / Grupos</th><th>Play-offs / Eliminatorias</th></tr></thead>
+          <tbody>
+            <tr><td>🎯 Marcador exacto</td><td class="num" id="r-ge">3 pts</td><td class="num" id="r-ee">5 pts</td></tr>
+            <tr><td>✔ Ganador o empate (1X2)</td><td class="num" id="r-gr">1 pt</td><td class="num" id="r-er">2 pts</td></tr>
+            <tr><td>🏆 Acertar el campeón</td><td class="num" colspan="2" id="r-bono">+10 pts por torneo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px"><b>Ejemplo en liga regular:</b> Pronosticas <b>Millonarios 2–1 Santa Fe</b> (o <b>Arsenal 2–1 Chelsea</b>). Si el marcador final es exactamente 2–1 sumas <b>3 pts</b>. Si el resultado es 3–1 o 1–0 sumas <b>1 pt</b> (acierto 1X2). Si empatan o gana el visitante sumas 0 pts.</p>
+      <p><b>Ejemplo en eliminatorias KO:</b> En cruces directos (ej. cuartos de final de Copa Libertadores o Sudamericana), acertar el marcador exacto premia con <b>5 pts</b> y el signo (ganador/empate) con <b>2 pts</b>. Se evalúa el marcador hasta el minuto 90 (o 120 con prórroga; la tanda de penales solo define quién clasifica).</p>
+    </div>
+
+    <div class="panel panel--relleno">
+      <h2>⏱ Cierres y Elección de Campeones</h2>
+      <p>✏️ <b>Partidos</b>: Puedes ingresar o modificar tus pronósticos hasta el <b>segundo previo al pitazo inicial</b>. Una vez arrancado el juego, queda bloqueado para garantizar transparencia total.</p>
+      <p>🕐 <b>Horarios por confirmar</b>: Partidos sin hora oficial cierran preventivamente a las 11:00 a. m. de Colombia. Apenas se confirma la hora oficial, el sistema se sincroniza en vivo.</p>
+      <p>🏆 <b>Mi Campeón (7 Torneos)</b>: Puedes pronosticar al club que levantará la copa en cada una de las 7 competiciones (Liga BetPlay, Premier League, LaLiga, Bundesliga, Champions, Libertadores y Sudamericana). Cada campeón acertado suma <b>+10 pts</b> al final de la temporada.</p>
+      <p>🤝 <b>Criterios de Desempate en la Tabla</b>, en estricto orden:
+        <br>1) Mayor cantidad de puntos acumulados.
+        <br>2) Mayor número de marcadores exactos (🎯).
+        <br>3) Mayor número de aciertos de resultado ganador/empate (✔).
+        <br>4) Participante registrado primero en la plataforma.
+      </p>
+    </div>
+
+    <div class="panel panel--relleno">
+      <h2>🌎 7 Grandes Competiciones</h2>
+      <p>ScoreCast incluye seguimiento y pronósticos de las mejores ligas del planeta:</p>
+      <ul style="margin:8px 0; padding-left:20px; line-height:1.7; color:var(--tinta-2); font-size:14px">
+        <li>🇨🇴 <b>Liga BetPlay Dimayor</b>: 20 clubes colombianos, fase todos contra todos y cuadrangulares.</li>
+        <li>🏴󠁧󠁢󠁥󠁮󠁧󠁿 <b>Premier League</b>: Las 38 jornadas completas del fútbol inglés.</li>
+        <li>🇪🇸 <b>LaLiga EA Sports</b>: Las 38 fechas del campeonato español.</li>
+        <li>🇩🇪 <b>Bundesliga</b>: 18 clubes alemanes y todo el calendario oficial.</li>
+        <li>🏆 <b>UEFA Champions League</b>: Nueva fase de liga única de 36 clubes y cruces de play-off.</li>
+        <li>🌎 <b>CONMEBOL Libertadores</b>: Fase de grupos y cuadro final de eliminatorias hasta la Gran Final.</li>
+        <li>🥈 <b>CONMEBOL Sudamericana</b>: Fase de grupos y cuadro de eliminación directa.</li>
+      </ul>
+      <p style="margin-top:10px; font-size:13px; color:var(--tinta-3)">💡 <i>Tip: Toca el escudo de cualquier club en cualquier pantalla para ver su palmarés, historia y racha de partidos.</i></p>
+    </div>
+
+    <div class="panel panel--relleno">
+      <h2>💰 Cuotas, Premios y Comunidad</h2>
+      <p>La inscripción tiene una cuota según tu moneda. <b>ScoreCast no maneja transacciones bancarias directamente</b>: solo lleva el registro de usuarios habilitados y validados por el organizador (<b id="r-tesorero">Nicolas Nieto</b>).</p>
+      <div class="tabla-envoltura" style="margin:10px 0">
+        <table class="tabla" style="min-width:0">
+          <thead><tr><th>Moneda</th><th>Cuota</th></tr></thead>
+          <tbody id="r-cuotas"></tbody>
+        </table>
+      </div>
+      <p>El acumulado de cada moneda se reparte según la escala acordada: <b id="r-premios"></b>. Los pronósticos de todos los participantes son públicos y auditables una vez iniciado cada partido en la sección <b>Tabla</b>.</p>
+    </div>
+  </div>
+
+  <div class="aviso aviso--dorado" style="margin-top:18px">
+    ⚖️ Juego de pronósticos deportivos en ScoreCast. La administración resuelve cualquier caso imprevisto con criterio, deportividad y juego limpio.
+  </div>
+
+  <footer class="pie">
+    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+  </footer>
+</main>
+
+<script type="module" src="js/config.js"></script>
+<script type="module" src="js/fixture.js"></script>
+<script type="module" src="js/utils.js"></script>
+<script type="module">
+  (async () => {
+    const CONFIG = window.CONFIG || {};
+    const R = CONFIG.REGLAS || {};
+    document.getElementById('r-ge').textContent = R.grupos.exacto + ' pts';
+    document.getElementById('r-gr').textContent = R.grupos.resultado + ' pt';
+    document.getElementById('r-ee').textContent = R.eliminatorias.exacto + ' pts';
+    document.getElementById('r-er').textContent = R.eliminatorias.resultado + ' pts';
+    document.getElementById('r-bono').textContent = '+' + (R.bonusCampeon || 10) + ' pts por torneo';
+    const elCierre = document.getElementById('r-cierre-campeon');
+    if (elCierre && R.cierreCampeonUTC) {
+      elCierre.textContent = U.diaLocal(R.cierreCampeonUTC) + ' · ' + U.horaLocal(R.cierreCampeonUTC) + ' (tu hora)';
+    }
+    document.getElementById('r-tesorero').textContent = CONFIG.TESORERO;
+    document.getElementById('r-cuotas').innerHTML = Object.entries(CONFIG.CUOTAS)
+      .map(([cod, m]) => `<tr><td>${U.esc(m.nombre)} (${cod})</td><td class="num">${U.moneda(m.valor, cod)}</td></tr>`).join('');
+    document.getElementById('r-premios').textContent =
+      CONFIG.PREMIOS.map(p => `${p.puesto} ${p.pct}%`).join(' · ');
+
+    // Forzar vista pública: siempre desactivar navegación a áreas que requieren sesión
+    try {
+      const links = ['app.html','tabla.html','cuentas.html'];
+      for (const href of links) {
+        const a = document.querySelector(`nav.nav a[href="${href}"]`);
+        if (a) {
+          a.style.pointerEvents = 'none';
+          a.style.opacity = '0.55';
+          a.title = 'Disponible tras iniciar sesión';
+          a.setAttribute('aria-disabled', 'true');
+        }
+      }
+    } catch (e) {
+      console.error('Reglas: fallo al deshabilitar enlaces', e);
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabla de posiciones — ScoreCast</title>
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0846f0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<header class="barra">
+  <div class="contenedor barra__fila">
+    <a class="logo" href="app.html"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
+    <nav class="nav" id="nav">
+      <a href="app.html">Partidos</a>
+      <a href="tabla.html" class="activo">Tabla</a>
+      <a href="cuentas.html">Cuentas</a>
+      <a href="reglas.html">Reglas</a>
+      <a href="lobby.html">🏟 Salas</a>
+    </nav>
+    <div class="usuario-mini">
+      <div class="avatar" id="avatar">?</div>
+      <button class="boton boton--fantasma boton--mini" id="salir" type="button">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="contenedor">
+
+  <section style="margin-top:26px">
+    <h1 style="margin:0;font-size:26px">🏅 Tabla de posiciones</h1>
+    <p class="sub" id="nota-tabla"></p>
+  </section>
+
+  <div class="podio" id="podio"></div>
+
+  <div class="tabla-envoltura">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>#</th><th>Participante</th><th>🏆</th>
+          <th>Pts</th><th>🎯 Exactos</th><th>✔ Resultados</th><th>Jugadas</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo"></tbody>
+    </table>
+  </div>
+
+  <p class="ayuda" style="margin-top:14px">Desempates, en orden: puntos → marcadores exactos → resultados acertados → quien se registró primero.
+    El bono de campeón (+10) se suma cuando termine la final.</p>
+
+  <footer class="pie">
+    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+  </footer>
+</main>
+
+<script type="module" src="js/config.js"></script>
+<script type="module" src="js/fixture.js"></script>
+<script type="module" src="js/utils.js"></script>
+<script type="module" src="js/store.js"></script>
+<script type="module" src="js/puntos.js"></script>
+<script type="module">
+import { CONFIG } from './js/config.js';
+(async () => {
+  await Store.init();
+  const yo = await Store.sesion();
+  if (!U.requiereSesion(yo)) return;
+  document.getElementById('avatar').textContent = U.iniciales(yo.nombre);
+  document.getElementById('salir').onclick = async () => { await Store.logout(); location.href = 'index.html'; };
+  if (yo.rol === 'admin') {
+    const a = document.createElement('a'); a.href = 'admin.html'; a.textContent = '🛠 Admin';
+    document.getElementById('nav').appendChild(a);
+  }
+
+  let filas = [], filtro = '';
+
+  async function cargar() {
+    const [usuarios, todas, resultados, ajustes, puntosManuales] = await Promise.all([
+      Store.usuariosSala(), Store.todasPrediccionesSala(), Store.resultados(), Store.ajustes(), Store.puntosManuales()
+    ]);
+    filas = Puntos.tabla(usuarios, todas, resultados, ajustes, puntosManuales);
+    document.getElementById('nota-tabla').textContent =
+      'Cálculo en vivo con los resultados cargados hasta ahora.';
+    pintar();
+  }
+
+  function pintar() {
+    const vista = filas;
+
+    /* Podio (siempre con la tabla general) */
+    const podio = document.getElementById('podio');
+    const medallas = ['🥇', '🥈', '🥉']; // 1st, 2nd, 3rd
+    podio.innerHTML = [0, 1, 2].map(i => {
+      const f = filas[i];
+      if (!f) return '<div></div>';
+      // La clase podio__caja--1, --2, --3 se usa para estilizar y ordenar con CSS grid
+      return `<div class="podio__caja podio__caja--${i + 1}">
+        <div class="medalla">${medallas[i]}</div>
+        <div class="quien">${U.esc(f.nombre)}</div>
+        <div class="pts">${f.pts} pts</div>
+        <div class="ayuda">${f.exactos} exactos</div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('cuerpo').innerHTML = vista.length ? vista.map(f => {
+      const esYo = f.uid === yo.uid;
+      const racha = f.racha || 0;
+      const rachaHtml = racha >= 5
+        ? ` <span class="racha racha--grande" title="🔥 ¡${racha} partidos seguidos sumando!">🔥🔥🔥</span>`
+        : racha >= 3
+        ? ` <span class="racha" title="${racha} partidos seguidos sumando">🔥</span>`
+        : '';
+      return `
+      <tr class="${esYo ? 'yo' : ''}" data-uid="${f.uid}">
+        <td class="pos num">${f.pos}</td>
+        <td><b>${U.esc(f.nombre)}</b>${esYo ? ' <span class="etiqueta etiqueta--dorada">TÚ</span>' : ''}${rachaHtml}</td>
+        <td>${f.campeon ? FIXTURE.equipo(f.campeon).b + ' ' + FIXTURE.equipo(f.campeon).n : '—'}</td>
+        <td class="num" style="color:var(--dorado);font-weight:900">${f.pts}</td>
+        <td class="num">${f.exactos}</td>
+        <td class="num">${f.aciertos}</td>
+        <td class="num">${f.jugadas}</td>
+      </tr>`;
+    }).join('')
+      : '<tr><td colspan="7" class="centro sub">Todavía no hay participantes registrados.</td></tr>';
+  }
+
+  // Los pronósticos de otros son visibles solo para partidos ya iniciados
+  document.getElementById('cuerpo').style.cursor = 'pointer';
+  document.getElementById('cuerpo').title = 'Haz clic para ver los pronósticos de partidos ya iniciados';
+
+  document.getElementById('cuerpo').addEventListener('click', async e => {
+    const tr = e.target.closest('tr[data-uid]');
+    if (!tr) return;
+    const uid = tr.dataset.uid;
+
+    const sig = tr.nextElementSibling;
+    if (sig && sig.classList.contains('fila-pronosticos')) {
+      sig.remove();
+      return;
+    }
+    document.querySelectorAll('.fila-pronosticos').forEach(el => el.remove());
+
+    const usuario = filas.find(f => f.uid === uid);
+    if (!usuario) return;
+
+    const [todas, resultados, ajustes] = await Promise.all([
+      Store.todasPrediccionesSala(), Store.resultados(), Store.ajustes()
+    ]);
+    const susPreds = todas[uid] || {};
+
+    const lista = FIXTURE.partidos
+      .map(p => Puntos.conAjustes(p, ajustes))
+      .filter(p => p.local && p.visitante)
+      .sort((a, b) => {
+        const tA = new Date(a.utc || '2099').getTime();
+        const tB = new Date(b.utc || '2099').getTime();
+        const ahora = Date.now();
+        return Math.abs(tA - ahora) - Math.abs(tB - ahora);
+      })
+      .map(p => {
+        const pr = susPreds[p.id];
+        const res = resultados[p.id];
+        const L = FIXTURE.equipo(p.local);
+        const V = FIXTURE.equipo(p.visitante);
+        const estado = U.estadoPartido(p, res);
+
+        // Lógica de visibilidad:
+        // - Si no hay pronóstico, no se muestra.
+        // - Si el usuario no es admin, solo puede ver pronósticos de partidos EN VIVO.
+        // - Los admins ven todo.
+        if (!pr) return null;
+        if (yo.rol !== 'admin' && estado !== 'en_juego' && estado !== 'finalizado') return null;
+
+        let color = 'var(--tinta)';
+        let icono = '⏳';
+        if (res && res.estado === 'finalizado') {
+          const cal = Puntos.calificar(pr, res, p.fase);
+          color = cal.tipo === 'exacto' ? 'var(--verde-claro)' : (cal.tipo === 'resultado' ? 'var(--dorado)' : 'var(--rojo)');
+          icono = cal.tipo === 'exacto' ? '🎯' : (cal.tipo === 'resultado' ? '✔' : '❌');
+        } else if (estado === 'en_juego') {
+          icono = '🔴';
+        } else if (estado === 'cerrado') {
+          icono = '🔒'; // Cerrado (ya no se puede pronosticar)
+        }
+
+        const fechaPronostico = pr.t ? `${U.diaLocal(pr.t)} · ${U.horaLocal(pr.t)}` : '';
+
+        return `
+          <div style="background:rgba(0,0,0,0.15); border:1px solid var(--linea); border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--tinta-2); border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
+              <span style="display:flex; align-items:center; gap:6px;">${L.b} ${U.esc(L.n)} vs ${U.esc(V.n)} ${V.b}</span>
+              <span title="Estado del pronóstico">${icono}</span>
+            </div>
+            <div style="display:flex; justify-content:space-around; align-items:center;">
+              <div style="text-align:center;">
+                <div style="font-size:10px; color:var(--tinta-3); letter-spacing:1px; text-transform:uppercase;">Pronóstico</div>
+                <div style="font-size:18px; font-family:var(--fuente-marcador); font-weight:900; color:${color}; margin-top:2px;">${pr.gl} – ${pr.gv}</div>
+                ${fechaPronostico ? `<div style="font-size:10px; color:var(--tinta-3); margin-top:4px;">${fechaPronostico}</div>` : ''}
+              </div>
+              ${res && res.estado === 'finalizado' ? `
+              <div style="text-align:center; border-left:1px solid var(--linea); padding-left:15px;">
+                <div style="font-size:10px; color:var(--tinta-3); letter-spacing:1px; text-transform:uppercase;">Real</div>
+                <div style="font-size:18px; font-family:var(--fuente-marcador); font-weight:900; color:var(--tinta); margin-top:2px;">${res.gl} – ${res.gv}</div>
+              </div>` : `
+              <div style="text-align:center; border-left:1px solid var(--linea); padding-left:15px; opacity:0.4;">
+                <div style="font-size:10px; color:var(--tinta-3); letter-spacing:1px; text-transform:uppercase;">Real</div>
+                <div style="font-size:14px; font-family:var(--fuente-marcador); font-weight:700; color:var(--tinta); margin-top:4px;">VS</div>
+              </div>`}
+            </div>
+          </div>`;
+      }).filter(Boolean).slice(0, 20);
+
+    const nota = yo.rol !== 'admin'
+      ? '<span style="font-size:12px; color:var(--tinta-3)">Partidos en vivo y finalizados</span>'
+      : `<span style="font-size:12px; color:var(--tinta-3);">Mostrando ${lista.length} partidos</span>`;
+
+    const trDetalle = document.createElement('tr');
+    trDetalle.className = 'fila-pronosticos';
+    trDetalle.innerHTML = `<td colspan="8" style="padding:18px; background:var(--superficie-2); border-bottom:3px solid var(--azul); box-shadow:inset 0 4px 15px rgba(0,0,0,0.15);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h4 style="margin:0; color:var(--dorado); font-size:16px;">🔮 Pronósticos de ${U.esc(usuario.nombre.split(' ')[0])}</h4>
+        ${nota}
+      </div>
+      ${lista.length
+        ? `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:12px;">${lista.join('')}</div>`
+        : '<div class="aviso" style="margin:0">Sin pronósticos de partidos iniciados todavía.</div>'}
+    </td>`;
+    tr.after(trDetalle);
+  });
+
+  await cargar();
+  Store.enCambios(cargar);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScoreCast — Entrar</title>
+  <meta name="description" content="Pronostica, compite y celebra con tus compañeros en tus competiciones favoritas.">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0846f0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<header class="barra">
+  <div class="contenedor barra__fila">
+    <a class="logo" href="index.html"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
+    <nav class="nav">
+      <a href="reglas.html">Reglas</a>
+    </nav>
+  </div>
+</header>
+
+<main class="contenedor">
+
+  <section class="heroe">
+    <div class="heroe__copa">🏆</div>
+    <h1><span class="acento">ScoreCast</span></h1>
+    <button id="install-pwa-button" class="boton" style="display: none;">📲 Instalar App en tu celular</button>
+    <p class="bajada">Champions, La Liga, Premier League, Bundesliga, Liga Colombiana, Libertadores y Sudamericana. Una sola tabla que importa: la nuestra.</p>
+    <div class="hero-banner" id="hero-banner"></div>
+    <p class="hero-cta" id="hero-cta"></p>
+  </section>
+
+  <section class="rejilla rejilla--2" style="align-items:start">
+
+    <!-- ====== ACCESO ====== -->
+    <div class="panel panel--relleno">
+      <div class="alterna" role="tablist">
+        <button id="t-login" class="activo" type="button">Iniciar sesión</button>
+        <button id="t-registro" type="button">Crear cuenta</button>
+      </div>
+
+      <!-- Login -->
+      <form id="f-login" autocomplete="on">
+        <div class="campo">
+          <label for="l-correo">Correo</label>
+          <input id="l-correo" name="l-correo" type="email" required placeholder="tu.correo@ejemplo.com" autocomplete="email">
+        </div>
+        <div class="campo">
+          <label for="l-clave">Contraseña</label>
+          <div class="campo-clave">
+            <input id="l-clave" name="l-clave" type="password" required minlength="8" autocomplete="current-password">
+            <button type="button" class="toggle-clave" aria-label="Mostrar contraseña">👁️</button>
+          </div>
+        </div>
+        <button class="boton boton--bloque" type="submit">Entrar a la cancha ⚽</button>
+        <button class="boton boton--google boton--bloque" type="button" id="btn-google">Entrar con Google</button>
+        <p class="sub" style="margin-top:8px"><a href="#" id="forgot-pass">¿Olvidaste tu contraseña?</a></p>
+      </form>
+
+      <!-- Registro -->
+      <form id="f-registro" class="oculto" autocomplete="on">
+        <div class="campo">
+          <label for="r-nombre">Nombre completo</label>
+          <input id="r-nombre" name="r-nombre" type="text" required minlength="3" placeholder="Como quieres aparecer en la tabla" autocomplete="name">
+        </div>
+        <div class="campo">
+          <label for="r-correo">Correo personal</label>
+          <input id="r-correo" name="r-correo" type="email" required placeholder="tu.correo@ejemplo.com" autocomplete="email">
+          <p class="ayuda">Puedes registrarte usando tu correo personal o corporativo. El acceso será inmediato.</p>
+        </div>
+        <div class="campo">
+          <label for="r-moneda">Moneda de tu cuota</label>
+          <select id="r-moneda" name="r-moneda" required></select>
+          <p class="ayuda" id="r-cuota"></p>
+        </div>
+        <div class="campo">
+          <label for="r-clave">Contraseña (mín. 8 caracteres)</label>
+          <div class="campo-clave">
+            <input id="r-clave" name="r-clave" type="password" required minlength="8" autocomplete="new-password">
+            <button type="button" class="toggle-clave" aria-label="Mostrar contraseña">👁️</button>
+          </div>
+        </div>
+        <button class="boton boton--verde boton--bloque" type="submit">Inscribirme en ScoreCast 🎟</button>
+        <p class="ayuda centro" style="margin-top:10px">Al registrarte aceptas las <a href="reglas.html">reglas del juego</a>.
+          La plata de la cuota se entrega por fuera de la app al tesorero.</p>
+      </form>
+
+      <div style="border-top: 1px solid var(--linea); margin-top: 22px; padding-top: 22px;">
+        <h2 style="margin:0 0 6px">🔑 Unirse con código</h2>
+        <p class="sub" style="margin:0 0 14px">¿Te invitaron a una sala privada? Ingresa el código que te compartieron.</p>
+        <form id="f-unirse-public" autocomplete="off">
+          <div class="campo">
+            <label for="invite-code-public">Código de invitación</label>
+            <input id="invite-code-public" name="invite-code-public" type="text" required maxlength="8" placeholder="Ej: AB3X7K" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;font-size:16px">
+          </div>
+          <button class="boton boton--bloque" type="submit">Unirme a la sala</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== CÓMO FUNCIONA ====== -->
+    <div class="panel panel--relleno">
+      <h2>¿Cómo se juega?</h2>
+      <p class="sub">Tres pasos y a gozarse el fútbol:</p>
+      <p>1️⃣ &nbsp;<b>Pronostica el marcador</b> de cada partido antes de que empiece.
+        Marcador exacto en fase de grupos vale <b>3 puntos</b>; acertar quién gana (o el empate) vale <b>1 punto</b>.
+        En eliminatorias sube a <b>5</b> y <b>2</b>.</p>
+      <p>2️⃣ &nbsp;<b>Elige tu campeón</b> antes del pitazo inicial: si lo aciertas, son <b>10 puntos</b> extra al final.</p>
+      <p>3️⃣ &nbsp;<b>Sigue la tabla en vivo</b>: los marcadores se actualizan en tiempo real y los puntos se calculan solos.</p>
+      <div class="aviso aviso--dorado">💰 La cuota se registra en tu moneda (pesos colombianos, mexicanos, chilenos,
+        uruguayos, bolívares y más). La app lleva las cuentas de quién pagó y de cuánto es la vaca,
+        pero <b>no mueve plata</b>.</div>
+      <div class="kpis">
+        <div class="kpi"><div class="valor">Top</div><div class="titulo">Ligas y Copas</div></div>
+        <div class="kpi"><div class="valor">100%</div><div class="titulo">En Vivo</div></div>
+        <div class="kpi"><div class="valor">10</div><div class="titulo">Pts por el campeón</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+  </footer>
+</main>
+
+<script type="module" src="js/config.js"></script>
+<script type="module" src="js/fixture.js"></script>
+<script type="module" src="js/utils.js"></script>
+<script type="module" src="js/store.js"></script>
+<script type="module" src="js/puntos.js"></script>
+<script type="module" src="js/email.js"></script>
+<script type="module">
+import { CONFIG } from './js/config.js';
+
+(async () => {
+  await Store.init();
+
+  /* Si ya hay sesión, directo a la sala activa o al lobby */
+  if (await Store.sesion()) {
+    const sala = localStorage.getItem('salaActiva');
+    location.href = sala ? `app.html?sala=${sala}` : 'lobby.html';
+    return;
+  }
+
+  /* --- Banner de partido en vivo / próximo / último ---------- */
+  function pintarHeroBanner() {
+    const ahora = Date.now();
+    const matches = FIXTURE.partidos
+      .filter(p => p.utc && p.local && p.visitante)
+      .sort((a, b) => a.utc.localeCompare(b.utc));
+
+    let match = null, esLive = false, esFuturo = false;
+
+    // ¿Hay partido en vivo ahora? (ventana de 3h desde el pitazo)
+    for (const p of matches) {
+      const t = new Date(p.utc).getTime();
+      if (ahora >= t && ahora <= t + 3 * 3600000) { match = p; esLive = true; break; }
+    }
+    // Si no, el próximo
+    if (!match) {
+      match = matches.find(p => new Date(p.utc).getTime() > ahora);
+      if (match) esFuturo = true;
+    }
+    // Si no, el último jugado
+    if (!match) match = matches.filter(p => new Date(p.utc).getTime() < ahora).slice(-1)[0];
+    if (!match) return;
+
+    const L = FIXTURE.equipo(match.local), V = FIXTURE.equipo(match.visitante);
+    const horaStr = match.utc ? ` · ${U.horaLocal(match.utc)} (tu hora)` : '';
+      const estadioStr = match.estadio ? `🏟 ${match.estadio}${horaStr}` : '';
+      let cierrePronosticoStr = '';
+      if (!match.horaOk) {
+        cierrePronosticoStr = '<div class="hero-banner__cierre">Cierre pronósticos: 11:00 a. m. Colombia</div>';
+      }
+
+      document.getElementById('hero-banner').innerHTML = `
+        ${esLive ? `<div class="hero-banner__vivo"><span class="live-dot"></span> EN VIVO AHORA</div>` : ''}
+        <div class="hero-banner__match">
+          <div class="hero-banner__equipo">
+            <div class="hero-banner__ban">${L.b || '⚽'}</div>
+            <div class="hero-banner__nom">${U.esc(L.n)}</div>
+          </div>
+          <div class="hero-banner__vs">VS</div>
+          <div class="hero-banner__equipo">
+            <div class="hero-banner__ban">${V.b || '⚽'}</div>
+            <div class="hero-banner__nom">${U.esc(V.n)}</div>
+          </div>
+        </div>
+        ${estadioStr ? `<div class="hero-banner__estadio">${estadioStr}</div>` : ''}
+        ${cierrePronosticoStr}`;
+
+    const ctaEl = document.getElementById('hero-cta');
+    if (esLive) {
+      ctaEl.innerHTML = `¡El balón ya rueda y estamos en el partido <b>${U.esc(L.n)} vs ${U.esc(V.n)}</b>! ⚽<br>Entra, pronostica tu marcador y participa por el premio mayor.`;
+    } else if (esFuturo) {
+      ctaEl.innerHTML = `⚽ Próximo partido: <b>${U.esc(L.n)} vs ${U.esc(V.n)}</b> — ¡entra y pronostica antes de que empiece!`;
+    } else {
+      ctaEl.innerHTML = `¡El fútbol no para! ⚽ Entra, revisa los resultados y sigue sumando puntos en la tabla.`;
+    }
+  }
+
+  /* --- Monedas en el registro -------------------------------- */
+  const sel = document.getElementById('r-moneda');
+  sel.innerHTML = Object.entries(CONFIG.CUOTAS)
+    .map(([cod, m]) => `<option value="${cod}">${U.esc(m.nombre)} (${cod})</option>`).join('');
+  const pintaCuota = () => {
+    const m = CONFIG.CUOTAS[sel.value];
+    document.getElementById('r-cuota').textContent = `Cuota de inscripción: ${U.moneda(m.valor, sel.value)} — se paga al tesorero (${CONFIG.TESORERO}).`;
+  };
+  sel.onchange = pintaCuota; pintaCuota();
+
+  /* --- Alternar pestañas ------------------------------------- */
+  const tL = document.getElementById('t-login'), tR = document.getElementById('t-registro');
+  const fL = document.getElementById('f-login'), fR = document.getElementById('f-registro');
+  const alterna = reg => {
+    tL.classList.toggle('activo', !reg); tR.classList.toggle('activo', reg);
+    fL.classList.toggle('oculto', reg);  fR.classList.toggle('oculto', !reg);
+  };
+  tL.onclick = () => alterna(false);
+  tR.onclick = () => alterna(true);
+
+  /* --- Login -------------------------------------------------- */
+  async function postLogin(usuario) {
+    const codigoPendiente = sessionStorage.getItem('codigoSalaPendiente');
+    if (codigoPendiente) {
+      sessionStorage.removeItem('codigoSalaPendiente');
+      try {
+        const sala = await Store.unirseASala(codigoPendiente, usuario.uid);
+        U.toast(`¡Bienvenido(a)! Te has unido a la sala "${sala.nombre}".`);
+        localStorage.setItem('salaActiva', sala.salaId);
+        location.href = `app.html?sala=${sala.salaId}`;
+        return;
+      } catch (err) {
+        U.toast(err.message, 'error');
+        location.href = 'lobby.html'; // Si falla, al lobby
+        return;
+      }
+    }
+    // Flujo normal
+    const sala = localStorage.getItem('salaActiva');
+    location.href = sala ? `app.html?sala=${sala}` : 'lobby.html';
+  }
+
+  fL.onsubmit = async e => {
+    e.preventDefault();
+    const btn = fL.querySelector('button'); btn.disabled = true;
+    try {
+      const u = await Store.login(document.getElementById('l-correo').value, document.getElementById('l-clave').value);
+      if (u.estado === 'pendiente') {
+        U.toast('Tu cuenta está pendiente de aprobación por Soporte IT.', 'info');
+        await Store.logout();
+      } else {
+        await postLogin(u);
+      }
+    } catch (err) { U.toast(err.message, 'error'); }
+    btn.disabled = false;
+  };
+
+  const btnGoogle = document.getElementById('btn-google');
+  if (btnGoogle) {
+    btnGoogle.onclick = async () => {
+      const btn = btnGoogle;
+      btn.disabled = true;
+      try {
+        if (typeof Store.loginGoogle !== 'function') {
+          throw new Error('No está disponible el inicio con Google. Actualiza la página y vuelve a intentar.');
+        }
+        const u = await Store.loginGoogle();
+        if (u.estado === 'pendiente') {
+          U.toast('Tu cuenta está pendiente de aprobación por Soporte IT.', 'info');
+          await Store.logout();
+        } else {
+          await postLogin(u);
+        }
+      } catch (err) {
+        U.toast(err.message || 'No fue posible iniciar sesión con Google.', 'error');
+      }
+      btn.disabled = false;
+    };
+  }
+
+  /* --- Olvidé mi contraseña ---------------------------------- */
+  document.getElementById('forgot-pass').onclick = async e => {
+    e.preventDefault();
+    const correo = document.getElementById('l-correo').value;
+    if (!U.correoValido(correo)) { U.toast('Escribe un correo válido para restablecer la contraseña.', 'error'); return; }
+    try {
+      // window.firebase se carga tras Store.init() (compat scripts)
+      if (!window.firebase) await Store.init();
+      await window.firebase.auth().sendPasswordResetEmail(correo);
+      U.toast('Se envió un correo para restablecer tu contraseña. Revisa tu bandeja.');
+    } catch (err) { U.toast(err.message || 'No se pudo enviar el correo de restablecimiento.', 'error'); }
+  };
+
+  /* --- Registro ----------------------------------------------- */
+  fR.onsubmit = async e => {
+    e.preventDefault();
+    const btn = fR.querySelector('button'); btn.disabled = true;
+    try {
+      const u = await Store.registrar({
+        nombre: document.getElementById('r-nombre').value,
+        correo: document.getElementById('r-correo').value,
+        area: 'General',
+        moneda: sel.value,
+        clave: document.getElementById('r-clave').value
+      });
+      Promise.resolve().then(() => Email.bienvenida(u)).catch(() => {});
+      if (u.estado === 'pendiente') {
+        U.toast('¡Listo! Tu cuenta quedó pendiente de aprobación. Te avisaremos por correo.', 'info');
+        await Store.logout();
+        alterna(false);
+      } else {
+        localStorage.removeItem('salaActiva');
+        U.toast(`¡Bienvenido(a) a ScoreCast, ${u.nombre.split(' ')[0]}! ⚽`);
+        setTimeout(() => {
+          const codigoPendiente = sessionStorage.getItem('codigoSalaPendiente');
+          if (codigoPendiente) {
+            postLogin(u);
+          } else {
+            location.href = 'lobby.html';
+          }
+        }, 600);
+      }
+    } catch (err) { U.toast(err.message, 'error'); }
+    btn.disabled = false;
+  };
+
+  document.getElementById('f-unirse-public').onsubmit = e => {
+    e.preventDefault();
+    const codigo = document.getElementById('invite-code-public').value;
+    if (!codigo) return;
+    sessionStorage.setItem('codigoSalaPendiente', codigo.toUpperCase().trim());
+    U.toast('¡Perfecto! Ahora inicia sesión o crea una cuenta para unirte a la sala.', 'info');
+    alterna(false);
+    document.getElementById('l-correo').focus();
+  };
+
+  // Toggle para ver/ocultar contraseña
+  document.querySelectorAll('.toggle-clave').forEach(btn => {
+    btn.onclick = () => {
+      const input = btn.previousElementSibling;
+      const esPassword = input.type === 'password';
+      input.type = esPassword ? 'text' : 'password';
+      btn.textContent = esPassword ? '🙈' : '👁️';
+      btn.setAttribute('aria-label', esPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    };
+  });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registrado'))
+        .catch(err => console.log('Error al registrar SW:', err));
+    });
+  }
+
+    // Lógica para el botón de instalación de la PWA
+    let deferredPrompt;
+    const installButton = document.getElementById('install-pwa-button');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installButton) installButton.style.display = 'block';
+
+      installButton.onclick = () => {
+        if (installButton) installButton.style.display = 'none';
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          console.log(`Resultado de la instalación: ${choiceResult.outcome}`);
+          deferredPrompt = null;
+        });
+      };
+    });
+
+    // Pintar el banner al final para asegurar que los scripts de fixture y utils se hayan cargado.
+    pintarHeroBanner();
+})();
+</script>
+</body>

@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+*.local
+
+# Wrangler / Cloudflare
+.wrangler/
+
+# System files
+.DS_Store
+Thumbs.db

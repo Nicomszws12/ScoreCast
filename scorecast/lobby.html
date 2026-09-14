@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Salas — ScoreCast</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <style>
+    .sala-card {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--superficie-2); border: 1px solid var(--linea);
+      border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+      transition: border-color .2s, transform .15s, box-shadow .2s;
+    }
+    .sala-card:hover {
+      border-color: var(--azul);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .sala-card--principal {
+      border-color: rgba(255, 184, 0, 0.4);
+      background: linear-gradient(135deg, rgba(255,184,0,0.06) 0%, var(--superficie-2) 100%);
+    }
+    .sala-card--principal:hover {
+      border-color: var(--dorado);
+    }
+    .sala-card__link {
+      display: flex; flex-grow: 1; align-items: center; gap: 14px;
+      text-decoration: none; color: inherit; cursor: pointer;
+    }
+    .sala-card__link:hover { text-decoration: none; }
+    .sala-icon {
+      font-size: 28px; flex-shrink: 0;
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(255,255,255,0.06); display: flex;
+      align-items: center; justify-content: center;
+    }
+    .sala-info { flex: 1; min-width: 0; }
+    .sala-info__nombre {
+      font-weight: 800; font-size: 16px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .sala-info__sub { font-size: 12px; color: var(--tinta-3); margin-top: 4px; }
+    .sala-codigo {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0, 255, 135, 0.1); border: 1px dashed var(--verde);
+      border-radius: 8px; padding: 3px 8px; font-family: monospace;
+      font-size: 14px; font-weight: 800; letter-spacing: 2px; color: var(--verde);
+      cursor: pointer; user-select: all; transition: all .15s;
+    }
+    .sala-codigo:hover {
+      background: rgba(0, 255, 135, 0.2);
+      transform: scale(1.03);
+    }
+    .modal-creada {
+      animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.92) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="contenedor barra__fila">
+    <a class="logo" href="lobby.html"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
+    <nav class="nav" id="nav">
+      <a href="app.html">⚽ Partidos</a>
+      <a href="lobby.html" class="activo">🏟 Mis Salas</a>
+    </nav>
+    <div class="usuario-mini">
+      <div class="avatar" id="avatar">?</div>
+      <button class="boton boton--fantasma boton--mini" id="salir" type="button">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="contenedor" style="max-width:680px">
+
+  <section style="margin-top:26px; margin-bottom:24px">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h1 style="margin:0;font-size:26px">🏟 Mis Salas de Juego</h1>
+        <p class="sub" style="margin:6px 0 0">Entra a la sala donde quieras pronosticar, crea tu sala privada o únete con un código.</p>
+      </div>
+      <a href="app.html" class="boton boton--fantasma boton--mini" style="font-weight:700;">Ir a Partidos ▶</a>
+    </div>
+  </section>
+
+  <div id="lista-salas">
+    <div style="text-align:center; padding: 24px; color: var(--tinta-3);">Cargando salas…</div>
+  </div>
+
+  <div class="rejilla rejilla--2" style="margin-top:30px; align-items:start">
+
+    <!-- Crear sala privada -->
+    <div class="panel panel--relleno">
+      <h2 style="margin:0 0 6px; font-size:18px;">➕ Crear sala privada</h2>
+      <p class="sub" style="margin:0 0 14px; font-size:13px;">Organiza tu polla con amigos o compañeros. La sala será 100% privada con un código único solo para ti.</p>
+      <form id="f-crear" autocomplete="off">
+        <div class="campo">
+          <label for="nuevo-nombre">Nombre de tu sala</label>
+          <input id="nuevo-nombre" type="text" required minlength="3" maxlength="40"
+                 placeholder="Ej: Familia Gol, Amigos del Barrio…">
+        </div>
+        <button class="boton boton--verde boton--bloque" id="btn-crear" type="submit" style="font-weight:800;">
+          Crear sala privada 🚀
+        </button>
+      </form>
+    </div>
+
+    <!-- Unirse con código -->
+    <div class="panel panel--relleno">
+      <h2 style="margin:0 0 6px; font-size:18px;">🔑 Unirse con código</h2>
+      <p class="sub" style="margin:0 0 14px; font-size:13px;">¿Te invitaron a una sala privada? Ingresa el código que te compartió el líder para unirte.</p>
+      <form id="f-unirse" autocomplete="off">
+        <div class="campo">
+          <label for="invite-code">Código de invitación</label>
+          <input id="invite-code" type="text" required maxlength="10"
+                 placeholder="Ej: K7X9Q2"
+                 style="text-transform:uppercase;font-family:monospace;letter-spacing:3px;font-size:17px;font-weight:800;text-align:center;">
+        </div>
+        <button class="boton boton--bloque" id="btn-unirse" type="submit" style="font-weight:800;">
+          Unirme a la sala
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <footer class="pie">
+    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+  </footer>
+</main>
+
+<!-- ============================================================
+     MODAL POPUP: SALA CREADA (EXCLUSIVO PARA EL LÍDER)
+     ============================================================ -->
+<div class="modal oculto" id="modal-sala-creada">
+  <div class="modal-contenido modal-creada" style="max-width: 480px; text-align: center; border: 2px solid var(--verde); box-shadow: 0 12px 48px rgba(0,255,135,0.25); position: relative;">
+    
+    <div style="font-size: 50px; margin-bottom: 6px;">🎉🏆</div>
+    <h2 style="margin: 0 0 6px; font-size: 22px; color: #fff;">¡Sala Creada con Éxito!</h2>
+    <p style="color: var(--tinta-2); font-size: 14px; margin: 0 0 18px;">
+      Tu sala privada <b id="modal-creada-nombre" style="color: var(--dorado);"></b> ya está registrada en la cancha.
+    </p>
+
+    <!-- Código de invitación en caja destacada -->
+    <div style="background: rgba(0, 255, 135, 0.08); border: 2px dashed var(--verde); border-radius: 14px; padding: 18px 14px; margin-bottom: 16px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--tinta-3); font-weight: 700; margin-bottom: 6px;">
+        🔑 CÓDIGO DE INVITACIÓN (SOLO PARA TI)
+      </div>
+      <div id="modal-creada-codigo" style="font-family: monospace; font-size: 36px; font-weight: 900; letter-spacing: 6px; color: var(--verde); user-select: all; text-shadow: 0 0 14px rgba(0,255,135,0.45); margin: 6px 0 12px;">
+        ------
+      </div>
+      <button class="boton boton--verde boton--bloque" id="btn-copiar-codigo-modal" type="button" style="font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        📋 Copiar código de invitación
+      </button>
+    </div>
+
+    <!-- Advertencia de seguridad para el líder -->
+    <div style="background: rgba(255, 184, 0, 0.09); border: 1px solid rgba(255, 184, 0, 0.35); border-radius: 10px; padding: 12px 14px; text-align: left; margin-bottom: 20px;">
+      <div style="display: flex; gap: 10px; align-items: flex-start;">
+        <span style="font-size: 20px; line-height: 1;">⚠️</span>
+        <div style="font-size: 13px; color: #f5f5f7; line-height: 1.45;">
+          <b style="color: var(--dorado);">¡Atención, líder de sala!</b><br>
+          Esta sala es <b>100% privada</b>. Nadie puede verla ni unirse a ella sin este código. Guárdalo muy bien y compártelo únicamente con las personas que desees invitar. ¡No lo pierdas!
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón entrar a la sala -->
+    <button class="boton boton--primario boton--bloque" id="btn-entrar-sala-modal" type="button" style="padding: 12px 20px; font-size: 15px; font-weight: 800;">
+      🚀 Entrar a mi sala ahora
+    </button>
+  </div>
+</div>
+
+<script type="module" src="js/config.js"></script>
+<script type="module" src="js/fixture.js"></script>
+<script type="module" src="js/utils.js"></script>
+<script type="module" src="js/store.js"></script>
+<script type="module">
+import { CONFIG } from './js/config.js';
+
+(async () => {
+  await Store.init();
+  const yo = await Store.sesion();
+  if (!U.requiereSesion(yo)) return;
+  if (yo.estado === 'pendiente') {
+    U.toast('Tu cuenta aún está pendiente de aprobación.', 'info');
+    await Store.logout();
+    location.href = 'index.html';
+    return;
+  }
+
+  document.getElementById('avatar').textContent = U.iniciales(yo.nombre);
+  document.getElementById('salir').onclick = async () => {
+    localStorage.removeItem('salaActiva');
+    await Store.logout();
+    location.href = 'index.html';
+  };
+  if (yo.rol === 'admin') {
+    const a = document.createElement('a'); a.href = 'admin.html'; a.textContent = '🛠 Admin';
+    document.getElementById('nav').appendChild(a);
+  }
+
+  function irASala(salaId) {
+    localStorage.setItem('salaActiva', salaId);
+    location.href = `app.html?sala=${encodeURIComponent(salaId)}`;
+  }
+
+  async function renderSalas() {
+    const cont = document.getElementById('lista-salas');
+    let salas = [];
+    try {
+      salas = await Store.misSalas(yo.uid);
+    } catch (e) {
+      console.warn("Error cargando salas:", e);
+    }
+
+    const principalCard = `
+      <div class="sala-card sala-card--principal">
+        <a href="#" data-sala="scorecast" class="sala-card__link">
+          <div class="sala-icon">🌍</div>
+          <div class="sala-info">
+            <div class="sala-info__nombre">
+              ScoreCast Principal <span class="etiqueta etiqueta--dorada">Oficial</span>
+            </div>
+            <div class="sala-info__sub">La sala general · Partidos y competiciones para todos</div>
+          </div>
+          <span style="font-size:20px;color:var(--dorado); margin-left: auto;">▶</span>
+        </a>
+      </div>`;
+
+    const privadas = salas.map(s => {
+      const esMiAdmin = s.adminUid === yo.uid || s.creadorUid === yo.uid || yo.rol === 'admin';
+      const linkAdmin = yo.rol === 'admin' ? `admin.html?sala=${encodeURIComponent(s.salaId)}` : `sala-admin.html?sala=${encodeURIComponent(s.salaId)}`;
+      
+      const codigoPrivadoHtml = esMiAdmin && s.codigo ? `
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:var(--dorado);font-weight:700;">🔑 CÓDIGO LÍDER:</span>
+          <span class="sala-codigo" title="Clic para copiar código de invitación" data-copy="${U.esc(s.codigo)}">${U.esc(s.codigo)} 📋</span>
+          <span style="font-size:11px;color:var(--tinta-3);">(Solo visible para ti)</span>
+        </div>
+      ` : `
+        <div style="font-size:12px;color:var(--tinta-3);margin-top:4px;">
+          🔒 Sala privada · Eres participante
+        </div>
+      `;
+
+      return `
+        <div class="sala-card">
+          <a href="#" data-sala="${U.esc(s.salaId)}" class="sala-card__link">
+            <div class="sala-icon">🏟️</div>
+            <div class="sala-info">
+              <div class="sala-info__nombre">
+                ${U.esc(s.nombre)}
+                ${esMiAdmin ? ` <span class="etiqueta etiqueta--dorada">${yo.rol === 'admin' ? 'Super Admin' : '👑 Líder'}</span>` : '<span class="etiqueta">Miembro</span>'}
+              </div>
+              <div class="sala-info__sub">
+                ${codigoPrivadoHtml}
+              </div>
+            </div>
+            <span style="font-size:20px;color:var(--tinta-2); margin-left: auto;">▶</span>
+          </a>
+          ${esMiAdmin ? `
+            <a href="${linkAdmin}" class="boton boton--fantasma boton--mini" title="Configurar sala" style="flex-shrink: 0;">⚙️</a>
+            <button class="boton boton--peligro boton--mini" data-eliminar-sala="${U.esc(s.salaId)}" title="Eliminar sala" style="flex-shrink: 0; background:rgba(224,53,75,0.2); border-color:rgba(224,53,75,0.4); color:#e0354b;">🗑</button>
+          ` : ''}
+        </div>`;
+    }).join('');
+
+    cont.innerHTML = principalCard + (privadas || '<p class="sub" style="margin:8px 0 0; text-align:center;">No perteneces a salas privadas aún — ¡crea la tuya o ingresa un código abajo!</p>');
+  }
+
+  // Delegación de clics en la lista de salas
+  document.getElementById('lista-salas').addEventListener('click', async e => {
+    // 1. Copiar código rápido desde la tarjeta (solo líder)
+    const cp = e.target.closest('[data-copy]');
+    if (cp) {
+      e.preventDefault();
+      e.stopPropagation();
+      const cod = cp.dataset.copy;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(cod).catch(() => {});
+      }
+      U.toast(`¡Código ${cod} copiado al portapapeles! 📋`, 'ok');
+      return;
+    }
+
+    // 2. Eliminar sala (solo líder o admin)
+    const btnElim = e.target.closest('[data-eliminar-sala]');
+    if (btnElim) {
+      e.preventDefault();
+      e.stopPropagation();
+      const salaId = btnElim.dataset.eliminarSala;
+      const nombre = btnElim.closest('.sala-card')?.querySelector('.sala-info__nombre')?.textContent?.trim() || 'esta sala';
+      if (!confirm(`¿Estás seguro de eliminar "${nombre}"?\n\nSe eliminarán los datos de la sala. Esta acción no se puede deshacer.`)) return;
+      try {
+        await Store.eliminarSala(salaId);
+        U.toast(`Sala eliminada correctamente.`, 'ok');
+        await renderSalas();
+        if (localStorage.getItem('salaActiva') === salaId) {
+          localStorage.setItem('salaActiva', 'scorecast');
+        }
+      } catch (err) {
+        U.toast(err.message, 'error');
+      }
+      return;
+    }
+
+    // 3. Ir a la sala al hacer clic en la tarjeta
+    const card = e.target.closest('[data-sala]');
+    if (card) {
+      e.preventDefault();
+      irASala(card.dataset.sala);
+    }
+  });
+
+  // Crear sala privada
+  document.getElementById('f-crear').onsubmit = async e => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-crear');
+    btn.disabled = true;
+    const nombre = document.getElementById('nuevo-nombre').value.trim();
+
+    try {
+      const sala = await Store.crearSala(yo.uid, nombre);
+      document.getElementById('nuevo-nombre').value = '';
+      await renderSalas();
+
+      // Configurar y abrir el modal popup exclusivo para el líder
+      document.getElementById('modal-creada-nombre').textContent = `"${sala.nombre}"`;
+      document.getElementById('modal-creada-codigo').textContent = sala.codigo;
+
+      const btnCopiar = document.getElementById('btn-copiar-codigo-modal');
+      btnCopiar.onclick = () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(sala.codigo).catch(() => {});
+        }
+        U.toast(`¡Código ${sala.codigo} copiado! 📋`, 'ok');
+        btnCopiar.textContent = '✅ ¡Código Copiado!';
+        setTimeout(() => { btnCopiar.innerHTML = '📋 Copiar código de invitación'; }, 2500);
+      };
+
+      const btnEntrar = document.getElementById('btn-entrar-sala-modal');
+      btnEntrar.onclick = () => {
+        irASala(sala.salaId);
+      };
+
+      // Mostrar modal
+      const modal = document.getElementById('modal-sala-creada');
+      modal.classList.remove('oculto');
+
+      // Disparo de confetti
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+
+    } catch (err) {
+      U.toast(err.message, 'error');
+    }
+    btn.disabled = false;
+  };
+
+  // Unirse a sala con código de invitación
+  document.getElementById('f-unirse').onsubmit = async e => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-unirse');
+    btn.disabled = true;
+    const codigo = document.getElementById('invite-code').value.trim().toUpperCase();
+
+    try {
+      const sala = await Store.unirseASala(codigo, yo.uid);
+      U.toast(`¡Te has unido exitosamente a "${sala.nombre}"! ⚽`, 'ok');
+      document.getElementById('invite-code').value = '';
+      setTimeout(() => irASala(sala.salaId), 500);
+    } catch (err) {
+      U.toast(err.message, 'error');
+    }
+    btn.disabled = false;
+  };
+
+  await renderSalas();
+})();
+</script>
+</body>
+</html>
