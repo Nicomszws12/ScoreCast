@@ -99,42 +99,54 @@ const ApiFutbol = {
     'portugal':'POR','dr congo':'COD','congo dr':'COD','uzbekistan':'UZB','colombia':'COL',
     'england':'ENG','croatia':'CRO','ghana':'GHA','panama':'PAN',
 
-    // Premier League
+    // Premier League 2026/27
     'arsenal':'ars','arsenal fc':'ars','chelsea':'che','chelsea fc':'che',
     'liverpool':'liv','liverpool fc':'liv','manchester city':'mci','man city':'mci',
     'manchester united':'mun','man united':'mun','tottenham':'tot','tottenham hotspur':'tot','spurs':'tot',
     'newcastle':'new','newcastle united':'new','aston villa':'avl','brighton':'bha','brighton & hove albion':'bha','brighton and hove albion':'bha',
-    'west ham':'whu','west ham united':'whu','brentford':'bre','brentford fc':'bre',
+    'brentford':'bre','brentford fc':'bre',
     'crystal palace':'cry','fulham':'ful','fulham fc':'ful','bournemouth':'bou','afc bournemouth':'bou',
-    'wolverhampton':'wol','wolverhampton wanderers':'wol','wolves':'wol',
-    'everton':'eve','everton fc':'eve','leicester':'lei','leicester city':'lei',
-    'ipswich':'ips','ipswich town':'ips','southampton':'sou','southampton fc':'sou',
+    'everton':'eve','everton fc':'eve',
+    'ipswich':'ips','ipswich town':'ips',
     'nottingham forest':'nfo','nott\'m forest':'nfo',
+    'coventry':'cov','coventry city':'cov',
+    'hull city':'hul','hull':'hul',
+    'sunderland':'sun','sunderland afc':'sun',
+    'leeds':'lee','leeds united':'lee',
 
-    // LaLiga
+    // LaLiga 2026/27
     'real madrid':'rma','barcelona':'bar','fc barcelona':'bar',
     'atletico madrid':'atm','atletico de madrid':'atm','atlético madrid':'atm','atlético de madrid':'atm',
     'athletic club':'ath','athletic bilbao':'ath','real sociedad':'rso',
     'real betis':'bet','betis':'bet','villarreal':'vil','villarreal cf':'vil',
-    'sevilla':'sev','sevilla fc':'sev','girona':'gir','girona fc':'gir',
+    'sevilla':'sev','sevilla fc':'sev',
     'celta vigo':'cel','celta de vigo':'cel','rc celta':'cel',
-    'osasuna':'osa','ca osasuna':'osa','mallorca':'mll','rcd mallorca':'mll',
+    'osasuna':'osa','ca osasuna':'osa',
     'alaves':'ala','deportivo alaves':'ala','rayo vallecano':'ray',
     'espanyol':'esp','rcd espanyol':'esp','valencia':'val','valencia cf':'val',
-    'leganes':'leg','cd leganes':'leg','getafe':'get','getafe cf':'get',
-    'las palmas':'lpa','ud las palmas':'lpa','valladolid':'vld','real valladolid':'vld',
+    'getafe':'get','getafe cf':'get',
+    'racing santander':'rac_s','racing de santander':'rac_s',
+    'deportivo':'dep','deportivo la coruna':'dep','rc deportivo':'dep','deportivo de la coruña':'dep',
+    'malaga':'mal_cf','malaga cf':'mal_cf','málaga':'mal_cf','málaga cf':'mal_cf',
+    'elche':'elc','elche cf':'elc',
+    'levante':'lev_ud','levante ud':'lev_ud',
 
-    // Bundesliga
+    // Bundesliga 2026/27
     'bayern munich':'bay','bayern munchen':'bay','fc bayern munich':'bay','fc bayern münchen':'bay',
     'borussia dortmund':'bvb','bvb dortmund':'bvb','bayer leverkusen':'lev','leverkusen':'lev',
-    'rb leipzig':'rbl','leipzig':'rbl','vfb stuttgart':'stu','stuttgart':'stu',
+    'rb leipzig':'rbl','leipzig':'rbl','vfb stuttgart':'vfb','stuttgart':'vfb',
     'eintracht frankfurt':'sge','frankfurt':'sge','hoffenheim':'tsg','tsg hoffenheim':'tsg',
-    'heidenheim':'hei','1. fc heidenheim':'hei','werder bremen':'brem','bremen':'brem',
-    'augsburg':'aug','fc augsburg':'aug','wolfsburg':'wol_de','vfl wolfsburg':'wol_de',
-    'borussia monchengladbach':'mgl','borussia mönchengladbach':'mgl','monchengladbach':'mgl',
-    'union berlin':'ubl','1. fc union berlin':'ubl','bochum':'boc','vfl bochum':'boc',
-    'st. pauli':'stp','fc st. pauli':'stp','holstein kiel':'kie','kiel':'kie',
-    'mainz 05':'mai','fsv mainz 05':'mai','mainz':'mai',
+    'werder bremen':'svw','bremen':'svw','sv werder bremen':'svw',
+    'augsburg':'fca','fc augsburg':'fca',
+    'borussia monchengladbach':'bmg','borussia mönchengladbach':'bmg','monchengladbach':'bmg',"gladbach":'bmg',
+    'union berlin':'fcu','1. fc union berlin':'fcu',
+    'mainz 05':'m05','fsv mainz 05':'m05','mainz':'m05',
+    'schalke 04':'s04','fc schalke 04':'s04','schalke':'s04',
+    'sv elversberg':'sve','elversberg':'sve','sv 07 elversberg':'sve',
+    'sc paderborn':'pad','sc paderborn 07':'pad','paderborn':'pad',
+    '1. fc koln':'koe','1. fc köln':'koe','koln':'koe','köln':'koe',
+    'hamburger sv':'hsv','hamburg':'hsv','hsv':'hsv',
+    'sc freiburg':'scf','freiburg':'scf',
 
     // Champions League / Europa
     'paris saint germain':'psg','paris sg':'psg','psg':'psg',
@@ -256,11 +268,23 @@ const ApiFutbol = {
     }
   },
 
-  /* Descarga y normaliza los partidos desde la API. */
-  async traerPartidos() {
+  /* IDs de liga en API-Football para cada competición local */
+  LEAGUE_IDS: {
+    bundesliga: 78,
+    premier: 39,
+    laliga: 140,
+    betplay: 239,
+    ucl: 2,
+    libertadores: 13,
+    sudamericana: 11
+  },
+
+  /* Descarga y normaliza los partidos desde la API para una liga y temporada. */
+  async traerPartidos(leagueId, season = '2026') {
     if (!this.disponible()) throw new Error('API no configurada en js/config.js');
+    if (!leagueId) throw new Error('Se requiere un ID de liga (ej: 78 para Bundesliga)');
     try {
-      const data = await this._request('/fixtures', { league: '1', season: '2026' });
+      const data = await this._request('/fixtures', { league: String(leagueId), season });
       return (data.response || []).map(f => ({
         apiId:              f.fixture?.id,
         local:              this._codigo(f.teams?.home?.name),

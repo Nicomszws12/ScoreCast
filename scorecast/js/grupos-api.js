@@ -8,11 +8,12 @@
 const GruposApi = (() => {
 
   /* Obtiene las posiciones de todos los grupos desde la API */
-  async function obtenerPosiciones() {
+  async function obtenerPosiciones(leagueId, season = '2026') {
     if (!window.ApiFutbol || !window.ApiFutbol.disponible()) return null;
+    if (!leagueId) leagueId = window.ApiFutbol.LEAGUE_IDS?.libertadores || 13;
 
     try {
-      const data = await window.ApiFutbol._request('/standings', { league: '1', season: '2026' });
+      const data = await window.ApiFutbol._request('/standings', { league: String(leagueId), season });
       if (!data.response?.length) return null;
 
       // Normalizar: { 'A': [...equipos], 'B': [...], ... }
@@ -52,11 +53,12 @@ const GruposApi = (() => {
   }
 
   /* Obtiene los máximos goleadores del torneo */
-  async function obtenerGoleadores(limite = 20) {
+  async function obtenerGoleadores(limite = 20, leagueId, season = '2026') {
     if (!window.ApiFutbol || !window.ApiFutbol.disponible()) return null;
+    if (!leagueId) leagueId = window.ApiFutbol.LEAGUE_IDS?.libertadores || 13;
 
     try {
-      const data = await window.ApiFutbol._request('/players/topscorers', { league: '1', season: '2026' });
+      const data = await window.ApiFutbol._request('/players/topscorers', { league: String(leagueId), season });
       if (!data.response?.length) return null;
 
       return data.response.slice(0, limite).map(j => {
