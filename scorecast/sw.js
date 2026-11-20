@@ -7,7 +7,7 @@
    • Sincronización periódica en background (Periodic Sync)
    • Actualización automática del SW
    ============================================================ */
-const CACHE_NAME = 'scorecast-cache-v21';
+const CACHE_NAME = 'scorecast-cache-v30';
 const APP_SHELL = [
   '/',
   'index.html',
@@ -15,6 +15,7 @@ const APP_SHELL = [
   'tabla.html',
   'cuentas.html',
   'reglas.html',
+  'creditos.html',
   'admin.html',
   'lobby.html',
   'css/estilos.css',
@@ -29,7 +30,10 @@ const APP_SHELL = [
   'js/grupos-api.js',
   'js/notificaciones.js',
   'js/equipos-info.js',
+  'js/competiciones-info.js',
   'js/tablas-cuadros.js',
+  'js/en-vivo-beta.js',
+  'js/tribuna-social.js',
   'img/escudos/betplay/dimayor.png',
   'img/escudos/premier/epl.png',
   'img/escudos/laliga/laliga.png',
@@ -104,8 +108,14 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    // Estrategia: Network First
-    fetch(event.request)
+    // Estrategia: Network First (revalidando siempre contra el servidor para no servir versiones viejas)
+    (() => {
+      let req = event.request;
+      if (url.origin === self.location.origin) {
+        try { req = new Request(event.request, { cache: 'no-cache' }); } catch (_) { req = event.request; }
+      }
+      return fetch(req);
+    })()
       .then(networkResponse => {
         // Solo cachear respuestas exitosas de nuestro origen
         if (networkResponse.ok && url.origin === self.location.origin) {

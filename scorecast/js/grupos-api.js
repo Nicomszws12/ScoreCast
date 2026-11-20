@@ -24,6 +24,7 @@ const GruposApi = (() => {
         for (const grupoStanding of liga.standings) {
           if (!grupoStanding?.length) continue;
           // Detectar letra del grupo desde el nombre (ej: "Group A" → "A")
+          // Detectar letra del grupo desde el nombre (ej: "Group A" → "A")
           const grupoNombre = grupoStanding[0]?.group || grupoStanding[0]?.description || '';
           const letra = (grupoNombre.match(/Group\s+([A-H])/i)?.[1] ||
                         grupoNombre.match(/[A-H]/)?.[0] || '?');

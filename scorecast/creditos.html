@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créditos, Autores y Fuentes — ScoreCast</title>
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0846f0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/estilos.css?v=30">
+</head>
+<body>
+
+<header class="barra">
+  <div class="contenedor barra__fila">
+    <a class="logo" href="index.html" id="link-logo"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
+    <nav class="nav" id="nav">
+      <a href="index.html">Inicio</a>
+      <a href="reglas.html">Reglas</a>
+      <a href="creditos.html" class="activo">Créditos</a>
+    </nav>
+  </div>
+</header>
+
+<main class="contenedor">
+
+  <!-- ====== ENCABEZADO INSTITUCIONAL ====== -->
+  <section class="cred-hero">
+    <div class="cred-hero__badge">🎓 PROYECTO INTEGRADOR (PICS) · ETITC 2026</div>
+    <h1>ScoreCast: Créditos, Autores y Fuentes</h1>
+    <p class="cred-hero__sub">
+      <b>Escuela Tecnológica Instituto Técnico Central (ETITC)</b> · Facultad de Sistemas · Tecnología en Desarrollo de Software · Bogotá, D. C., noviembre de 2026
+    </p>
+    <p class="cred-hero__desc">
+      Plataforma Web Multi-Competición para la Gestión de Pronósticos y Marcadores Deportivos concebida bajo estándares web abiertos, arquitectura serverless de costo mínimo ($0 COP en etapa piloto) y enfoque comunitario responsable.
+    </p>
+    <div class="cred-hero__links">
+      <a class="boton boton--verde boton--mini" href="https://github.com/Nicomszws12/ScoreCast" target="_blank" rel="noopener noreferrer">💻 Repositorio oficial en GitHub</a>
+      <a class="boton boton--fantasma boton--mini" href="reglas.html">📖 Ver Reglas del Juego</a>
+    </div>
+  </section>
+
+  <!-- ====== AUTORES DEL PROYECTO PICS ====== -->
+  <section class="panel panel--relleno" style="margin-top:22px;">
+    <h2 style="margin:0 0 6px;">👥 Equipo de Autores (Proyecto Integrador PICS)</h2>
+    <p class="sub" style="margin:0 0 18px;">Créditos oficiales conforme al documento integrador de la Facultad de Sistemas de la Escuela Tecnológica Instituto Técnico Central (ETITC).</p>
+
+    <div class="cred-autores-grid">
+      <article class="cred-autor-card">
+        <div class="cred-autor-avatar cred-autor-avatar--1">NN</div>
+        <div class="cred-autor-body">
+          <h3>Nicolás Nieto Daza</h3>
+          <span class="etiqueta etiqueta--fin">Líder Técnico · Desarrollo Full-Stack</span>
+          <p>Arquitectura general del sistema, motor de pronósticos y puntuación, integración con Firebase, Cloudflare Workers y API-Football, evolución multi-competición y administración del repositorio oficial en GitHub.</p>
+        </div>
+      </article>
+
+      <article class="cred-autor-card">
+        <div class="cred-autor-avatar cred-autor-avatar--2">AR</div>
+        <div class="cred-autor-body">
+          <h3>Alejandro Rodríguez Rubio</h3>
+          <span class="etiqueta etiqueta--dorada">Desarrollo Full-Stack · Investigación</span>
+          <p>Diseño funcional, modelado de reglas de puntuación, documentación técnica e investigativa en normas APA, validación del piloto sobre 104 partidos y pruebas de seguridad en Cloud Firestore.</p>
+        </div>
+      </article>
+
+      <article class="cred-autor-card">
+        <div class="cred-autor-avatar cred-autor-avatar--3">AP</div>
+        <div class="cred-autor-body">
+          <h3>Angie Marcela Pinzón Moncada</h3>
+          <span class="etiqueta">Equipo Integrador PICS · Desarrollo y QA</span>
+          <p>Integrante del equipo integrador PICS. Apoyo en desarrollo de interfaz, pruebas de aseguramiento de calidad (QA), verificación de usabilidad multi-competición y consolidación de la documentación académica.</p>
+        </div>
+      </article>
+
+      <article class="cred-autor-card">
+        <div class="cred-autor-avatar cred-autor-avatar--4">CA</div>
+        <div class="cred-autor-body">
+          <h3>Catalina Alarcón Medina</h3>
+          <span class="etiqueta">Equipo Integrador PICS · Requerimientos y Validación</span>
+          <p>Integrante del equipo integrador PICS. Análisis de requerimientos, validación funcional con usuarios finales, revisión normativa/ética y apoyo en la documentación integral del proyecto.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ====== FUENTES DE DATOS DEPORTIVOS Y SERVICIOS ====== -->
+  <section class="panel panel--relleno" style="margin-top:22px;">
+    <h2 style="margin:0 0 6px;">🌐 Fuentes de Datos Deportivos, APIs y Tecnología</h2>
+    <p class="sub" style="margin:0 0 16px;">Origen de los calendarios, resultados en vivo, infraestructura en la nube y estándares abiertos utilizados por ScoreCast.</p>
+
+    <div class="tabla-envoltura">
+      <table class="tabla" style="min-width:0;">
+        <thead>
+          <tr>
+            <th>Fuente / Proveedor</th>
+            <th>Categoría</th>
+            <th>Información / Servicio Aportado</th>
+            <th>Enlace Oficial</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>API-Football (API-Sports v3)</b></td>
+            <td>Datos deportivos en vivo</td>
+            <td>Calendarios oficiales, marcadores en tiempo real, minutos, estados de partido, alineaciones y eventos de las 7 competiciones.</td>
+            <td><a href="https://www.api-football.com/documentation-v3" target="_blank" rel="noopener noreferrer">api-football.com</a></td>
+          </tr>
+          <tr>
+            <td><b>Google Firebase</b></td>
+            <td>BaaS en la nube</td>
+            <td>Firebase Authentication (identidad y roles), Cloud Firestore (base de datos NoSQL en tiempo real con reglas en servidor) y Firebase Hosting (HTTPS/CDN).</td>
+            <td><a href="https://firebase.google.com/docs" target="_blank" rel="noopener noreferrer">firebase.google.com</a></td>
+          </tr>
+          <tr>
+            <td><b>Cloudflare Workers</b></td>
+            <td>Proxy Serverless</td>
+            <td>Intermediario seguro para resguardar credenciales de API y controlar cuotas operativas en capa gratuita.</td>
+            <td><a href="https://developers.cloudflare.com/workers/" target="_blank" rel="noopener noreferrer">developers.cloudflare.com</a></td>
+          </tr>
+          <tr>
+            <td><b>EmailJS</b></td>
+            <td>Mensajería</td>
+            <td>Envío de correos transaccionales de bienvenida, recordatorios de cierre y resúmenes de tabla (~200 envíos/mes en capa gratuita).</td>
+            <td><a href="https://www.emailjs.com/docs/" target="_blank" rel="noopener noreferrer">emailjs.com</a></td>
+          </tr>
+          <tr>
+            <td><b>Organizadores de Competiciones</b></td>
+            <td>Referencias de torneos</td>
+            <td>Datos históricos, formatos oficiales, escudos referenciales y estadísticas públicas de <b>DIMAYOR</b> (Liga BetPlay), <b>Premier League</b>, <b>LaLiga EA Sports</b>, <b>Bundesliga (DFL)</b>, <b>UEFA</b> (Champions League) y <b>CONMEBOL</b> (Libertadores y Sudamericana).</td>
+            <td>Uso informativo y académico sin ánimo de lucro</td>
+          </tr>
+          <tr>
+            <td><b>HLS.js &amp; Streams Abiertos de Prueba</b></td>
+            <td>Módulo En Vivo (BETA)</td>
+            <td>Librería open-source HLS.js (Apache 2.0) y flujos públicos libres de derechos (Mux / Unified Streaming / Tears of Steel) para demostración técnica de reproductor web.</td>
+            <td><a href="https://github.com/video-dev/hls.js" target="_blank" rel="noopener noreferrer">video-dev/hls.js</a></td>
+          </tr>
+          <tr>
+            <td><b>Estándares Web &amp; GitHub</b></td>
+            <td>Desarrollo y Control</td>
+            <td>HTML5, CSS3, JavaScript (ES Modules), PWA Service Worker, Visual Studio Code y control de versiones colaborativo en Git/GitHub.</td>
+            <td><a href="https://github.com/Nicomszws12/ScoreCast" target="_blank" rel="noopener noreferrer">GitHub ScoreCast</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====== REFERENCIAS ACADÉMICAS Y NORMATIVAS (APA 7) ====== -->
+  <section class="panel panel--relleno" style="margin-top:22px;">
+    <h2 style="margin:0 0 6px;">📚 Referencias Bibliográficas y Marco Normativo (APA 7.ª ed.)</h2>
+    <p class="sub" style="margin:0 0 16px;">Fuentes científicas, jurídicas y periodísticas que fundamentan el diseño social, ético, técnico y legal del proyecto PICS.</p>
+
+    <div class="rejilla rejilla--2" style="align-items:start;">
+      <div class="cred-ref-col">
+        <h3>🔬 Estudios Académicos y Gamificación</h3>
+        <ul class="cred-ref-list">
+          <li><b>Wilkins, L., Churchyard, J., Zaborski, Z., Dowsett, R., &amp; Britton, G. (2025).</b> <i>The revised model for initial and continued involvement in fantasy football</i>. Entertainment Computing, 52, Artículo 100917. <a href="https://doi.org/10.1016/j.entcom.2024.100917" target="_blank" rel="noopener noreferrer">DOI</a></li>
+          <li><b>Drayer, J., Shapiro, S. L., Dwyer, B., Morse, A. L., &amp; White, J. (2010).</b> <i>The effects of fantasy football participation on NFL consumption: A qualitative analysis</i>. Sport Management Review, 13(2), 129–141.</li>
+          <li><b>Hamari, J., Koivisto, J., &amp; Sarsa, H. (2014).</b> <i>Does gamification work? A literature review of empirical studies on gamification</i>. Proceedings of the 47th HICSS (pp. 3025–3034). IEEE. <a href="https://doi.org/10.1109/HICSS.2014.377" target="_blank" rel="noopener noreferrer">DOI</a></li>
+          <li><b>Wilson, C., Butler, N., &amp; Quigg, Z. (2023).</b> <i>Associations between playing free-to-play sports gambling predictor games and online sports betting frequency for men in the United Kingdom</i>. Journal of Public Health, 31(12), 1989–1998. <a href="https://doi.org/10.1007/s10389-022-01774-4" target="_blank" rel="noopener noreferrer">DOI</a></li>
+          <li><b>McGee, D. (2020).</b> <i>On the normalisation of online sports gambling among young adult men in the UK: A public health perspective</i>. Public Health, 184, 89–94. <a href="https://doi.org/10.1016/j.puhe.2020.04.018" target="_blank" rel="noopener noreferrer">DOI</a></li>
+          <li><b>Ardila Mejía, I., López Martínez, M. C., &amp; Ceballos Porto, N. P. (2025).</b> <i>Percepción del desarrollo de la ludopatía en adultos jóvenes de la Universidad Sergio Arboleda Bogotá</i>. Ciencia Latina Revista Científica Multidisciplinar, 9(2), 1–16. <a href="https://doi.org/10.37811/cl_rcm.v9i2.16775" target="_blank" rel="noopener noreferrer">DOI</a></li>
+        </ul>
+      </div>
+
+      <div class="cred-ref-col">
+        <h3>⚖️ Marco Legal, Institucional y Contexto Colombia</h3>
+        <ul class="cred-ref-list">
+          <li><b>Congreso de la República de Colombia (2001).</b> <i>Ley 643 de 2001</i>, por la cual se fija el régimen propio del monopolio rentístico de juegos de suerte y azar (Diario Oficial No. 44.294), y <b>Código Sustantivo del Trabajo</b> (arts. 59–60).</li>
+          <li><b>Escuela Tecnológica Instituto Técnico Central – ETITC (2013).</b> <i>Acuerdo número 08 de 2013</i>, Reglamento de Propiedad Intelectual de la ETITC (Consejo Directivo ETITC, arts. 6, 7, 8, 10 y 18).</li>
+          <li><b>Moreno, J. (2025, 25 de junio).</b> <i>¿Por qué están creciendo tanto los juegos de azar en Colombia? Datos, riesgos y la realidad detrás del boom</i>. Vanguardia.</li>
+          <li><b>Redacción Colombia (2026, 3 de junio).</b> <i>¿Va a hacer una polla para el Mundial? Siga estas reglas para evitar problemas legales</i>. El Universal.</li>
+          <li><b>El Colombiano (2026, 3 de junio).</b> <i>¿Va a hacer una "polla" para el Mundial? Estas son las reglas que debe tener en cuenta para no meterse en problemas</i>.</li>
+          <li><b>Nieto Daza, N., Rodríguez Rubio, A., Pinzón Moncada, A. M., &amp; Alarcón Medina, C. (2026).</b> <i>ScoreCast: Plataforma web multi-competición para la gestión de pronósticos y marcadores deportivos [Software de computador]</i>. GitHub.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== AVISO ÉTICO Y PROPIEDAD INTELECTUAL ====== -->
+  <div class="aviso aviso--dorado" style="margin-top:20px; line-height:1.65;">
+    🛡️ <b>Propiedad Intelectual, Marcas y Uso Responsable:</b> ScoreCast es un proyecto académico desarrollado en la Facultad de Sistemas de la <b>ETITC</b> sin ánimo de lucro ($0 COP de costo operativo), amparado por los derechos morales y patrimoniales del <b>Acuerdo 08 de 2013 de la ETITC</b>. La plataforma <b>no es una casa de apuestas</b>, no contiene publicidad comercial de apuestas, no procesa pagos ni retransmite señales deportivas con derechos reservados. Todos los nombres, marcas comerciales y escudos de clubes o federaciones mencionados pertenecen a sus respectivos propietarios y se emplean exclusivamente con fines informativos, estadísticos y académicos.
+  </div>
+
+  <footer class="pie">
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
+  </footer>
+</main>
+
+<script type="module" src="js/config.js?v=30"></script>
+<script type="module" src="js/utils.js?v=30"></script>
+<script type="module" src="js/store.js?v=30"></script>
+<script type="module">
+  (async () => {
+    try {
+      await Store.init();
+      const yo = await Store.sesion();
+      const nav = document.getElementById('nav');
+      const logo = document.getElementById('link-logo');
+      if (yo && nav) {
+        if (logo) logo.href = 'app.html';
+        nav.innerHTML = `
+          <a href="app.html">Partidos</a>
+          <a href="tabla.html">Tabla</a>
+          <a href="cuentas.html">Cuentas</a>
+          <a href="reglas.html">Reglas</a>
+          <a href="creditos.html" class="activo">Créditos</a>
+          <a href="lobby.html" style="color:var(--verde);">🏟 Salas</a>
+          ${yo.rol === 'admin' ? '<a href="admin.html">🛠 Admin</a>' : ''}`;
+      }
+    } catch (_) {}
+  })();
+</script>
+</body>
+</html>

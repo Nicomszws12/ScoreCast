@@ -10,7 +10,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=30">
 </head>
 <body>
 
@@ -19,6 +19,7 @@
     <a class="logo" href="index.html" id="link-logo"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
     <nav class="nav" id="nav">
       <span class="nav__solo">Reglas</span>
+      <a href="creditos.html">Créditos</a>
     </nav>
   </div>
 </header>
@@ -92,17 +93,18 @@
   </div>
 
   <div class="aviso aviso--dorado" style="margin-top:18px">
-    ⚖️ Juego de pronósticos deportivos en ScoreCast. La administración resuelve cualquier caso imprevisto con criterio, deportividad y juego limpio.
+    ⚖️ <b>Juego recreativo y comunitario responsable:</b> ScoreCast es una plataforma gratuita para comunidades cerradas sin ánimo de lucro, sin comisiones, sin billeteras virtuales ni vínculos con casas de apuestas (conforme a la Ley 643 de 2001 y los arts. 59–60 del CST). Además cuenta con <b>📺 En Vivo (BETA)</b> y <b>💬 Tribuna Social</b> para vivir cada fecha en comunidad.
   </div>
 
   <footer class="pie">
-    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/fixture.js"></script>
-<script type="module" src="js/utils.js"></script>
+<script type="module" src="js/config.js?v=30"></script>
+<script type="module" src="js/fixture.js?v=30"></script>
+<script type="module" src="js/utils.js?v=30"></script>
+<script type="module" src="js/store.js?v=30"></script>
 <script type="module">
   (async () => {
     const CONFIG = window.CONFIG || {};
@@ -122,21 +124,24 @@
     document.getElementById('r-premios').textContent =
       CONFIG.PREMIOS.map(p => `${p.puesto} ${p.pct}%`).join(' · ');
 
-    // Forzar vista pública: siempre desactivar navegación a áreas que requieren sesión
+    // Mostrar navegación completa si el usuario ya tiene sesión iniciada
     try {
-      const links = ['app.html','tabla.html','cuentas.html'];
-      for (const href of links) {
-        const a = document.querySelector(`nav.nav a[href="${href}"]`);
-        if (a) {
-          a.style.pointerEvents = 'none';
-          a.style.opacity = '0.55';
-          a.title = 'Disponible tras iniciar sesión';
-          a.setAttribute('aria-disabled', 'true');
-        }
+      await Store.init();
+      const yo = await Store.sesion();
+      const nav = document.getElementById('nav');
+      const logo = document.getElementById('link-logo');
+      if (yo && nav) {
+        if (logo) logo.href = 'app.html';
+        nav.innerHTML = `
+          <a href="app.html">Partidos</a>
+          <a href="tabla.html">Tabla</a>
+          <a href="cuentas.html">Cuentas</a>
+          <a href="reglas.html" class="activo">Reglas</a>
+          <a href="creditos.html">Créditos</a>
+          <a href="lobby.html" style="color:var(--verde);">🏟 Salas</a>
+          ${yo.rol === 'admin' ? '<a href="admin.html">🛠 Admin</a>' : ''}`;
       }
-    } catch (e) {
-      console.error('Reglas: fallo al deshabilitar enlaces', e);
-    }
+    } catch (_) {}
   })();
 </script>
 </body>

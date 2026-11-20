@@ -10,7 +10,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=2">
+  <link rel="stylesheet" href="css/estilos.css?v=30">
 </head>
 <body>
 
@@ -48,6 +48,8 @@
   <div class="tabs" role="tablist" style="margin-top:18px">
     <button class="activo" data-tab="partidos" type="button">⚽ Partidos</button>
     <button data-tab="tablas" type="button">📊 Tablas y Cuadros</button>
+    <button data-tab="envivo" type="button">📺 En Vivo <span class="tab-beta-pill">BETA</span></button>
+    <button data-tab="tribuna" type="button">💬 Tribuna</button>
     <button data-tab="campeon" type="button">🏆 Mi campeón</button>
   </div>
 
@@ -68,18 +70,25 @@
         <option value="">Todos los grupos (A–H)</option>
       </select>
       <select class="mini-input" id="f-fecha" aria-label="Filtrar por jornada" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
-        <option value="">Todas las fechas (1–19)</option>
-        <option value="hoy_reciente">🔥 En curso (Fechas 5 y 10)</option>
+        <option value="">Todas las fechas (1–19 + Cuadrangulares)</option>
+        <option value="hoy_reciente">🔥 Cuadrangulares (todas las fechas)</option>
+        <option value="20">Cuadrangulares · Fecha 1 (20–21 nov)</option>
+        <option value="21">Cuadrangulares · Fecha 2</option>
+        <option value="22">Cuadrangulares · Fecha 3</option>
+        <option value="23">Cuadrangulares · Fecha 4</option>
+        <option value="24">Cuadrangulares · Fecha 5</option>
+        <option value="25">Cuadrangulares · Fecha 6</option>
+        <option value="26">🏆 Gran Final</option>
         <option value="1">Fecha 1</option>
         <option value="2">Fecha 2</option>
         <option value="3">Fecha 3</option>
         <option value="4">Fecha 4</option>
-        <option value="5">Fecha 5 (Hoy: Millos vs Cali)</option>
+        <option value="5">Fecha 5</option>
         <option value="6">Fecha 6</option>
         <option value="7">Fecha 7</option>
         <option value="8">Fecha 8</option>
         <option value="9">Fecha 9</option>
-        <option value="10">Fecha 10 (Próxima: 11–14 sep)</option>
+        <option value="10">Fecha 10</option>
         <option value="11">Fecha 11</option>
         <option value="12">Fecha 12</option>
         <option value="13">Fecha 13</option>
@@ -88,11 +97,11 @@
         <option value="16">Fecha 16</option>
         <option value="17">Fecha 17</option>
         <option value="18">Fecha 18</option>
-        <option value="19">Fecha 19</option>
+        <option value="19">Fecha 19 (Finalizada)</option>
       </select>
       <select class="mini-input" id="f-fecha-premier" aria-label="Filtrar por jornada Premier League" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todas las jornadas (1–38)</option>
-        <option value="5">🔥 Jornada 5 (Próxima: 11–14 sep)</option>
+        <option value="11">🔥 Jornada 11 (Próxima: 21–23 nov)</option>
         <option value="1">Jornada 1</option>
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
@@ -134,7 +143,7 @@
       </select>
       <select class="mini-input" id="f-fecha-laliga" aria-label="Filtrar por jornada LaLiga" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todas las jornadas (1–38)</option>
-        <option value="5">🔥 Jornada 5 (En curso: 11–14 sep)</option>
+        <option value="13">🔥 Jornada 13 (Próxima: 20–23 nov)</option>
         <option value="1">Jornada 1</option>
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
@@ -176,7 +185,7 @@
       </select>
       <select class="mini-input" id="f-fecha-bundesliga" aria-label="Filtrar por jornada Bundesliga" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todas las jornadas (1–34)</option>
-        <option value="4">🔥 Jornada 4 (Próxima: 11–13 sep)</option>
+        <option value="10">🔥 Jornada 10 (Próxima: 20–22 nov)</option>
         <option value="1">Jornada 1</option>
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
@@ -214,7 +223,7 @@
       </select>
       <select class="mini-input" id="f-fecha-ucl" aria-label="Filtrar por etapa Champions League" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todo el torneo (Play-off, Liga y KO)</option>
-        <option value="j1">🔥 Fase de Liga: Jornada 1 (15–17 sep)</option>
+        <option value="j5">🔥 Fase de Liga: Jornada 5 (24–25 nov)</option>
         <option value="po">Ronda Play-off (Finalizada)</option>
         <option value="j1">Fase de Liga: Jornada 1</option>
         <option value="j2">Fase de Liga: Jornada 2</option>
@@ -228,12 +237,23 @@
       </select>
     </div>
     
+    <div id="comp-banner-partidos"></div>
     <div id="lista-partidos" aria-live="polite"></div>
   </section>
 
   <!-- ============ TAB TABLAS Y CUADROS ============ -->
   <section id="tab-tablas" class="oculto">
     <div id="contenedor-tablas-cuadros"></div>
+  </section>
+
+  <!-- ============ TAB EN VIVO (VERSIÓN BETA) ============ -->
+  <section id="tab-envivo" class="oculto">
+    <div id="contenedor-en-vivo"></div>
+  </section>
+
+  <!-- ============ TAB TRIBUNA SOCIAL ============ -->
+  <section id="tab-tribuna" class="oculto">
+    <div id="contenedor-tribuna"></div>
   </section>
 
   <!-- ============ TAB CAMPEÓN MULTICOMPETICIÓN ============ -->
@@ -263,7 +283,7 @@
   </section>
 
   <footer class="pie">
-    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
@@ -301,23 +321,42 @@
 <audio id="sonido-gol" src="sounds/gol.mp3" preload="auto"></audio>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/fixture.js"></script>
-<script type="module" src="js/utils.js"></script>
-<script type="module" src="js/store.js"></script>
-<script type="module" src="js/puntos.js"></script>
-<script type="module" src="js/api-futbol.js"></script>
-<script type="module" src="js/email.js"></script>
-<script type="module" src="js/grupos-api.js"></script>
-<script type="module" src="js/notificaciones.js"></script>
-<script type="module" src="js/equipos-info.js"></script>
-<script type="module" src="js/tablas-cuadros.js"></script>
+<script type="module" src="js/config.js?v=30"></script>
+<script type="module" src="js/fixture.js?v=30"></script>
+<script type="module" src="js/utils.js?v=30"></script>
+<script type="module" src="js/store.js?v=30"></script>
+<script type="module" src="js/puntos.js?v=30"></script>
+<script type="module" src="js/api-futbol.js?v=30"></script>
+<script type="module" src="js/email.js?v=30"></script>
+<script type="module" src="js/grupos-api.js?v=30"></script>
+<script type="module" src="js/notificaciones.js?v=30"></script>
+<script type="module" src="js/equipos-info.js?v=30"></script>
+<script type="module" src="js/competiciones-info.js?v=30"></script>
+<script type="module" src="js/tablas-cuadros.js?v=30"></script>
+<script type="module" src="js/en-vivo-beta.js?v=30"></script>
+<script type="module" src="js/tribuna-social.js?v=30"></script>
 <script type="module">
-import { CONFIG } from './js/config.js';
-import { EquiposInfo } from './js/equipos-info.js';
-import { TablasCuadros } from './js/tablas-cuadros.js';
+import { CONFIG } from './js/config.js?v=30';
+import { EquiposInfo } from './js/equipos-info.js?v=30';
+import { CompeticionesInfo } from './js/competiciones-info.js?v=30';
+import { TablasCuadros } from './js/tablas-cuadros.js?v=30';
+import { EnVivoBeta } from './js/en-vivo-beta.js?v=30';
+import { TribunaSocial } from './js/tribuna-social.js?v=30';
 
 (async () => {
+  try {
+    if (localStorage.getItem('sc_cache_ver') !== 'v30') {
+      localStorage.setItem('sc_cache_ver', 'v30');
+      if ('caches' in window) {
+        const ks = await caches.keys();
+        await Promise.all(ks.map(k => caches.delete(k)));
+      }
+      if ('serviceWorker' in navigator) {
+        const rs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(rs.map(r => r.update()));
+      }
+    }
+  } catch (_) {}
   await Store.init();
   const yo = await Store.sesion();
   if (!U.requiereSesion(yo)) return;
@@ -431,17 +470,46 @@ import { TablasCuadros } from './js/tablas-cuadros.js';
   setInterval(pintarProximoCierre, 1000);
 
   /* --- TABS ----------------------------------------------------- */
-  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
-    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('activo', x === b));
-    ['partidos', 'tablas', 'campeon'].forEach(t => {
+  function activarTab(tabId) {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('activo', x.dataset.tab === tabId));
+    ['partidos', 'tablas', 'envivo', 'tribuna', 'campeon'].forEach(t => {
       const sec = document.getElementById('tab-' + t);
-      if (sec) sec.classList.toggle('oculto', b.dataset.tab !== t);
+      if (sec) sec.classList.toggle('oculto', tabId !== t);
     });
-    if (b.dataset.tab === 'tablas') {
+    if (tabId !== 'envivo') EnVivoBeta.destruir();
+    if (tabId !== 'tribuna') TribunaSocial.destruir();
+
+    const nombreSala = document.getElementById('nombre-sala-activa')?.textContent || 'ScoreCast Principal';
+    if (tabId === 'tablas') {
       TablasCuadros.render(document.getElementById('contenedor-tablas-cuadros'), resultados, misPred);
+    } else if (tabId === 'envivo') {
+      EnVivoBeta.render(document.getElementById('contenedor-en-vivo'), {
+        yo, salaId, resultados, misPred, predsByPartido,
+        irAPartido: (pid) => {
+          activarTab('partidos');
+          filtro = 'todos';
+          document.querySelectorAll('#chips .chip').forEach(c => c.classList.toggle('activo', c.dataset.f === 'todos'));
+          pintarPartidos();
+          setTimeout(() => {
+            const el = document.getElementById('p-' + pid);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.classList.add('partido--destacado');
+              setTimeout(() => el.classList.remove('partido--destacado'), 2200);
+            }
+          }, 80);
+        }
+      });
+    } else if (tabId === 'tribuna') {
+      TribunaSocial.render(document.getElementById('contenedor-tribuna'), {
+        yo, salaId, nombreSala, misPred, resultados
+      });
+    } else if (tabId === 'campeon') {
+      pintarCampeon();
     }
-    if (b.dataset.tab === 'campeon') pintarCampeon();
-  });
+  }
+
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => activarTab(b.dataset.tab));
 
   /* --- FILTROS --------------------------------------------------- */
   const selGrupo = document.getElementById('f-grupo');
@@ -587,7 +655,7 @@ import { TablasCuadros } from './js/tablas-cuadros.js';
       out = out.filter(p => p.competicion === filtro);
       if (filtro === 'betplay' && filtroFecha) {
         if (filtroFecha === 'hoy_reciente') {
-          out = out.filter(p => p.jornada === 5 || p.jornada === 10);
+          out = out.filter(p => p.fase === 'cuadrangulares' || p.fase === 'final');
         } else {
           out = out.filter(p => p.jornada === Number(filtroFecha));
         }
@@ -1329,6 +1397,15 @@ import { TablasCuadros } from './js/tablas-cuadros.js';
   }
 
   function pintarPartidos() {
+    const bannerComp = document.getElementById('comp-banner-partidos');
+    if (bannerComp) {
+      if (FIXTURE.competiciones && FIXTURE.competiciones[filtro]) {
+        bannerComp.innerHTML = CompeticionesInfo.renderBanner(filtro, true);
+      } else {
+        bannerComp.innerHTML = '';
+      }
+    }
+
     const prioridad = p => {
       const est = U.estadoPartido(p, resultados[p.id]);
       return est === 'en_juego' ? 0 : est === 'finalizado' ? 2 : 1;
@@ -1549,8 +1626,14 @@ import { TablasCuadros } from './js/tablas-cuadros.js';
     if (cont) TablasCuadros.render(cont, resultados, misPred);
   }
 
-  /* --- CLIC GLOBAL EN CUALQUIER ESCUDO O EQUIPO PARA ABRIR PERFIL --- */
+  /* --- CLIC GLOBAL EN CUALQUIER ESCUDO, EQUIPO O COMPETICIÓN PARA ABRIR PERFIL --- */
   document.addEventListener('click', e => {
+    const btnComp = e.target.closest('[data-ver-comp]');
+    if (btnComp && btnComp.dataset.verComp) {
+      e.stopPropagation();
+      CompeticionesInfo.abrir(btnComp.dataset.verComp, resultados);
+      return;
+    }
     const el = e.target.closest('[data-equipo], .escudo-img, [data-perfil-club]');
     if (!el) return;
     const codigo = el.dataset.equipo || el.dataset.perfilClub || el.closest('[data-equipo]')?.dataset.equipo;
@@ -1791,11 +1874,11 @@ import { TablasCuadros } from './js/tablas-cuadros.js';
   // Iniciar recordatorios de pronósticos pendientes
   Notifica.iniciarRecordatorios(yo, partidosEf, resultados, misPred);
 
-  /* filtro inicial: si hoy no hay partidos, mostrar Jornada 1 */
+  /* filtro inicial: si hoy hay partidos mostrar Hoy; si no, mostrar Todos */
   const hoyLocal = new Date().toLocaleDateString('en-CA');
   const hayHoy = FIXTURE.partidos.some(p => p.utc && new Date(p.utc).toLocaleDateString('en-CA') === hoyLocal);
-  filtro = hayHoy ? 'hoy' : 'j1';
-  document.querySelector(`.chip[data-f="${filtro}"]`).classList.add('activo');
+  filtro = hayHoy ? 'hoy' : 'todos';
+  document.querySelectorAll('#chips .chip').forEach(c => c.classList.toggle('activo', c.dataset.f === filtro));
 
   /* Reloj en vivo: actualiza el minuto mostrado cada 5s sin llamadas extra a la API */
   const PERIODOS_LIVE = {'1H':'1ª Parte','2H':'2ª Parte','ET':'Prórroga','P':'Penales'};

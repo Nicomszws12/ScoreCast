@@ -175,6 +175,41 @@ service cloud.firestore {
       allow delete: if esAdmin();
     }
 
+    // ---------- chat_salas/{msgId} (Tribuna Social) --------------
+    match /chat_salas/{msgId} {
+      allow read: if conectado();
+      allow create: if conectado()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.texto is string
+        && request.resource.data.texto.size() > 0
+        && request.resource.data.texto.size() <= 400;
+      allow delete: if esAdmin()
+        || (conectado() && resource.data.uid == request.auth.uid);
+    }
+
+    // ---------- encuestas_votos/{pollId__uid} --------------------
+    match /encuestas_votos/{docId} {
+      allow read: if conectado();
+      allow create, update: if conectado()
+        && request.resource.data.uid == request.auth.uid
+        && docId == request.resource.data.pollId + '__' + request.auth.uid;
+      allow delete: if esAdmin();
+    }
+
+    // ---------- reacciones_vivo/{docId} --------------------------
+    match /reacciones_vivo/{docId} {
+      allow read: if conectado();
+      allow create, update: if conectado();
+      allow delete: if esAdmin();
+    }
+
+    // ---------- transmisiones_beta/{docId} -----------------------
+    match /transmisiones_beta/{docId} {
+      allow read: if conectado();
+      allow create, update: if conectado();
+      allow delete: if esAdmin();
+    }
+
     // Todo lo demás, cerrado.
     match /{document=**} {
       allow read, write: if false;

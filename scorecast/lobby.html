@@ -6,7 +6,7 @@
   <title>Mis Salas — ScoreCast</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=30">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <style>
     .sala-card {
@@ -108,6 +108,13 @@
           <input id="nuevo-nombre" type="text" required minlength="3" maxlength="40"
                  placeholder="Ej: Familia Gol, Amigos del Barrio…">
         </div>
+        <div class="campo">
+          <label for="nuevo-modalidad">Modalidad de la sala</label>
+          <select id="nuevo-modalidad">
+            <option value="gratuita" selected>🆓 100% Recreativa / Gratuita (sin cuotas)</option>
+            <option value="cuota">📒 Con registro informativo de cuota externa</option>
+          </select>
+        </div>
         <button class="boton boton--verde boton--bloque" id="btn-crear" type="submit" style="font-weight:800;">
           Crear sala privada 🚀
         </button>
@@ -134,7 +141,7 @@
   </div>
 
   <footer class="pie">
-    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
@@ -181,12 +188,12 @@
   </div>
 </div>
 
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/fixture.js"></script>
-<script type="module" src="js/utils.js"></script>
-<script type="module" src="js/store.js"></script>
+<script type="module" src="js/config.js?v=30"></script>
+<script type="module" src="js/fixture.js?v=30"></script>
+<script type="module" src="js/utils.js?v=30"></script>
+<script type="module" src="js/store.js?v=30"></script>
 <script type="module">
-import { CONFIG } from './js/config.js';
+import { CONFIG } from './js/config.js?v=30';
 
 (async () => {
   await Store.init();
@@ -261,6 +268,7 @@ import { CONFIG } from './js/config.js';
             <div class="sala-info">
               <div class="sala-info__nombre">
                 ${U.esc(s.nombre)}
+                ${s.esGratuita ? ' <span class="etiqueta etiqueta--fin">🆓 Recreativa</span>' : ''}
                 ${esMiAdmin ? ` <span class="etiqueta etiqueta--dorada">${yo.rol === 'admin' ? 'Super Admin' : '👑 Líder'}</span>` : '<span class="etiqueta">Miembro</span>'}
               </div>
               <div class="sala-info__sub">
@@ -329,9 +337,10 @@ import { CONFIG } from './js/config.js';
     const btn = document.getElementById('btn-crear');
     btn.disabled = true;
     const nombre = document.getElementById('nuevo-nombre').value.trim();
+    const esGratuita = (document.getElementById('nuevo-modalidad')?.value || 'gratuita') === 'gratuita';
 
     try {
-      const sala = await Store.crearSala(yo.uid, nombre);
+      const sala = await Store.crearSala(yo.uid, nombre, { esGratuita });
       document.getElementById('nuevo-nombre').value = '';
       await renderSalas();
 

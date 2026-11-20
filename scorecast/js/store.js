@@ -6,7 +6,7 @@
    • MODO 'firebase' → Firebase Auth + Cloud Firestore (real).
    Las páginas solo hablan con `Store`, nunca con el motor.
    ============================================================ */
-import { CONFIG } from './config.js';
+import { CONFIG } from './config.js?v=30';
 
 const Store = (() => {
 
@@ -274,6 +274,86 @@ const Store = (() => {
     async obtenerSala(salaId) {
       const d = _db();
       return (d.salas && d.salas[salaId]) ? { ...d.salas[salaId] } : null;
+    },
+
+    async salaPorId(salaId) {
+      return this.obtenerSala(salaId);
+    },
+
+    /* ---- TRIBUNA SOCIAL & EN VIVO BETA (demo) ---- */
+    async mensajesChat(salaId = 'scorecast', limite = 60) {
+      const d = _db();
+      return (d.chat_salas || []).filter(m => (m.salaId || 'scorecast') === salaId).sort((a, b) => a.t - b.t).slice(-limite);
+    },
+    async enviarMensajeChat(salaId, yo, texto, partidoId = null) {
+      const d = _db();
+      if (!d.chat_salas) d.chat_salas = [];
+      const msg = {
+        id: 'm_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        salaId: salaId || 'scorecast',
+        uid: yo.uid, nombre: yo.nombre, rol: yo.rol || 'jugador',
+        texto: String(texto || '').trim().slice(0, 400),
+        partidoId: partidoId || null,
+        t: Date.now()
+      };
+      d.chat_salas.push(msg);
+      _save(d);
+      return msg;
+    },
+    async eliminarMensajeChat(msgId) {
+      const d = _db();
+      d.chat_salas = (d.chat_salas || []).filter(m => m.id !== msgId);
+      _save(d);
+    },
+    escucharChat(salaId, cb) {
+      const h = e => { if (e.key === LS) this.mensajesChat(salaId).then(cb); };
+      window.addEventListener('storage', h);
+      this.mensajesChat(salaId).then(cb);
+      return () => window.removeEventListener('storage', h);
+    },
+    async votosEncuestas() {
+      const d = _db();
+      return d.encuestas_votos || {};
+    },
+    async votarEncuesta(pollId, uid, opcionId) {
+      const d = _db();
+      if (!d.encuestas_votos) d.encuestas_votos = {};
+      d.encuestas_votos[`${pollId}__${uid}`] = { pollId, uid, opcionId, t: Date.now() };
+      _save(d);
+    },
+    escucharEncuestas(cb) {
+      this.votosEncuestas().then(cb);
+      return () => {};
+    },
+    async enviarReaccionVivo(salaId, partidoId, emoji) {
+      const d = _db();
+      if (!d.reacciones_vivo) d.reacciones_vivo = {};
+      const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+      d.reacciones_vivo[k] = d.reacciones_vivo[k] || {};
+      d.reacciones_vivo[k][emoji] = (d.reacciones_vivo[k][emoji] || 0) + 1;
+      _save(d);
+      return d.reacciones_vivo[k];
+    },
+    async reaccionesVivo(salaId, partidoId) {
+      const d = _db();
+      const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+      return (d.reacciones_vivo && d.reacciones_vivo[k]) ? { ...d.reacciones_vivo[k] } : {};
+    },
+    escucharReaccionesVivo(salaId, partidoId, cb) {
+      this.reaccionesVivo(salaId, partidoId).then(cb);
+      return () => {};
+    },
+    async guardarTransmisionBeta(salaId, partidoId, url, titulo, uid) {
+      const d = _db();
+      if (!d.transmisiones_beta) d.transmisiones_beta = {};
+      const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+      d.transmisiones_beta[k] = { url, titulo: titulo || '', uid, t: Date.now() };
+      _save(d);
+    },
+    async obtenerTransmisionBeta(salaId, partidoId) {
+      const d = _db();
+      const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+      return (d.transmisiones_beta && d.transmisiones_beta[k]) || null;
     },
 
     async eliminarSala(salaId) {
@@ -630,14 +710,14 @@ const Store = (() => {
       return fdb.collection('resultados').onSnapshot(() => cb());
     },
 
-    async reclamarSincronizacion() {
+    async reclamarSincronizacion(ventanaMs = 120000) {
       const ref = fdb.collection('sincronizacion').doc('live');
       const ahora = Date.now();
+      const bloqueoMs = Math.max(25000, Number(ventanaMs) || 120000);
       try {
         const doc = await ref.get();
         if (doc.exists && ahora < (doc.data().hasta || 0)) return false;
-        // Aumentamos el tiempo de bloqueo a 120 segundos para dar más margen en redes lentas.
-        await ref.set({ at: ahora, hasta: ahora + 120000 });
+        await ref.set({ at: ahora, hasta: ahora + bloqueoMs });
         return true;
       } catch { return false; }
     },
@@ -795,6 +875,117 @@ const Store = (() => {
         console.error("🔥 Error Firebase (obtenerSala):", err);
         return null;
       }
+    },
+
+    async salaPorId(salaId) {
+      return this.obtenerSala(salaId);
+    },
+
+    /* ---- TRIBUNA SOCIAL & EN VIVO BETA (Firebase) ---- */
+    async mensajesChat(salaId = 'scorecast', limite = 60) {
+      try {
+        const snap = await fdb.collection('chat_salas').where('salaId', '==', salaId || 'scorecast').get();
+        return snap.docs.map(d => ({ ...d.data(), id: d.id })).sort((a, b) => (a.t || 0) - (b.t || 0)).slice(-limite);
+      } catch (e) {
+        console.warn('mensajesChat:', e);
+        return [];
+      }
+    },
+    async enviarMensajeChat(salaId, yo, texto, partidoId = null) {
+      const limpio = String(texto || '').trim().slice(0, 400);
+      if (!limpio) return null;
+      const payload = {
+        salaId: salaId || 'scorecast',
+        uid: yo.uid,
+        nombre: yo.nombre || 'Participante',
+        rol: yo.rol || 'jugador',
+        texto: limpio,
+        partidoId: partidoId || null,
+        t: Date.now()
+      };
+      const ref = await fdb.collection('chat_salas').add(payload);
+      return { ...payload, id: ref.id };
+    },
+    async eliminarMensajeChat(msgId) {
+      await fdb.collection('chat_salas').doc(msgId).delete();
+    },
+    escucharChat(salaId, cb) {
+      try {
+        return fdb.collection('chat_salas')
+          .where('salaId', '==', salaId || 'scorecast')
+          .onSnapshot(snap => {
+            const lista = snap.docs.map(d => ({ ...d.data(), id: d.id })).sort((a, b) => (a.t || 0) - (b.t || 0)).slice(-60);
+            cb(lista);
+          }, err => console.warn('escucharChat:', err));
+      } catch (e) {
+        console.warn('escucharChat:', e);
+        return () => {};
+      }
+    },
+    async votosEncuestas() {
+      try {
+        const snap = await fdb.collection('encuestas_votos').get();
+        const out = {};
+        snap.docs.forEach(d => { out[d.id] = d.data(); });
+        return out;
+      } catch (e) { console.warn('votosEncuestas:', e); return {}; }
+    },
+    async votarEncuesta(pollId, uid, opcionId) {
+      await fdb.collection('encuestas_votos').doc(`${pollId}__${uid}`).set({
+        pollId, uid, opcionId, t: Date.now()
+      });
+    },
+    escucharEncuestas(cb) {
+      try {
+        return fdb.collection('encuestas_votos').onSnapshot(snap => {
+          const out = {};
+          snap.docs.forEach(d => { out[d.id] = d.data(); });
+          cb(out);
+        }, err => console.warn('escucharEncuestas:', err));
+      } catch (e) { return () => {}; }
+    },
+    async enviarReaccionVivo(salaId, partidoId, emoji) {
+      const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+      const ref = fdb.collection('reacciones_vivo').doc(k);
+      await ref.set({
+        salaId: salaId || 'scorecast',
+        partidoId: partidoId || 'general',
+        [emoji]: fb.firestore.FieldValue.increment(1),
+        t: Date.now()
+      }, { merge: true });
+    },
+    async reaccionesVivo(salaId, partidoId) {
+      try {
+        const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+        const doc = await fdb.collection('reacciones_vivo').doc(k).get();
+        return doc.exists ? doc.data() : {};
+      } catch (e) { return {}; }
+    },
+    escucharReaccionesVivo(salaId, partidoId, cb) {
+      try {
+        const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+        return fdb.collection('reacciones_vivo').doc(k).onSnapshot(doc => {
+          cb(doc.exists ? doc.data() : {});
+        }, () => {});
+      } catch (e) { return () => {}; }
+    },
+    async guardarTransmisionBeta(salaId, partidoId, url, titulo, uid) {
+      const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+      await fdb.collection('transmisiones_beta').doc(k).set({
+        salaId: salaId || 'scorecast',
+        partidoId: partidoId || 'general',
+        url: String(url || '').trim(),
+        titulo: String(titulo || '').trim(),
+        uid: uid || '',
+        t: Date.now()
+      }, { merge: true });
+    },
+    async obtenerTransmisionBeta(salaId, partidoId) {
+      try {
+        const k = `${salaId || 'scorecast'}__${partidoId || 'general'}`;
+        const doc = await fdb.collection('transmisiones_beta').doc(k).get();
+        return doc.exists ? doc.data() : null;
+      } catch (e) { return null; }
     },
 
     async eliminarSala(salaId) {

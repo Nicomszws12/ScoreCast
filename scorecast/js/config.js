@@ -46,7 +46,7 @@ export const CONFIG = {
   API_FUTBOL: {
     apiKey: '56a4071402402681ba8fa228a7312084',
     proxyUrl: '',
-    intervaloSegundos: 15,        // Frecuencia de refresco en vivo
+    intervaloSegundos: 60,        // Frecuencia base de refresco en vivo (protege plan gratuito 100 req/día)
     sincronizaCalendario: true    // Permite sincronizar fechas y horas
   },
 

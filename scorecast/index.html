@@ -11,7 +11,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=30">
 </head>
 <body>
 
@@ -20,6 +20,7 @@
     <a class="logo" href="index.html"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
     <nav class="nav">
       <a href="reglas.html">Reglas</a>
+      <a href="creditos.html">Créditos</a>
     </nav>
   </div>
 </header>
@@ -124,18 +125,18 @@
   </section>
 
   <footer class="pie">
-    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/fixture.js"></script>
-<script type="module" src="js/utils.js"></script>
-<script type="module" src="js/store.js"></script>
-<script type="module" src="js/puntos.js"></script>
-<script type="module" src="js/email.js"></script>
+<script type="module" src="js/config.js?v=30"></script>
+<script type="module" src="js/fixture.js?v=30"></script>
+<script type="module" src="js/utils.js?v=30"></script>
+<script type="module" src="js/store.js?v=30"></script>
+<script type="module" src="js/puntos.js?v=30"></script>
+<script type="module" src="js/email.js?v=30"></script>
 <script type="module">
-import { CONFIG } from './js/config.js';
+import { CONFIG } from './js/config.js?v=30';
 
 (async () => {
   await Store.init();

@@ -10,7 +10,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=30">
 </head>
 <body>
 
@@ -21,6 +21,8 @@
       <a href="app.html">Partidos</a>
       <a href="tabla.html">Tabla</a>
       <a href="cuentas.html">Cuentas</a>
+      <a href="reglas.html">Reglas</a>
+      <a href="creditos.html">Créditos</a>
       <a href="admin.html" class="activo">🛠 Admin</a>
     </nav>
     <div class="usuario-mini">
@@ -58,24 +60,22 @@
   <!-- ====== RESULTADOS ====== -->
   <section id="tab-resultados">
 
-    <!-- Panel de Conexión y Estado de API-Football -->
-    <div class="panel panel--relleno" style="margin-bottom:20px; border: 1px solid rgba(8,70,240,0.35); background: rgba(8,70,240,0.035); border-radius:12px; padding:16px 20px;">
-      <div class="fila-flex" style="align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+    <!-- Centro de Control de API-Football -->
+    <div class="api-panel">
+      <div class="api-panel__head">
         <div>
-          <h2 style="margin:0 0 4px; font-size:18px; color:var(--primario); display:flex; align-items:center; gap:8px;">
-            <span>⚡ API-Football (Resultados y Marcadores en Vivo)</span>
+          <h2 class="api-panel__titulo">
+            <span>⚡ Centro de Control API-Football</span>
             <span class="etiqueta etiqueta--fin" id="api-badge-estado" style="font-size:11px;">🟢 Conectada</span>
           </h2>
-          <p class="sub" style="margin:0; font-size:13px;">Sincronización oficial de resultados, minutos en tiempo real, alineaciones y tarjetas para las 7 competiciones.</p>
+          <p class="sub" style="margin:0; font-size:13px;">Sincronización oficial filtrada a las 7 competiciones (BetPlay, Premier, LaLiga, Bundesliga, Champions, Libertadores y Sudamericana).</p>
         </div>
-        <div class="fila-flex" style="gap:8px; flex-wrap:wrap;">
-          <button class="boton boton--fantasma boton--mini" id="b-test-api" type="button" style="font-weight:700;">🧪 Probar Conexión</button>
-          <button class="boton boton--mini" id="b-sync-card" type="button" style="font-weight:700;">🔄 Sincronizar Ahora</button>
-          <button class="boton boton--fantasma boton--mini" id="b-vivo-card" type="button" style="font-weight:700;">📡 Automático: OFF</button>
+        <div style="text-align:right; font-size:11.5px; color:var(--tinta-3);" id="api-ultima-sync">
+          Sin sincronización manual en esta sesión
         </div>
       </div>
 
-      <div id="caja-estado-api" style="margin-top:14px; padding:12px 16px; border-radius:10px; background:var(--superficie-2); border:1px solid var(--linea); font-size:13px;">
+      <div id="caja-estado-api" class="api-cuota-box">
         <div class="fila-flex" style="align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
           <div>
             <b>👤 Cuenta:</b> <span id="api-info-usuario">Nicolas Nieto Daza (nicolasnieto191213@gmail.com)</span>
@@ -85,9 +85,51 @@
             <b>Consumo hoy:</b> <span id="api-info-cuota" style="font-weight:800; color:var(--verde);">Consultando cuota…</span>
           </div>
         </div>
-        <div style="margin-top:10px; font-size:12px; color:var(--tinta-sub); line-height:1.5;">
-          🛡️ <b>Protección de cuota de 100 peticiones/día:</b> ScoreCast centraliza la sincronización en el administrador. Una única consulta escribe el marcador en Cloud Firestore y se replica al instante en la pantalla de todos los participantes sin consumir llamadas adicionales.
+        <div class="api-cuota-bar" title="Consumo diario de API-Football">
+          <div class="api-cuota-fill" id="api-cuota-bar-fill"></div>
         </div>
+        <div style="margin-top:9px; font-size:12px; color:var(--tinta-2); line-height:1.5;">
+          🛡️ <b>Modo Ahorro Plan Free (100 req/día):</b> <code>Probar</code> gasta <b>0 req</b> · <code>En Vivo Ahora</code> trae las 7 ligas en <b>1 req</b> · <code>Por Fecha</code> usa tu zona horaria local en <b>1 req</b> (ventana gratuita: ayer, hoy, mañana y +2 días). Un solo clic actualiza a todos los participantes vía Cloud Firestore.
+        </div>
+      </div>
+
+      <div class="api-toolbar">
+        <button class="boton boton--fantasma boton--mini" id="b-test-api" type="button" style="font-weight:700;">🧪 Probar (0 req)</button>
+        <button class="boton boton--rojo boton--mini" id="b-sync-vivo" type="button" style="font-weight:700;">🔴 En Vivo Ahora (1 req)</button>
+        <button class="boton boton--verde boton--mini" id="b-sync-hoy" type="button" style="font-weight:700;">📅 Hoy (1 req)</button>
+        <button class="boton boton--mini" id="b-sync-manana" type="button" style="font-weight:700;">📆 Mañana (1 req)</button>
+        <div class="api-date-group">
+          <input type="date" id="api-fecha-input" aria-label="Elegir fecha para sincronizar">
+          <button class="boton boton--fantasma boton--mini" id="b-sync-fecha" type="button" style="font-weight:700;">🔎 Fecha (1 req)</button>
+        </div>
+        <button class="boton boton--fantasma boton--mini" id="b-sync-card" type="button" style="font-weight:700;">🔄 Hoy + Mañana (2 req)</button>
+      </div>
+
+      <div class="api-ctrl-bar">
+        <div class="api-ctrl-left">
+          <button class="boton boton--fantasma boton--mini" id="b-vivo-card" type="button" style="font-weight:700;">📡 Automático: OFF</button>
+          <label style="display:inline-flex; align-items:center; gap:6px; color:var(--tinta-2);">
+            <span>Intervalo:</span>
+            <select id="api-intervalo-sel" class="mini-input" style="padding:4px 8px; border-radius:8px; font-size:12px; font-weight:700;">
+              <option value="60">60s (activo)</option>
+              <option value="90">90s (equilibrado)</option>
+              <option value="120" selected>120s (recomendado Free)</option>
+              <option value="180">180s (ahorro)</option>
+              <option value="300">300s (ultra ahorro)</option>
+            </select>
+          </label>
+          <label class="api-chk-lbl" title="Trae goleadores, tarjetas y estadísticas al haber gol o finalizar (consume +1-2 req por partido).">
+            <input type="checkbox" id="api-detalles-chk">
+            <span>Eventos y estadísticas detalladas (+1–2 req/partido)</span>
+          </label>
+        </div>
+        <div id="api-auto-estado" style="font-size:12px; color:var(--tinta-3);">
+          En reposo · 0 req/h cuando no hay partidos activos
+        </div>
+      </div>
+
+      <div id="api-sync-log" class="api-diag-box">
+        <span style="color:var(--tinta-3);">📋 <b>Diagnóstico de emparejamiento:</b> Pulsa <b>«🔴 En Vivo Ahora»</b>, <b>«📅 Hoy»</b> o <b>«📆 Mañana»</b> para ver qué partidos detectó API-Football en nuestras 7 competiciones y confirmar su vinculación con el fixture local.</span>
       </div>
     </div>
 
@@ -114,18 +156,25 @@
         <option value="aplazado">⏸️ Aplazados</option>
       </select>
       <select class="mini-input" id="f-fecha-admin" aria-label="Jornada BetPlay" style="display:none; font-weight:700; border-radius:20px; padding:7px 12px; background:var(--superficie-2); color:var(--tinta);">
-        <option value="">Todas las fechas (1–19)</option>
-        <option value="hoy_reciente">🔥 Fechas en curso (5 y 10)</option>
+        <option value="">Todas las fechas (1–19 + Cuadrangulares)</option>
+        <option value="hoy_reciente">🔥 Cuadrangulares (todas las fechas)</option>
+        <option value="20">Cuadrangulares · Fecha 1 (20–21 nov)</option>
+        <option value="21">Cuadrangulares · Fecha 2</option>
+        <option value="22">Cuadrangulares · Fecha 3</option>
+        <option value="23">Cuadrangulares · Fecha 4</option>
+        <option value="24">Cuadrangulares · Fecha 5</option>
+        <option value="25">Cuadrangulares · Fecha 6</option>
+        <option value="26">🏆 Gran Final</option>
         <option value="1">Fecha 1</option>
         <option value="2">Fecha 2</option>
         <option value="3">Fecha 3</option>
         <option value="4">Fecha 4</option>
-        <option value="5">Fecha 5 (Hoy: Millos vs Cali)</option>
+        <option value="5">Fecha 5</option>
         <option value="6">Fecha 6</option>
         <option value="7">Fecha 7</option>
         <option value="8">Fecha 8</option>
         <option value="9">Fecha 9</option>
-        <option value="10">Fecha 10 (Próxima: 11–14 sep)</option>
+        <option value="10">Fecha 10</option>
         <option value="11">Fecha 11</option>
         <option value="12">Fecha 12</option>
         <option value="13">Fecha 13</option>
@@ -138,7 +187,7 @@
       </select>
       <select class="mini-input" id="f-fecha-laliga-admin" aria-label="Jornada LaLiga" style="display:none; font-weight:700; border-radius:20px; padding:7px 12px; background:var(--superficie-2); color:var(--tinta);">
         <option value="">Todas las jornadas (1–38)</option>
-        <option value="5">🔥 Jornada 5 (En curso: 11–14 sep)</option>
+        <option value="13">🔥 Jornada 13 (Próxima: 20–23 nov)</option>
         <option value="1">Jornada 1</option>
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
@@ -184,7 +233,7 @@
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
         <option value="4">Jornada 4</option>
-        <option value="5">🔥 Jornada 5 (Próxima)</option>
+        <option value="5">Jornada 5</option>
         <option value="6">Jornada 6</option>
         <option value="7">Jornada 7</option>
         <option value="8">Jornada 8</option>
@@ -319,28 +368,46 @@
 
   <!-- ====== ANÁLISIS IA ====== -->
   <section id="tab-ia" class="oculto">
-    <div id="ia-no-config" class="aviso aviso--dorado" style="display:none">
-      ⚙️ <b>Falta configurar el proxy IA.</b> Despliega el Worker siguiendo
-      las instrucciones en <code>proxy/ia-worker.js</code> y pega la URL en
-      <code>CONFIG.IA.proxyUrl</code> dentro de <code>js/config.js</code>.
-    </div>
-
     <div id="ia-panel">
-      <div class="panel panel--relleno" style="margin-bottom: 18px; background: linear-gradient(135deg, rgba(245,184,0,.15), rgba(245,184,0,.05)); border-color: rgba(245,184,0,.4);">
-        <h2 style="color: var(--dorado);">🚀 Próximamente: Funciones Pro</h2>
-        <p class="sub">Estamos trabajando en nuevas herramientas de análisis para darte una ventaja competitiva. ¡Prepárate para lo que viene!</p>
-        <div class="rejilla rejilla--3" style="gap: 20px; margin-top: 16px;">
+      <!-- Radar Táctico Automático de la Próxima Jornada -->
+      <div class="panel panel--relleno ia-radar-panel">
+        <div class="fila-flex" style="justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
           <div>
-            <h4 style="margin:0 0 4px;">📡 Radar de Valor Exclusivo</h4>
-            <p style="font-size:13px; color: var(--tinta-2); margin:0;">Accede a las tendencias y oportunidades de alta probabilidad con cuotas superiores a 1.40.</p>
+            <h2 style="margin:0 0 4px; color:var(--dorado);">🤖 Centro de Análisis IA &amp; Modelo Estadístico Poisson</h2>
+            <p class="sub" style="margin:0;">Funciona al instante con los resultados reales de la temporada 2026/27 (887+ partidos, $0 COP). Haz clic en cualquier duelo del radar para ver su pronóstico táctico completo.</p>
           </div>
-          <div>
-            <h4 style="margin:0 0 4px;">🔔 Alertas de "Gol Inminente"</h4>
-            <p style="font-size:13px; color: var(--tinta-2); margin:0;">Nuestro robot escanea partidos en vivo y te envía correos cuando un equipo está dominando brutalmente.</p>
+          <label class="api-chk-lbl" title="Si está activo, intenta enriquecer la redacción con la IA externa y hace fallback automático al motor local si no responde.">
+            <input type="checkbox" id="ia-usar-llm">
+            <span>✨ Enriquecer redacción con IA externa (fallback automático)</span>
+          </label>
+        </div>
+
+        <div id="ia-radar-grid" class="ia-radar-grid">
+          <div class="sub">Calculando radar estadístico de los próximos partidos…</div>
+        </div>
+      </div>
+
+      <!-- Filtro rápido + Selector de próximo partido oficial -->
+      <div class="panel panel--relleno" style="margin-bottom:16px;">
+        <div class="fila-flex" style="gap:12px; flex-wrap:wrap; align-items:center;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <b style="font-size:13px; color:var(--tinta-2);">🏆 Filtrar clubes por torneo:</b>
+            <select id="ia-sel-comp" class="mini-input" style="padding:7px 12px; border-radius:10px; font-weight:700;">
+              <option value="">Todas las 7 competiciones</option>
+              <option value="betplay">🇨🇴 Liga BetPlay Dimayor</option>
+              <option value="premier">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+              <option value="laliga">🇪🇸 LaLiga EA Sports</option>
+              <option value="bundesliga">🇩🇪 Bundesliga</option>
+              <option value="ucl">🏆 UEFA Champions League</option>
+              <option value="libertadores">🌎 Copa Libertadores</option>
+              <option value="sudamericana">🥈 Copa Sudamericana</option>
+            </select>
           </div>
-          <div>
-            <h4 style="margin:0 0 4px;">✨ Sin Riesgo de Publicidad</h4>
-            <p style="font-size:13px; color: var(--tinta-2); margin:0;">Navegación limpia, rápida y enfocada 100% en análisis de datos puros y reales.</p>
+          <div style="flex:1; min-width:250px; display:flex; align-items:center; gap:8px;">
+            <select id="ia-sel-proximo" class="mini-input" style="flex:1; padding:7px 12px; border-radius:10px;">
+              <option value="">📅 Elegir un próximo partido oficial…</option>
+            </select>
+            <button class="boton boton--verde boton--mini" id="ia-btn-proximo" type="button">Analizar duelo ⚡</button>
           </div>
         </div>
       </div>
@@ -350,7 +417,7 @@
         <!-- Análisis de equipo -->
         <div class="panel panel--relleno">
           <h2>🌍 Análisis de equipo</h2>
-          <p class="sub">Selecciona un equipo para generar un informe táctico completo con probabilidades por ronda.</p>
+          <p class="sub">Selecciona cualquier club de las 7 competiciones para generar su radiografía estadística 2026/27 y proyección.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <select id="ia-sel-equipo" class="mini-input" style="flex:1;min-width:180px">
               <option value="">— Elige un equipo —</option>
@@ -362,13 +429,13 @@
         <!-- Predicción de partido -->
         <div class="panel panel--relleno">
           <h2>⚽ Predicción de partido</h2>
-          <p class="sub">Elige dos equipos para obtener un análisis comparativo y el pronóstico del partido.</p>
+          <p class="sub">Compara cualquier cruce con modelo Poisson + Dixon-Coles, goles esperados (xG) y Top 3 marcadores exactos.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <select id="ia-sel-local" class="mini-input" style="flex:1;min-width:140px">
+            <select id="ia-sel-local" class="mini-input" style="flex:1;min-width:130px">
               <option value="">— Local —</option>
             </select>
             <span style="color:var(--tinta-3)">vs</span>
-            <select id="ia-sel-visitante" class="mini-input" style="flex:1;min-width:140px">
+            <select id="ia-sel-visitante" class="mini-input" style="flex:1;min-width:130px">
               <option value="">— Visitante —</option>
             </select>
             <button class="boton" id="ia-btn-partido" type="button">Predecir 🤖</button>
@@ -376,17 +443,24 @@
         </div>
       </div>
 
-      <!-- Resultado IA -->
-      <div id="ia-resultado" style="display:none;margin-top:18px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <h3 id="ia-resultado-titulo" style="margin:0;color:var(--dorado)"></h3>
-          <button class="boton boton--fantasma boton--mini" id="ia-btn-copiar" type="button">📋 Copiar</button>
-        </div>
-        <div id="ia-resultado-cuerpo" style="background:var(--superficie-2);border:1px solid var(--linea);border-radius:10px;padding:20px 24px;line-height:1.75;font-size:14px"></div>
+      <div id="ia-cargando" style="display:none; margin-top:16px;" class="aviso">
+        <span id="ia-dots">⏳ Generando análisis táctico y modelo Poisson…</span>
       </div>
 
-      <div id="ia-cargando" style="display:none" class="aviso">
-        <span id="ia-dots">⏳ Generando análisis</span>
+      <!-- Resultado IA -->
+      <div id="ia-resultado" style="display:none;margin-top:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <div>
+            <h3 id="ia-resultado-titulo" style="margin:0;color:var(--dorado)"></h3>
+            <small id="ia-resultado-motor" style="color:var(--tinta-3);font-size:11.5px;"></small>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="boton boton--verde boton--mini" id="ia-btn-publicar" type="button" style="display:none;">📤 Publicar en partido</button>
+            <button class="boton boton--fantasma boton--mini" id="ia-btn-copiar" type="button">📋 Copiar</button>
+          </div>
+        </div>
+        <div id="ia-resumen-visual" class="ia-resumen-visual" style="display:none;"></div>
+        <div id="ia-resultado-cuerpo" style="background:var(--superficie-2);border:1px solid var(--linea);border-radius:12px;padding:20px 24px;line-height:1.75;font-size:14px"></div>
       </div>
     </div>
   </section>
@@ -492,20 +566,21 @@
   </div>
 
   <footer class="pie">
-    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/fixture.js"></script>
-<script type="module" src="js/utils.js"></script>
-<script type="module" src="js/store.js"></script>
-<script type="module" src="js/puntos.js"></script>
-<script type="module" src="js/api-futbol.js"></script>
-<script type="module" src="js/email.js"></script>
-<script type="module" src="js/ia.js"></script>
+<script type="module" src="js/config.js?v=30"></script>
+<script type="module" src="js/fixture.js?v=30"></script>
+<script type="module" src="js/utils.js?v=30"></script>
+<script type="module" src="js/store.js?v=30"></script>
+<script type="module" src="js/puntos.js?v=30"></script>
+<script type="module" src="js/equipos-info.js?v=30"></script>
+<script type="module" src="js/api-futbol.js?v=30"></script>
+<script type="module" src="js/email.js?v=30"></script>
+<script type="module" src="js/ia.js?v=30"></script>
 <script type="module">
-import { CONFIG } from './js/config.js';
+import { CONFIG } from './js/config.js?v=30';
 (async () => {
   await Store.init();
   const yo = await Store.sesion();
@@ -585,6 +660,8 @@ import { CONFIG } from './js/config.js';
 
   async function cargar() {
     [resultados, ajustes] = await Promise.all([Store.resultados(), Store.ajustes()]);
+    window._resultadosLive = resultados;
+    window._ajustesLive = ajustes;
     pintarRes();
   }
 
@@ -610,6 +687,8 @@ import { CONFIG } from './js/config.js';
       pintarPrevios();
     } else if (tabName === 'pronosticos') {
       pintarPron();
+    } else if (tabName === 'ia') {
+      pintarIA();
     }
   });
 
@@ -689,7 +768,7 @@ import { CONFIG } from './js/config.js';
       out = out.filter(p => p.competicion === fRes);
       if (fRes === 'betplay' && fFechaAdmin) {
         if (fFechaAdmin === 'hoy_reciente') {
-          out = out.filter(p => p.jornada === 5 || p.jornada === 10);
+          out = out.filter(p => p.fase === 'cuadrangulares' || p.fase === 'final');
         } else {
           out = out.filter(p => p.jornada === Number(fFechaAdmin));
         }
@@ -868,7 +947,8 @@ import { CONFIG } from './js/config.js';
         U.toast('Esta función es para el modo Firebase.', 'error');
         return;
       }
-      if (!confirm('¿Deseas sincronizar todos los resultados iniciales (499 partidos finalizados) a Cloud Firestore?')) return;
+      const totalIniciales = Object.keys(FIXTURE.resultadosIniciales || {}).length;
+      if (!confirm(`¿Deseas sincronizar todos los resultados iniciales (${totalIniciales} partidos finalizados) a Cloud Firestore?`)) return;
       this.disabled = true;
       this.textContent = '⏳ Subiendo a Firestore…';
       try {
@@ -886,30 +966,157 @@ import { CONFIG } from './js/config.js';
     };
   }
 
-  /* ====== Sincronización con la API ====== */
-  async function sincronizarConApi(btn) {
+  /* ====== Centro de Control API-Football ====== */
+  const elFechaApi = document.getElementById('api-fecha-input');
+  const elIntervaloApi = document.getElementById('api-intervalo-sel');
+  const elDetallesApi = document.getElementById('api-detalles-chk');
+  const elLogApi = document.getElementById('api-sync-log');
+  const elUltimaSync = document.getElementById('api-ultima-sync');
+  const elAutoEstado = document.getElementById('api-auto-estado');
+
+  if (elFechaApi && window.ApiFutbol) {
+    elFechaApi.value = ApiFutbol.fechaLocal(1);
+    const hoyLbl = ApiFutbol.fechaLocal(0).slice(5);
+    const manLbl = ApiFutbol.fechaLocal(1).slice(5);
+    const bHoy = document.getElementById('b-sync-hoy');
+    const bMan = document.getElementById('b-sync-manana');
+    if (bHoy) bHoy.textContent = `📅 Hoy ${hoyLbl} (1 req)`;
+    if (bMan) bMan.textContent = `📆 Mañana ${manLbl} (1 req)`;
+  }
+
+  if (elIntervaloApi) {
+    const guardado = localStorage.getItem('sc_api_intervalo');
+    if (guardado && [...elIntervaloApi.options].some(o => o.value === guardado)) {
+      elIntervaloApi.value = guardado;
+    }
+    elIntervaloApi.onchange = () => {
+      localStorage.setItem('sc_api_intervalo', elIntervaloApi.value);
+      if (pararVivo) {
+        toggleVivo();
+        toggleVivo();
+      }
+    };
+  }
+
+  function renderDiagnosticoApi(r) {
+    if (!elLogApi || !r) return;
+    const hora = new Date(r.timestamp || Date.now()).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    if (elUltimaSync) elUltimaSync.textContent = `Última consulta: ${hora} (${r.fuente || 'api'})`;
+
+    if (r.error) {
+      elLogApi.innerHTML = `<div style="color:var(--rojo); font-weight:700;">❌ Error al consultar API-Football: ${U.esc(r.mensaje || 'Error desconocido')}</div>`;
+      return;
+    }
+
+    const detalle = r.detalle || [];
+    const sinCodigo = r.sinCodigo || [];
+    const kpis = `
+      <div class="api-diag-kpis">
+        <span class="api-kpi">🌐 API global: ${r.totalGlobal ?? r.total}</span>
+        <span class="api-kpi api-kpi--ok">🏆 Nuestras 7 ligas: ${r.total}</span>
+        <span class="api-kpi api-kpi--ok">✅ Emparejados: ${r.emparejados ?? 0}</span>
+        ${(r.sinEmparejar || 0) > 0 ? `<span class="api-kpi api-kpi--warn">⚠️ Sin emparejar: ${r.sinEmparejar}</span>` : ''}
+        ${sinCodigo.length > 0 ? `<span class="api-kpi api-kpi--warn">🧩 Equipos no mapeados: ${sinCodigo.length}</span>` : ''}
+        <span class="api-kpi api-kpi--live">⚽ Marcadores guardados: ${r.marcadores}</span>
+        <span class="api-kpi">📅 Horarios/IDs: ${r.calendario}</span>
+      </div>`;
+
+    if (!detalle.length && !sinCodigo.length) {
+      const msgVacio = r.fuente === 'live'
+        ? 'No hay partidos en vivo de nuestras 7 competiciones en este instante.'
+        : 'No se encontraron partidos de nuestras 7 competiciones para esa fecha (recuerda: el plan gratuito cubre ayer, hoy, mañana y +2 días).';
+      elLogApi.innerHTML = `${kpis}<div style="color:var(--tinta-2); padding:4px 0;">ℹ️ ${msgVacio}</div>`;
+      return;
+    }
+
+    const filas = [
+      ...detalle.map(d => {
+        const compNom = ApiFutbol.COMP_NOMBRES?.[d.competicion] || d.leagueName || d.competicion || '—';
+        const horaLocal = d.utc ? new Date(d.utc).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
+        const marcador = (d.gl !== null && d.gl !== undefined && d.gv !== null && d.gv !== undefined)
+          ? `<b>${d.gl} – ${d.gv}</b> ${d.periodo ? `<small style="color:var(--tinta-3)">(${U.esc(d.periodo)}${d.minuto ? ' ' + d.minuto + "'" : ''})</small>` : ''}`
+          : `<span style="color:var(--tinta-3)">${U.esc(d.periodo || 'NS')}</span>`;
+        const badgeEstado = d.estado === 'en_juego'
+          ? `<span class="api-pill-live">🔴 EN VIVO</span>`
+          : d.emparejado
+            ? `<span class="api-pill-ok">✅ ${U.esc(d.pid)}</span>`
+            : `<span class="api-pill-warn">⚠️ Sin emparejar</span>`;
+        return `<tr>
+          <td><b>${U.esc(compNom)}</b></td>
+          <td>${U.esc(d.homeRaw)} vs ${U.esc(d.awayRaw)}</td>
+          <td style="color:var(--tinta-2)">${U.esc(horaLocal)}</td>
+          <td>${marcador}</td>
+          <td>${badgeEstado}</td>
+          <td style="color:var(--tinta-2)">${U.esc(d.accion || '—')}</td>
+        </tr>`;
+      }),
+      ...sinCodigo.map(d => `<tr>
+        <td><b>${U.esc(ApiFutbol.COMP_NOMBRES?.[d.competicion] || d.leagueName || '—')}</b></td>
+        <td>${U.esc(d.homeRaw)} vs ${U.esc(d.awayRaw)}</td>
+        <td style="color:var(--tinta-3)">${d.utc ? U.esc(new Date(d.utc).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })) : '—'}</td>
+        <td>${U.esc(d.periodo || 'NS')}</td>
+        <td><span class="api-pill-warn">🧩 Falta alias</span></td>
+        <td style="color:var(--dorado)">L:${U.esc(d.local || '?')} / V:${U.esc(d.visitante || '?')}</td>
+      </tr>`)
+    ].join('');
+
+    elLogApi.innerHTML = `${kpis}
+      <div class="api-diag-scroll">
+        <table class="api-diag-table">
+          <thead>
+            <tr>
+              <th>Competición</th>
+              <th>Partido (API-Football)</th>
+              <th>Hora local</th>
+              <th>Estado / Marcador</th>
+              <th>Vínculo Local</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>${filas}</tbody>
+        </table>
+      </div>`;
+  }
+
+  async function ejecutarSyncApi(btn, accionFn, etiquetaOk) {
     if (!ApiFutbol.disponible()) {
       U.toast('Configura primero API_FUTBOL en js/config.js.', 'error'); return;
     }
     const origText = btn ? btn.textContent : '';
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Sincronizando…'; }
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Consultando…'; }
     try {
-      const r = await ApiFutbol.sincronizar();
+      const incluirDetalles = !!(elDetallesApi && elDetallesApi.checked);
+      const r = await accionFn({ incluirDetalles });
+      renderDiagnosticoApi(r);
       if (r.error) {
         U.toast(`API: ${r.mensaje || 'Error al conectar'}`, 'error');
       } else {
-        U.toast(`Sincronizado: ${r.marcadores} marcadores · ${r.calendario} horarios (de ${r.total} partidos encontrados).`);
+        U.toast(`${etiquetaOk}: ${r.emparejados ?? 0}/${r.total} emparejados · ${r.marcadores} marcadores · ${r.calendario} horarios.`);
       }
       await cargar();
       await refrescarEstadoApi(false);
-    } catch (err) { U.toast('API: ' + err.message, 'error'); }
-    if (btn) { btn.disabled = false; btn.textContent = origText || '🔄 Sincronizar Ahora'; }
+    } catch (err) {
+      renderDiagnosticoApi({ error: true, mensaje: err.message });
+      U.toast('API: ' + err.message, 'error');
+    }
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
   }
 
   const bSync = document.getElementById('b-sync');
-  if (bSync) bSync.onclick = () => sincronizarConApi(bSync);
+  if (bSync) bSync.onclick = () => ejecutarSyncApi(bSync, (o) => ApiFutbol.sincronizar(o), 'Jornada sincronizada');
   const bSyncCard = document.getElementById('b-sync-card');
-  if (bSyncCard) bSyncCard.onclick = () => sincronizarConApi(bSyncCard);
+  if (bSyncCard) bSyncCard.onclick = () => ejecutarSyncApi(bSyncCard, (o) => ApiFutbol.sincronizar(o), 'Hoy + Mañana');
+  const bSyncVivo = document.getElementById('b-sync-vivo');
+  if (bSyncVivo) bSyncVivo.onclick = () => ejecutarSyncApi(bSyncVivo, (o) => ApiFutbol.sincronizarSoloVivos(o), 'En Vivo');
+  const bSyncHoy = document.getElementById('b-sync-hoy');
+  if (bSyncHoy) bSyncHoy.onclick = () => ejecutarSyncApi(bSyncHoy, (o) => ApiFutbol.sincronizarFecha(ApiFutbol.fechaLocal(0), o), 'Hoy');
+  const bSyncManana = document.getElementById('b-sync-manana');
+  if (bSyncManana) bSyncManana.onclick = () => ejecutarSyncApi(bSyncManana, (o) => ApiFutbol.sincronizarFecha(ApiFutbol.fechaLocal(1), o), 'Mañana');
+  const bSyncFecha = document.getElementById('b-sync-fecha');
+  if (bSyncFecha) bSyncFecha.onclick = () => {
+    const f = elFechaApi?.value || ApiFutbol.fechaLocal(0);
+    ejecutarSyncApi(bSyncFecha, (o) => ApiFutbol.sincronizarFecha(f, o), `Fecha ${f}`);
+  };
 
   let pararVivo = null;
   function toggleVivo() {
@@ -919,23 +1126,46 @@ import { CONFIG } from './js/config.js';
       pararVivo(); pararVivo = null;
       if (bVivo) { bVivo.textContent = '📡 Marcador automático: OFF'; bVivo.classList.add('boton--fantasma'); }
       if (bVivoCard) { bVivoCard.textContent = '📡 Automático: OFF'; bVivoCard.classList.add('boton--fantasma'); }
+      if (elAutoEstado) elAutoEstado.textContent = 'En reposo · 0 req/h cuando no hay partidos activos';
       return;
     }
     if (!ApiFutbol.disponible()) { U.toast('Configura primero apiKey en js/config.js.', 'error'); return; }
-    pararVivo = ApiFutbol.cicloEnVivo(() => cargar());
-    if (bVivo) { bVivo.textContent = `📡 Automático cada ${CONFIG.API_FUTBOL.intervaloSegundos}s: ON`; bVivo.classList.remove('boton--fantasma'); }
-    if (bVivoCard) { bVivoCard.textContent = `📡 Automático: ON (${CONFIG.API_FUTBOL.intervaloSegundos}s)`; bVivoCard.classList.remove('boton--fantasma'); }
-    U.toast('Marcador automático activo. Deja esta pestaña abierta durante los partidos. 📡');
+    const seg = Number(elIntervaloApi?.value) || 120;
+    const incluirDetalles = !!(elDetallesApi && elDetallesApi.checked);
+    pararVivo = ApiFutbol.cicloEnVivo(async (r) => {
+      if (r?.pausadoPorCuota) {
+        if (elAutoEstado) elAutoEstado.textContent = `⚠️ ${r.mensaje}`;
+        U.toast(r.mensaje, 'error');
+        return;
+      }
+      if (r?.enEspera) {
+        const proxTxt = r.proximo?.utc
+          ? `Próximo: ${new Date(r.proximo.utc).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}`
+          : 'sin partidos en ventana';
+        if (elAutoEstado) elAutoEstado.textContent = `⏸️ En espera (0 req) · ${proxTxt}`;
+        return;
+      }
+      renderDiagnosticoApi(r);
+      if (elAutoEstado) elAutoEstado.textContent = `🟢 Activo cada ${seg}s · Último ciclo: ${new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+      await cargar();
+      await refrescarEstadoApi(false);
+    }, { modo: 'admin', intervaloSegundos: seg, incluirDetalles });
+
+    if (bVivo) { bVivo.textContent = `📡 Automático (${seg}s): ON`; bVivo.classList.remove('boton--fantasma'); }
+    if (bVivoCard) { bVivoCard.textContent = `📡 Automático: ON (${seg}s)`; bVivoCard.classList.remove('boton--fantasma'); }
+    if (elAutoEstado) elAutoEstado.textContent = `🟢 Iniciando monitoreo inteligente cada ${seg}s (1 req/ciclo solo en partidos activos)…`;
+    U.toast(`Marcador automático activo cada ${seg}s (1 req/ciclo). Deja esta pestaña abierta durante los partidos. 📡`);
   }
   if (document.getElementById('b-vivo')) document.getElementById('b-vivo').onclick = toggleVivo;
   if (document.getElementById('b-vivo-card')) document.getElementById('b-vivo-card').onclick = toggleVivo;
 
-  /* Diagnóstico y prueba en vivo de API-Football */
+  /* Diagnóstico y prueba en vivo de API-Football (0 req de cuota) */
   async function refrescarEstadoApi(conToast = false) {
     const elUsuario = document.getElementById('api-info-usuario');
     const elPlan = document.getElementById('api-info-plan');
     const elCuota = document.getElementById('api-info-cuota');
     const elBadge = document.getElementById('api-badge-estado');
+    const elBarFill = document.getElementById('api-cuota-bar-fill');
 
     if (!ApiFutbol.disponible()) {
       if (elBadge) { elBadge.textContent = '⚠️ No configurada'; elBadge.className = 'etiqueta etiqueta--rojo'; }
@@ -951,11 +1181,17 @@ import { CONFIG } from './js/config.js';
         if (elCuota) {
           const usas = res.peticionesHoy ?? 0;
           const lim = res.limiteDiario ?? 100;
-          elCuota.textContent = `${usas} / ${lim} peticiones hoy (${lim - usas} disponibles)`;
-          elCuota.style.color = (lim - usas) > 20 ? 'var(--verde)' : 'var(--rojo)';
+          const disp = Math.max(0, lim - usas);
+          const pct = Math.min(100, Math.round((usas / Math.max(1, lim)) * 100));
+          elCuota.textContent = `${usas} / ${lim} peticiones hoy (${disp} disponibles)`;
+          elCuota.style.color = pct >= 85 ? 'var(--rojo)' : pct >= 60 ? 'var(--dorado)' : 'var(--verde)';
+          if (elBarFill) {
+            elBarFill.style.width = `${pct}%`;
+            elBarFill.className = 'api-cuota-fill' + (pct >= 85 ? ' api-cuota-fill--crit' : pct >= 60 ? ' api-cuota-fill--warn' : '');
+          }
         }
         if (elBadge) { elBadge.textContent = '🟢 Conectada y Activa'; elBadge.className = 'etiqueta etiqueta--fin'; }
-        if (conToast) U.toast(`✅ API-Football conectada. Plan: ${res.plan} · ${res.peticionesHoy}/${res.limiteDiario} peticiones hoy.`);
+        if (conToast) U.toast(`✅ API-Football conectada. Plan: ${res.plan} · ${res.peticionesHoy}/${res.limiteDiario} peticiones hoy (0 req usadas en esta prueba).`);
       } else {
         if (elBadge) { elBadge.textContent = '❌ Error de Conexión'; elBadge.className = 'etiqueta etiqueta--rojo'; }
         if (elCuota) elCuota.textContent = res.error || 'Error al conectar';
@@ -972,11 +1208,11 @@ import { CONFIG } from './js/config.js';
     bTestApi.onclick = async function() {
       this.disabled = true; this.textContent = '⏳ Probando…';
       await refrescarEstadoApi(true);
-      this.disabled = false; this.textContent = '🧪 Probar Conexión';
+      this.disabled = false; this.textContent = '🧪 Probar (0 req)';
     };
   }
 
-  // Consulta el estado y cuota real en segundo plano al cargar
+  // Consulta el estado y cuota real en segundo plano al cargar (0 req de cuota)
   setTimeout(() => refrescarEstadoApi(false), 600);
 
   /* ============ PARTICIPANTES ============ */
@@ -1778,6 +2014,246 @@ import { CONFIG } from './js/config.js';
       lista.innerHTML = `<div class="aviso" style="color:var(--rojo)">⚠️ Error: ${U.esc(err.message)}</div>`;
       console.error('pintarPron:', err);
     }
+  }
+
+  /* ============ ANÁLISIS IA HÍBRIDO (POISSON + LLM OPCIONAL) ============ */
+  let _ultimoMdIA = '';
+  let _ultimoPidIA = null;
+  let _iaIniciado = false;
+
+  function poblarSelectoresIA() {
+    const compFiltro = document.getElementById('ia-sel-comp')?.value || '';
+    const selEq = document.getElementById('ia-sel-equipo');
+    const selL = document.getElementById('ia-sel-local');
+    const selV = document.getElementById('ia-sel-visitante');
+    const selProx = document.getElementById('ia-sel-proximo');
+    if (!selEq || !selL || !selV) return;
+
+    const compsLista = compFiltro
+      ? LISTA_COMPS_ADMIN.filter(c => c.id === compFiltro)
+      : LISTA_COMPS_ADMIN;
+
+    const optsGrupos = compsLista.map(c => {
+      const eqs = equiposDeCompAdmin(c.id);
+      if (!eqs.length) return '';
+      return `<optgroup label="${U.esc(c.nombre)}">${eqs.map(cod => {
+        const eq = FIXTURE.equipo(cod);
+        return `<option value="${cod}">${U.esc(eq.n)}</option>`;
+      }).join('')}</optgroup>`;
+    }).join('');
+
+    const prevEq = selEq.value, prevL = selL.value, prevV = selV.value;
+    selEq.innerHTML = `<option value="">— Elige un equipo —</option>${optsGrupos}`;
+    selL.innerHTML = `<option value="">— Local —</option>${optsGrupos}`;
+    selV.innerHTML = `<option value="">— Visitante —</option>${optsGrupos}`;
+    if (prevEq) selEq.value = prevEq;
+    if (prevL) selL.value = prevL;
+    if (prevV) selV.value = prevV;
+
+    if (selProx) {
+      const ahora = Date.now();
+      const prox = partidosEf()
+        .filter(p => p.local && p.visitante && FIXTURE.equipos[p.local] && FIXTURE.equipos[p.visitante]
+          && (!compFiltro || p.competicion === compFiltro)
+          && (resultados[p.id]?.estado !== 'finalizado')
+          && p.utc && new Date(p.utc).getTime() >= ahora - 3 * 3600000)
+        .sort((a, b) => a.utc.localeCompare(b.utc))
+        .slice(0, 35);
+
+      selProx.innerHTML = '<option value="">📅 Elegir un próximo partido oficial…</option>' + prox.map(p => {
+        const L = FIXTURE.equipo(p.local), V = FIXTURE.equipo(p.visitante);
+        const fTxt = new Date(p.utc).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+        const compCorto = ApiFutbol.COMP_NOMBRES?.[p.competicion] || p.competicion;
+        return `<option value="${p.id}">${U.esc(compCorto)} · ${U.esc(L.n)} vs ${U.esc(V.n)} (${U.esc(fTxt)})</option>`;
+      }).join('');
+    }
+  }
+
+  function pintarRadarIA() {
+    const grid = document.getElementById('ia-radar-grid');
+    if (!grid || !window.IA?.radarJornada) return;
+    const rad = IA.radarJornada(resultados, ajustes, 96);
+    const tarjetas = [
+      rad.destacado && { tag: '🔥 Partido de la Fecha', item: rad.destacado, extra: `Ritmo combinado ${rad.destacado.calidad} PPG` },
+      rad.masGoles && { tag: '⚽ Promesa de Goles', item: rad.masGoles, extra: `+2.5 goles: ${rad.masGoles.probOver25}% · xG ${rad.masGoles.xGL}-${rad.masGoles.xGV}` },
+      rad.masCerrado && { tag: '🧱 Duelo Más Parejo', item: rad.masCerrado, extra: `1X2: ${rad.masCerrado.probLocal}% / ${rad.masCerrado.probEmpate}% / ${rad.masCerrado.probVisitante}%` },
+      rad.favoritoSolido && { tag: '⭐ Favorito Más Sólido', item: rad.favoritoSolido, extra: `Máx. prob: ${rad.favoritoSolido.maxProb}%` }
+    ].filter(Boolean);
+
+    if (!tarjetas.length) {
+      grid.innerHTML = '<div class="sub">No hay partidos próximos programados para el radar en este momento.</div>';
+      return;
+    }
+
+    grid.innerHTML = tarjetas.map(({ tag, item, extra }) => {
+      const fTxt = new Date(item.utc).toLocaleString('es-CO', { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+      return `
+        <button type="button" class="ia-radar-card" data-ia-pid="${U.esc(item.pid)}">
+          <div class="ia-radar-tag">${tag}</div>
+          <div class="ia-radar-match">${U.esc(item.localNom)} vs ${U.esc(item.visNom)}</div>
+          <div class="ia-radar-meta">${U.esc(item.compNombre)} · ${U.esc(fTxt)}</div>
+          <div class="ia-radar-score">
+            <span>Sugerido: <b>${item.sugerido.gl}–${item.sugerido.gv}</b></span>
+            <span style="color:var(--tinta-2);font-weight:600;font-size:11px;">${U.esc(extra)}</span>
+          </div>
+        </button>`;
+    }).join('');
+  }
+
+  function mostrarResultadoIA(informe, pidAsociado = null) {
+    const box = document.getElementById('ia-resultado');
+    const tit = document.getElementById('ia-resultado-titulo');
+    const mot = document.getElementById('ia-resultado-motor');
+    const vis = document.getElementById('ia-resumen-visual');
+    const cue = document.getElementById('ia-resultado-cuerpo');
+    const btnPub = document.getElementById('ia-btn-publicar');
+
+    _ultimoMdIA = informe.md || '';
+    _ultimoPidIA = pidAsociado;
+
+    if (tit) tit.textContent = informe.titulo || 'Informe Táctico';
+    if (mot) mot.textContent = `⚡ ${informe.motor || 'Motor Estadístico ScoreCast'}`;
+    if (cue) cue.innerHTML = IA.mdAHtml(informe.md || '');
+    if (btnPub) btnPub.style.display = pidAsociado ? 'inline-flex' : 'none';
+
+    if (vis) {
+      if (informe.tipo === 'partido' && informe.datos) {
+        const d = informe.datos;
+        vis.style.display = 'block';
+        vis.innerHTML = `
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;font-weight:800;">
+            <span style="color:var(--azul-claro)">${U.esc(d.stL.nombre)} ${d.probLocal}% (xG ${d.xGL})</span>
+            <span style="color:var(--tinta-2)">Empate ${d.probEmpate}%</span>
+            <span style="color:var(--dorado)">${U.esc(d.stV.nombre)} ${d.probVisitante}% (xG ${d.xGV})</span>
+          </div>
+          <div class="ia-prob-bar">
+            <div class="ia-prob-seg--l" style="width:${d.probLocal}%"></div>
+            <div class="ia-prob-seg--e" style="width:${d.probEmpate}%"></div>
+            <div class="ia-prob-seg--v" style="width:${d.probVisitante}%"></div>
+          </div>
+          <div class="ia-scores-pills">
+            ${d.marcadoresTop.map((m, idx) => `<span class="ia-score-pill ${idx === 0 ? 'ia-score-pill--top' : ''}">${idx === 0 ? '🎯 ' : ''}Marcador ${m.gl}–${m.gv} (${m.pct}%)</span>`).join('')}
+            <span class="ia-score-pill">⚽ +2.5 goles: ${d.probOver25}%</span>
+            <span class="ia-score-pill">🤝 Ambos anotan: ${d.probBTTS}%</span>
+            <span class="ia-score-pill">📊 Confianza: ${U.esc(d.confianza)}</span>
+          </div>`;
+      } else if (informe.tipo === 'equipo' && informe.datos?.st) {
+        const st = informe.datos.st;
+        const pr = informe.datos.proyeccion;
+        vis.style.display = 'block';
+        vis.innerHTML = `
+          <div class="ia-scores-pills" style="margin-top:0;">
+            <span class="ia-score-pill ia-score-pill--top">📊 ${st.pj} PJ · ${st.pts} pts (${st.ppg} PPG)</span>
+            <span class="ia-score-pill">⚽ ${st.gf} GF (${st.gfPj}/PJ)</span>
+            <span class="ia-score-pill">🧱 ${st.gc} GC (${st.gcPj}/PJ)</span>
+            <span class="ia-score-pill">🧤 Vallas invictas: ${st.pctValla}%</span>
+            <span class="ia-score-pill">🏆 Opción título: ${pr.pTitulo}%</span>
+          </div>`;
+      } else {
+        vis.style.display = 'none';
+      }
+    }
+
+    if (box) {
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  async function ejecutarAnalisisIA(fn, pidAsociado = null) {
+    const load = document.getElementById('ia-cargando');
+    if (load) load.style.display = 'block';
+    try {
+      const informe = await fn();
+      mostrarResultadoIA(informe, pidAsociado);
+    } catch (err) {
+      U.toast('Error en Análisis IA: ' + err.message, 'error');
+    } finally {
+      if (load) load.style.display = 'none';
+    }
+  }
+
+  function pintarIA() {
+    poblarSelectoresIA();
+    pintarRadarIA();
+    if (_iaIniciado) return;
+    _iaIniciado = true;
+
+    const usarLLM = () => !!document.getElementById('ia-usar-llm')?.checked;
+
+    document.getElementById('ia-sel-comp')?.addEventListener('change', poblarSelectoresIA);
+
+    document.getElementById('ia-btn-equipo')?.addEventListener('click', () => {
+      const cod = document.getElementById('ia-sel-equipo')?.value;
+      if (!cod) { U.toast('Selecciona un equipo primero.', 'error'); return; }
+      const comp = document.getElementById('ia-sel-comp')?.value || null;
+      ejecutarAnalisisIA(() => IA.generarInformeEquipo(cod, resultados, { competicion: comp, usarLLM: usarLLM() }), null);
+    });
+
+    document.getElementById('ia-btn-partido')?.addEventListener('click', () => {
+      const l = document.getElementById('ia-sel-local')?.value;
+      const v = document.getElementById('ia-sel-visitante')?.value;
+      if (!l || !v) { U.toast('Selecciona equipo local y visitante.', 'error'); return; }
+      if (l === v) { U.toast('Elige dos equipos diferentes.', 'error'); return; }
+      const comp = document.getElementById('ia-sel-comp')?.value || null;
+      const matchReal = partidosEf().find(p => p.local === l && p.visitante === v && resultados[p.id]?.estado !== 'finalizado');
+      ejecutarAnalisisIA(() => IA.generarInformePartido(l, v, resultados, {
+        fechaUtc: matchReal?.utc || null,
+        competicion: matchReal?.competicion || comp,
+        usarLLM: usarLLM()
+      }), matchReal?.id || null);
+    });
+
+    const analizarPorPid = (pid) => {
+      const p = partidosEf().find(x => x.id === pid);
+      if (!p || !p.local || !p.visitante) { U.toast('Partido no válido.', 'error'); return; }
+      const selL = document.getElementById('ia-sel-local');
+      const selV = document.getElementById('ia-sel-visitante');
+      if (selL) selL.value = p.local;
+      if (selV) selV.value = p.visitante;
+      ejecutarAnalisisIA(() => IA.generarInformePartido(p.local, p.visitante, resultados, {
+        fechaUtc: p.utc,
+        competicion: p.competicion,
+        usarLLM: usarLLM()
+      }), p.id);
+    };
+
+    document.getElementById('ia-btn-proximo')?.addEventListener('click', () => {
+      const pid = document.getElementById('ia-sel-proximo')?.value;
+      if (!pid) { U.toast('Elige un próximo partido oficial.', 'error'); return; }
+      analizarPorPid(pid);
+    });
+
+    document.getElementById('ia-radar-grid')?.addEventListener('click', e => {
+      const card = e.target.closest('[data-ia-pid]');
+      if (card) analizarPorPid(card.dataset.iaPid);
+    });
+
+    document.getElementById('ia-btn-copiar')?.addEventListener('click', async () => {
+      if (!_ultimoMdIA) return;
+      try {
+        await navigator.clipboard.writeText(_ultimoMdIA);
+        U.toast('Informe copiado al portapapeles 📋');
+      } catch {
+        U.toast('No se pudo copiar automáticamente.', 'error');
+      }
+    });
+
+    document.getElementById('ia-btn-publicar')?.addEventListener('click', async function () {
+      if (!_ultimoPidIA || !_ultimoMdIA) return;
+      this.disabled = true;
+      this.textContent = '⏳ Publicando…';
+      try {
+        const resAnt = resultados[_ultimoPidIA] || {};
+        await Store.guardarResultado(_ultimoPidIA, { ...resAnt, analisisIA: _ultimoMdIA });
+        U.toast(`Análisis publicado en el partido ${_ultimoPidIA} ✅`);
+        await cargar();
+      } catch (err) {
+        U.toast('Error al publicar: ' + err.message, 'error');
+      }
+      this.disabled = false;
+      this.textContent = '📤 Publicar en partido';
+    });
   }
 
   /* ============ TEMA ESPECIAL (TEST) ============ */

@@ -10,7 +10,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=30">
 </head>
 <body>
 
@@ -35,19 +35,22 @@
 
   <section style="margin-top:26px">
     <h1 style="margin:0;font-size:26px">💰 Las cuentas claras (y el chocolate espeso)</h1>
-    <p class="sub">La app <b>solo registra</b> la plata: las cuotas se entregan por fuera
-      (Nequi, Daviplata, transferencia o en efectivo) al tesorero — <b id="tesorero"></b>. Aquí todos vemos
-      de cuánto es la vaca (acumulado), quién ya pagó y cómo se repartiría el premio.</p>
+    <p class="sub">La app <b>solo lleva un registro informativo</b>: ScoreCast no realiza transacciones bancarias, no maneja billeteras virtuales ni recauda dinero. Cualquier acuerdo externo entre amigos es administrado por fuera por el organizador de la sala — <b id="tesorero"></b>.</p>
   </section>
+
+  <div class="aviso aviso--etico" style="margin:14px 0;">
+    🛡️ <b>Uso recreativo y comunitario responsable:</b> ScoreCast es una plataforma gratuita para comunidades cerradas sin ánimo de lucro, sin comisiones ni vínculos con casas de apuestas (en concordancia con la Ley 643 de 2001 y los arts. 59–60 del CST).
+  </div>
 
   <div class="aviso" id="mi-estado"></div>
 
-  <h2 style="font-size:19px;margin:26px 0 4px">🏦 La Vaca (Acumulado)</h2>
-  <p class="sub">Cada quien juega en su moneda. La plata de cada moneda se reparte entre quienes se pusieron al día.</p>
+  <div id="bloque-cuotas-activas">
+  <h2 style="font-size:19px;margin:26px 0 4px">🏦 Acumulado informativo de la sala</h2>
+  <p class="sub">Cada participante registra su moneda de referencia. El detalle se organiza de forma transparente entre los miembros al día.</p>
   <div class="rejilla rejilla--3" id="botes"></div>
 
-  <h2 style="font-size:19px;margin:30px 0 4px">📒 ¿Quién está colgado con la plata?</h2>
-  <p class="sub">Los que faltan por ponerse al día con el tesorero. Cuando termine el Mundial, el tesorero le paga a los ganadores.</p>
+  <h2 style="font-size:19px;margin:30px 0 4px">📒 Estado de cuotas en la sala</h2>
+  <p class="sub">Participantes registrados y su estado de aporte con el organizador. Al cierre de cada competición o temporada activa, el organizador entrega los reconocimientos acordados por el grupo.</p>
   <div class="tabla-envoltura">
     <table class="tabla">
       <thead><tr><th>Participante</th><th>Cuota</th><th>Estado</th><th>Movimiento</th></tr></thead>
@@ -55,22 +58,23 @@
     </table>
   </div>
 
-  <h2 style="font-size:19px;margin:30px 0 4px">🏆 Proyección de premios</h2>
+  <h2 style="font-size:19px;margin:30px 0 4px">🏆 Proyección de distribución</h2>
   <p class="sub" id="nota-premios"></p>
   <div class="rejilla rejilla--3" id="premios"></div>
+  </div>
 
   <footer class="pie">
-    <p class="creditos">Creado por Nicolas Nieto Daza y Alejandro Rodriguez Rubio</p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/fixture.js"></script>
-<script type="module" src="js/utils.js"></script>
-<script type="module" src="js/store.js"></script>
-<script type="module" src="js/puntos.js"></script>
+<script type="module" src="js/config.js?v=30"></script>
+<script type="module" src="js/fixture.js?v=30"></script>
+<script type="module" src="js/utils.js?v=30"></script>
+<script type="module" src="js/store.js?v=30"></script>
+<script type="module" src="js/puntos.js?v=30"></script>
 <script type="module">
-import { CONFIG } from './js/config.js';
+import { CONFIG } from './js/config.js?v=30';
 (async () => {
   await Store.init();
   const yo = await Store.sesion();
@@ -82,7 +86,7 @@ import { CONFIG } from './js/config.js';
     document.getElementById('nav').appendChild(a);
   }
   const salaId = new URLSearchParams(location.search).get('sala') || localStorage.getItem('salaActiva') || 'scorecast';
-  const sala = await Store.salaPorId(salaId);
+  const sala = await Store.obtenerSala(salaId);
   const tesorero = sala?.config?.tesorero || CONFIG.TESORERO;
   document.getElementById('tesorero').textContent = tesorero;
 
@@ -102,6 +106,14 @@ import { CONFIG } from './js/config.js';
     const activos = usuarios.filter(u => u.estado === 'activo');
     const botes = Puntos.bote(activos, sala?.config);
     const tabla = Puntos.tabla(usuarios, todas, resultados, ajustes);
+
+    if (sala?.esGratuita) {
+      document.getElementById('mi-estado').className = 'aviso aviso--verde';
+      document.getElementById('mi-estado').innerHTML = `🆓 <b>Sala 100% recreativa y gratuita (${U.esc(sala.nombre || 'Sala Privada')})</b>: aquí no se manejan cuotas ni aportes. ¡Se compite exclusivamente por el honor, los puntos y las insignias!`;
+      const blk = document.getElementById('bloque-cuotas-activas');
+      if (blk) blk.style.display = 'none';
+      return;
+    }
 
     /* --- mi estado ------------------------------------------- */
     let miCuota, miMoneda;
@@ -161,9 +173,9 @@ import { CONFIG } from './js/config.js';
 
     /* --- proyección de premios ---------------------------------- */
     document.getElementById('nota-premios').textContent = tabla.length
-      ? 'Si el Mundial terminara hoy, la vaca de CADA moneda se repartiría así (reparto ' +
+      ? 'Si la temporada activa terminara hoy, el acumulado de CADA moneda se distribuiría así (escala ' +
         CONFIG.PREMIOS.map(p => p.pct + '%').join(' / ') + '):'
-      : 'Cuando haya tabla, aquí verás cómo quedaría el reparto.';
+      : 'Cuando haya tabla de posiciones, aquí verás cómo quedaría la proyección.';
 
     const ganadores = pos => {
       if (!tabla.length) return null;

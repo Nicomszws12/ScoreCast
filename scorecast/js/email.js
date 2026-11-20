@@ -7,7 +7,7 @@
    correo, nombre, etc.) para máxima compatibilidad con las
    plantillas de EmailJS.
    ============================================================ */
-import { CONFIG } from './config.js';
+import { CONFIG } from './config.js?v=30';
 
 const Email = {
 
