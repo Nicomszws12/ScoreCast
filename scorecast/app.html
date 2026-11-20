@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/estilos.css?v=31">
+  <link rel="stylesheet" href="css/estilos.css?v=32">
 </head>
 <body>
 
@@ -324,32 +324,33 @@
 <audio id="sonido-gol" src="sounds/gol.mp3" preload="auto"></audio>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script type="module" src="js/config.js?v=31"></script>
-<script type="module" src="js/fixture.js?v=31"></script>
-<script type="module" src="js/utils.js?v=31"></script>
-<script type="module" src="js/store.js?v=31"></script>
-<script type="module" src="js/puntos.js?v=31"></script>
-<script type="module" src="js/api-futbol.js?v=31"></script>
-<script type="module" src="js/email.js?v=31"></script>
-<script type="module" src="js/grupos-api.js?v=31"></script>
-<script type="module" src="js/notificaciones.js?v=31"></script>
-<script type="module" src="js/equipos-info.js?v=31"></script>
-<script type="module" src="js/competiciones-info.js?v=31"></script>
-<script type="module" src="js/tablas-cuadros.js?v=31"></script>
-<script type="module" src="js/en-vivo-beta.js?v=31"></script>
-<script type="module" src="js/tribuna-social.js?v=31"></script>
+<script type="module" src="js/config.js?v=32"></script>
+<script type="module" src="js/fixture.js?v=32"></script>
+<script type="module" src="js/utils.js?v=32"></script>
+<script type="module" src="js/store.js?v=32"></script>
+<script type="module" src="js/puntos.js?v=32"></script>
+<script type="module" src="js/api-futbol.js?v=32"></script>
+<script type="module" src="js/ia.js?v=32"></script>
+<script type="module" src="js/email.js?v=32"></script>
+<script type="module" src="js/grupos-api.js?v=32"></script>
+<script type="module" src="js/notificaciones.js?v=32"></script>
+<script type="module" src="js/equipos-info.js?v=32"></script>
+<script type="module" src="js/competiciones-info.js?v=32"></script>
+<script type="module" src="js/tablas-cuadros.js?v=32"></script>
+<script type="module" src="js/en-vivo-beta.js?v=32"></script>
+<script type="module" src="js/tribuna-social.js?v=32"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=31';
-import { EquiposInfo } from './js/equipos-info.js?v=31';
-import { CompeticionesInfo } from './js/competiciones-info.js?v=31';
-import { TablasCuadros } from './js/tablas-cuadros.js?v=31';
-import { EnVivoBeta } from './js/en-vivo-beta.js?v=31';
-import { TribunaSocial } from './js/tribuna-social.js?v=31';
+import { CONFIG } from './js/config.js?v=32';
+import { EquiposInfo } from './js/equipos-info.js?v=32';
+import { CompeticionesInfo } from './js/competiciones-info.js?v=32';
+import { TablasCuadros } from './js/tablas-cuadros.js?v=32';
+import { EnVivoBeta } from './js/en-vivo-beta.js?v=32';
+import { TribunaSocial } from './js/tribuna-social.js?v=32';
 
 (async () => {
   try {
-    if (localStorage.getItem('sc_cache_ver') !== 'v31') {
-      localStorage.setItem('sc_cache_ver', 'v31');
+    if (localStorage.getItem('sc_cache_ver') !== 'v32') {
+      localStorage.setItem('sc_cache_ver', 'v32');
       if ('caches' in window) {
         const ks = await caches.keys();
         await Promise.all(ks.map(k => caches.delete(k)));
@@ -651,14 +652,14 @@ import { TribunaSocial } from './js/tribuna-social.js?v=31';
   }
 
   function filtrar(lista) {
-    const hoyLocal = new Date().toLocaleDateString('en-CA');
+    const hoyLocal = U.fechaLocalKey(Date.now());
     let out = lista;
 
     if (filtro === 'hoy') {
       out = lista.filter(p => {
         const est = (resultados[p.id] || p.resultado || {}).estado;
-        const esHoy = p.utc && new Date(p.utc).toLocaleDateString('en-CA') === hoyLocal;
-        // Mostrar partidos de hoy, o cualquiera que esté en vivo o iniciando
+        const esHoy = U.fechaLocalKey(p.utc, p.fecha) === hoyLocal;
+        // Mostrar partidos de hoy (hora local), o cualquiera que esté en vivo o iniciando
         return esHoy || est === 'en_juego' || est === 'iniciando';
       });
     } else if (filtro === 'pendientes') {
@@ -906,9 +907,23 @@ import { TribunaSocial } from './js/tribuna-social.js?v=31';
         </div>`;
     }
 
+    const analisisMd = (res && res.analisisIA) ? String(res.analisisIA).trim() : '';
+    const analisisHtml = analisisMd
+      ? `<div class="ia-analisis-bloque">
+          <div class="ia-analisis-bloque__head">
+            <span class="ia-badge-discreto">IA</span>
+            <strong>Análisis Táctico ScoreCast</strong>
+          </div>
+          <div class="ia-analisis-bloque__body">
+            ${window.IA && typeof window.IA.mdAHtml === 'function' ? window.IA.mdAHtml(analisisMd) : `<p>${U.esc(analisisMd).replace(/\n/g, '<br>')}</p>`}
+          </div>
+        </div>`
+      : '';
+
     const contenidoSplit = (est === 'finalizado' && !sinEquipos) ? '' : `
       <details class="partido-detalles">
-        <summary><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Ver análisis y estadísticas del partido</summary>
+        <summary><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Ver análisis y estadísticas del partido${analisisMd ? ' <span class="ia-badge-discreto" style="margin-left:4px;">IA</span>' : ''}</summary>
+        ${analisisHtml}
         <div class="polla-layout-split" style="padding-top: 10px;">
           <div class="columna-split-izquierda">
             <h3 class="subtitulo-polla" style="margin-bottom: 10px;">Datos oficiales del partido (API)</h3>
@@ -949,27 +964,15 @@ import { TribunaSocial } from './js/tribuna-social.js?v=31';
         </div>`;
     }
 
-    // Bloque de IA compacto
+    // Bloque de IA compacto (solo botón de generación cuando aún no hay análisis publicado)
     let iaCompacto = '';
     const analisisIA = res?.analisisIA;
-    if (analisisIA && window.IA && typeof window.IA.mdAHtml === 'function') {
-      iaCompacto = `
-        <div class="tarjeta-polla-info ia-analisis-box">
-          <div class="ia-header">
-            <span class="ia-badge">IA</span>
-            <strong>Análisis Predictivo</strong>
-          </div>
-          <div class="ia-cuerpo">
-            <p>Nivel de Confianza: <span class="confianza-texto">Media</span></p>
-            <p class="ia-prediccion-texto">Tendencia Pro: Análisis generado por IA disponible.</p>
-          </div>
-        </div>`;
-    } else if (window.IA?.disponible()) {
+    if (!analisisIA && window.IA?.disponible()) {
       iaCompacto = `
         <div class="tarjeta-polla-info ia-analisis-box" style="border-left-style: dashed;">
           <div class="ia-header">
-            <span class="ia-badge">IA</span>
-            <strong>Análisis Predictivo</strong>
+            <span class="ia-badge-discreto">IA</span>
+            <strong>Análisis Táctico ScoreCast</strong>
           </div>
           <div class="ia-cuerpo">
             <button class="boton boton--mini" data-generar-ia="${p.id}" type="button">Generar análisis</button>
@@ -1431,7 +1434,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=31';
         diaActual = '';
         if (g === 2) html += `<h3 class="dia-titulo" style="opacity:.7;font-size:13px"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Partidos finalizados</h3>`;
       }
-      const fechaItem = p.fecha || (p.utc ? p.utc.substring(0, 10) : '');
+      const fechaItem = U.fechaLocalKey(p.utc, p.fecha);
       if (fechaItem && fechaItem !== diaActual && g !== 2) {
         diaActual = fechaItem;
         const tit = U.fechaLarga(fechaItem);

@@ -6,11 +6,14 @@
   <title>Reglas del Juego — ScoreCast</title>
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0846f0">
+  <meta name="theme-color" content="#0B0E11">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=31">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css?v=32">
 </head>
 <body>
 
@@ -18,7 +21,7 @@
   <div class="contenedor barra__fila">
     <a class="logo" href="index.html" id="link-logo"><img src="icons/icon-192.png" alt="ScoreCast" class="logo__img"></a>
     <nav class="nav" id="nav">
-      <span class="nav__solo">Reglas</span>
+      <a href="reglas.html" class="activo">Reglas</a>
       <a href="creditos.html">Créditos</a>
     </nav>
   </div>
@@ -26,8 +29,11 @@
 
 <main class="contenedor">
 
-  <section class="heroe" style="padding:44px 0 18px">
-    <div class="heroe__copa">📖</div>
+  <section class="heroe" style="padding:36px 0 22px">
+    <div class="heroe__kicker">
+      <svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Reglamento oficial
+    </div>
     <h1>Reglas del juego</h1>
     <p class="bajada">Cortas, claras y sin VAR. Léelas una vez y a pronosticar.</p>
   </section>
@@ -35,76 +41,117 @@
   <div class="rejilla rejilla--2" style="align-items:start">
 
     <div class="panel panel--relleno">
-      <h2>⚽ Sistema de Puntuación</h2>
+      <h2 class="sec-h2">
+        <svg class="ico" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polygon points="12 8 15 10.5 14 14 10 14 9 10.5 12 8"/></svg>
+        Sistema de Puntuación
+      </h2>
       <p class="sub">Puntuación justa, dinámica y diferenciada por tipo de fase.</p>
       <div class="tabla-envoltura" style="margin-top:10px">
         <table class="tabla" style="min-width:0">
           <thead><tr><th>Tipo de Acierto</th><th>Fases de Liga / Grupos</th><th>Play-offs / Eliminatorias</th></tr></thead>
           <tbody>
-            <tr><td>🎯 Marcador exacto</td><td class="num" id="r-ge">3 pts</td><td class="num" id="r-ee">5 pts</td></tr>
-            <tr><td>✔ Ganador o empate (1X2)</td><td class="num" id="r-gr">1 pt</td><td class="num" id="r-er">2 pts</td></tr>
-            <tr><td>🏆 Acertar el campeón</td><td class="num" colspan="2" id="r-bono">+10 pts por torneo</td></tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:7px"><svg class="ico ico--sm" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg> Marcador exacto</span></td>
+              <td class="num tabular" id="r-ge">3 pts</td>
+              <td class="num tabular" id="r-ee">5 pts</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:7px"><svg class="ico ico--sm" style="color:var(--tinta-2)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Ganador o empate (1X2)</span></td>
+              <td class="num tabular" id="r-gr">1 pt</td>
+              <td class="num tabular" id="r-er">2 pts</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:7px"><svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Acertar el campeón</span></td>
+              <td class="num tabular" colspan="2" id="r-bono">+10 pts por torneo</td>
+            </tr>
           </tbody>
         </table>
       </div>
-      <p style="margin-top:14px"><b>Ejemplo en liga regular:</b> Pronosticas <b>Millonarios 2–1 Santa Fe</b> (o <b>Arsenal 2–1 Chelsea</b>). Si el marcador final es exactamente 2–1 sumas <b>3 pts</b>. Si el resultado es 3–1 o 1–0 sumas <b>1 pt</b> (acierto 1X2). Si empatan o gana el visitante sumas 0 pts.</p>
-      <p><b>Ejemplo en eliminatorias KO:</b> En cruces directos (ej. cuartos de final de Copa Libertadores o Sudamericana), acertar el marcador exacto premia con <b>5 pts</b> y el signo (ganador/empate) con <b>2 pts</b>. Se evalúa el marcador hasta el minuto 90 (o 120 con prórroga; la tanda de penales solo define quién clasifica).</p>
+      <p style="margin-top:14px;color:var(--tinta-2);font-size:13.5px;line-height:1.6"><b style="color:var(--tinta)">Ejemplo en liga regular:</b> Pronosticas <b style="color:var(--tinta)">Millonarios 2–1 Santa Fe</b> (o <b style="color:var(--tinta)">Arsenal 2–1 Chelsea</b>). Si el marcador final es exactamente 2–1 sumas <b style="color:var(--tinta)">3 pts</b>. Si el resultado es 3–1 o 1–0 sumas <b style="color:var(--tinta)">1 pt</b> (acierto 1X2). Si empatan o gana el visitante sumas 0 pts.</p>
+      <p style="color:var(--tinta-2);font-size:13.5px;line-height:1.6"><b style="color:var(--tinta)">Ejemplo en eliminatorias KO:</b> En cruces directos (ej. cuartos de final de Copa Libertadores o Sudamericana), acertar el marcador exacto premia con <b style="color:var(--tinta)">5 pts</b> y el signo (ganador/empate) con <b style="color:var(--tinta)">2 pts</b>. Se evalúa el marcador hasta el minuto 90 (o 120 con prórroga; la tanda de penales solo define quién clasifica).</p>
     </div>
 
     <div class="panel panel--relleno">
-      <h2>⏱ Cierres y Elección de Campeones</h2>
-      <p>✏️ <b>Partidos</b>: Puedes ingresar o modificar tus pronósticos hasta el <b>segundo previo al pitazo inicial</b>. Una vez arrancado el juego, queda bloqueado para garantizar transparencia total.</p>
-      <p>🕐 <b>Horarios por confirmar</b>: Partidos sin hora oficial cierran preventivamente a las 11:00 a. m. de Colombia. Apenas se confirma la hora oficial, el sistema se sincroniza en vivo.</p>
-      <p>🏆 <b>Mi Campeón (7 Torneos)</b>: Puedes pronosticar al club que levantará la copa en cada una de las 7 competiciones (Liga BetPlay, Premier League, LaLiga, Bundesliga, Champions, Libertadores y Sudamericana). Cada campeón acertado suma <b>+10 pts</b> al final de la temporada.</p>
-      <p>🤝 <b>Criterios de Desempate en la Tabla</b>, en estricto orden:
-        <br>1) Mayor cantidad de puntos acumulados.
-        <br>2) Mayor número de marcadores exactos (🎯).
-        <br>3) Mayor número de aciertos de resultado ganador/empate (✔).
-        <br>4) Participante registrado primero en la plataforma.
+      <h2 class="sec-h2">
+        <svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Cierres y Elección de Campeones
+      </h2>
+      <ul class="reglas-lista" style="margin-top:12px">
+        <li>
+          <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+          <span><b>Partidos:</b> Puedes ingresar o modificar tus pronósticos hasta el <b>segundo previo al pitazo inicial</b>. Una vez arrancado el juego, queda bloqueado para garantizar transparencia total.</span>
+        </li>
+        <li>
+          <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span><b>Horarios por confirmar:</b> Partidos sin hora oficial cierran preventivamente a las 11:00 a. m. de Colombia. Apenas se confirma la hora oficial, el sistema se sincroniza en vivo.</span>
+        </li>
+        <li>
+          <svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          <span><b>Mi Campeón (7 Torneos):</b> Puedes pronosticar al club que levantará la copa en cada una de las 7 competiciones (Liga BetPlay, Premier League, LaLiga, Bundesliga, Champions, Libertadores y Sudamericana). Cada campeón acertado suma <b>+10 pts</b> al final de la temporada.</span>
+        </li>
+        <li>
+          <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+          <span><b>Criterios de Desempate en la Tabla</b>, en estricto orden:<br>
+            1) Mayor cantidad de puntos acumulados.<br>
+            2) Mayor número de marcadores exactos.<br>
+            3) Mayor número de aciertos de resultado ganador/empate (1X2).<br>
+            4) Participante registrado primero en la plataforma.
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="panel panel--relleno">
+      <h2 class="sec-h2">
+        <svg class="ico" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        7 Grandes Competiciones
+      </h2>
+      <p class="sub">ScoreCast incluye seguimiento y pronósticos de las mejores ligas del planeta:</p>
+      <ul class="reglas-lista">
+        <li><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span><b>Liga BetPlay Dimayor (COL):</b> 20 clubes colombianos, fase todos contra todos y cuadrangulares.</span></li>
+        <li><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span><b>Premier League (ING):</b> Las 38 jornadas completas del fútbol inglés.</span></li>
+        <li><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span><b>LaLiga EA Sports (ESP):</b> Las 38 fechas del campeonato español.</span></li>
+        <li><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span><b>Bundesliga (ALE):</b> 18 clubes alemanes y todo el calendario oficial.</span></li>
+        <li><svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg><span><b>UEFA Champions League:</b> Nueva fase de liga única de 36 clubes y cruces de play-off.</span></li>
+        <li><svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><span><b>CONMEBOL Libertadores:</b> Fase de grupos y cuadro final de eliminatorias hasta la Gran Final.</span></li>
+        <li><svg class="ico ico--sm" style="color:var(--plata)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg><span><b>CONMEBOL Sudamericana:</b> Fase de grupos y cuadro de eliminación directa.</span></li>
+      </ul>
+      <p class="reglas-nota">
+        <svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span>Tip: Toca el escudo de cualquier club en cualquier pantalla para ver su palmarés, historia y racha de partidos.</span>
       </p>
     </div>
 
     <div class="panel panel--relleno">
-      <h2>🌎 7 Grandes Competiciones</h2>
-      <p>ScoreCast incluye seguimiento y pronósticos de las mejores ligas del planeta:</p>
-      <ul style="margin:8px 0; padding-left:20px; line-height:1.7; color:var(--tinta-2); font-size:14px">
-        <li>🇨🇴 <b>Liga BetPlay Dimayor</b>: 20 clubes colombianos, fase todos contra todos y cuadrangulares.</li>
-        <li>🏴󠁧󠁢󠁥󠁮󠁧󠁿 <b>Premier League</b>: Las 38 jornadas completas del fútbol inglés.</li>
-        <li>🇪🇸 <b>LaLiga EA Sports</b>: Las 38 fechas del campeonato español.</li>
-        <li>🇩🇪 <b>Bundesliga</b>: 18 clubes alemanes y todo el calendario oficial.</li>
-        <li>🏆 <b>UEFA Champions League</b>: Nueva fase de liga única de 36 clubes y cruces de play-off.</li>
-        <li>🌎 <b>CONMEBOL Libertadores</b>: Fase de grupos y cuadro final de eliminatorias hasta la Gran Final.</li>
-        <li>🥈 <b>CONMEBOL Sudamericana</b>: Fase de grupos y cuadro de eliminación directa.</li>
-      </ul>
-      <p style="margin-top:10px; font-size:13px; color:var(--tinta-3)">💡 <i>Tip: Toca el escudo de cualquier club en cualquier pantalla para ver su palmarés, historia y racha de partidos.</i></p>
-    </div>
-
-    <div class="panel panel--relleno">
-      <h2>💰 Cuotas, Premios y Comunidad</h2>
-      <p>La inscripción tiene una cuota según tu moneda. <b>ScoreCast no maneja transacciones bancarias directamente</b>: solo lleva el registro de usuarios habilitados y validados por el organizador (<b id="r-tesorero">Nicolas Nieto</b>).</p>
+      <h2 class="sec-h2">
+        <svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+        Cuotas, Premios y Comunidad
+      </h2>
+      <p style="color:var(--tinta-2);font-size:13.5px;line-height:1.6">La inscripción tiene una cuota según tu moneda. <b style="color:var(--tinta)">ScoreCast no maneja transacciones bancarias directamente</b>: solo lleva el registro de usuarios habilitados y validados por el organizador (<b style="color:var(--tinta)" id="r-tesorero">Nicolas Nieto</b>).</p>
       <div class="tabla-envoltura" style="margin:10px 0">
         <table class="tabla" style="min-width:0">
-          <thead><tr><th>Moneda</th><th>Cuota</th></tr></thead>
+          <thead><tr><th>Moneda</th><th class="num">Cuota</th></tr></thead>
           <tbody id="r-cuotas"></tbody>
         </table>
       </div>
-      <p>El acumulado de cada moneda se reparte según la escala acordada: <b id="r-premios"></b>. Los pronósticos de todos los participantes son públicos y auditables una vez iniciado cada partido en la sección <b>Tabla</b>.</p>
+      <p style="color:var(--tinta-2);font-size:13.5px;line-height:1.6">El acumulado de cada moneda se reparte según la escala acordada: <b style="color:var(--tinta)" id="r-premios"></b>. Los pronósticos de todos los participantes son públicos y auditables una vez iniciado cada partido en la sección <b style="color:var(--tinta)">Tabla</b>.</p>
     </div>
   </div>
 
-  <div class="aviso aviso--dorado" style="margin-top:18px">
-    ⚖️ <b>Juego recreativo y comunitario responsable:</b> ScoreCast es una plataforma gratuita para comunidades cerradas sin ánimo de lucro, sin comisiones, sin billeteras virtuales ni vínculos con casas de apuestas (conforme a la Ley 643 de 2001 y los arts. 59–60 del CST). Además cuenta con <b>📺 En Vivo (BETA)</b> y <b>💬 Tribuna Social</b> para vivir cada fecha en comunidad.
+  <div class="aviso aviso--dorado aviso-ico" style="margin-top:18px">
+    <svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+    <span><b>Juego recreativo y comunitario responsable:</b> ScoreCast es una plataforma gratuita para comunidades cerradas sin ánimo de lucro, sin comisiones, sin billeteras virtuales ni vínculos con casas de apuestas (conforme a la Ley 643 de 2001 y los arts. 59–60 del CST). Además cuenta con <b>En Vivo (BETA)</b> y <b>Tribuna Social</b> para vivir cada fecha en comunidad.</span>
   </div>
 
   <footer class="pie">
-    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--acento-vivo); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=31"></script>
-<script type="module" src="js/fixture.js?v=31"></script>
-<script type="module" src="js/utils.js?v=31"></script>
-<script type="module" src="js/store.js?v=31"></script>
+<script type="module" src="js/config.js?v=32"></script>
+<script type="module" src="js/fixture.js?v=32"></script>
+<script type="module" src="js/utils.js?v=32"></script>
+<script type="module" src="js/store.js?v=32"></script>
 <script type="module">
   (async () => {
     const CONFIG = window.CONFIG || {};
@@ -120,9 +167,9 @@
     }
     document.getElementById('r-tesorero').textContent = CONFIG.TESORERO;
     document.getElementById('r-cuotas').innerHTML = Object.entries(CONFIG.CUOTAS)
-      .map(([cod, m]) => `<tr><td>${U.esc(m.nombre)} (${cod})</td><td class="num">${U.moneda(m.valor, cod)}</td></tr>`).join('');
+      .map(([cod, m]) => `<tr><td>${U.esc(m.nombre)} (${cod})</td><td class="num tabular">${U.moneda(m.valor, cod)}</td></tr>`).join('');
     document.getElementById('r-premios').textContent =
-      CONFIG.PREMIOS.map(p => `${p.puesto} ${p.pct}%`).join(' · ');
+      CONFIG.PREMIOS.map(p => `${p.puesto.replace(/^\S+\s/, '')} (${p.pct}%)`).join(' · ');
 
     // Mostrar navegación completa si el usuario ya tiene sesión iniciada
     try {
@@ -132,14 +179,16 @@
       const logo = document.getElementById('link-logo');
       if (yo && nav) {
         if (logo) logo.href = 'app.html';
+        const svgGrid = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`;
+        const svgGear = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>`;
         nav.innerHTML = `
           <a href="app.html">Partidos</a>
           <a href="tabla.html">Tabla</a>
           <a href="cuentas.html">Cuentas</a>
           <a href="reglas.html" class="activo">Reglas</a>
           <a href="creditos.html">Créditos</a>
-          <a href="lobby.html" style="color:var(--verde);">🏟 Salas</a>
-          ${yo.rol === 'admin' ? '<a href="admin.html">🛠 Admin</a>' : ''}`;
+          <a href="lobby.html">${svgGrid} Salas</a>
+          ${yo.rol === 'admin' ? `<a href="admin.html">${svgGear} Admin</a>` : ''}`;
       }
     } catch (_) {}
   })();

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/estilos.css?v=31">
+  <link rel="stylesheet" href="css/estilos.css?v=32">
 </head>
 <body>
 
@@ -63,13 +63,13 @@
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=31"></script>
-<script type="module" src="js/fixture.js?v=31"></script>
-<script type="module" src="js/utils.js?v=31"></script>
-<script type="module" src="js/store.js?v=31"></script>
-<script type="module" src="js/puntos.js?v=31"></script>
+<script type="module" src="js/config.js?v=32"></script>
+<script type="module" src="js/fixture.js?v=32"></script>
+<script type="module" src="js/utils.js?v=32"></script>
+<script type="module" src="js/store.js?v=32"></script>
+<script type="module" src="js/puntos.js?v=32"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=31';
+import { CONFIG } from './js/config.js?v=32';
 (async () => {
   await Store.init();
   const yo = await Store.sesion();
@@ -98,14 +98,12 @@ import { CONFIG } from './js/config.js?v=31';
     const vista = filas;
     const svgFlame = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.38 0 2.5-1.12 2.5-2.5 0-1.5-1.2-2.3-2-3.5-.4 1.2-1.8 1.5-3 3.5Z"/><path d="M12 2c.5 4.5-4 6.5-4 11a6 6 0 0 0 12 0c0-3.5-2-6-3.5-7.5-.5 2-2 2.5-2 2.5S15 4.5 12 2Z"/></svg>`;
 
-    /* Podio arquitectónico 01 / 02 / 03 */
+    /* Podio arquitectónico 01 / 02 / 03 (centrado cuando hay menos de 3) */
     const podio = document.getElementById('podio');
     const ranks = ['01', '02', '03'];
     const labels = ['Líder', '2.º puesto', '3.º puesto'];
-    podio.innerHTML = [0, 1, 2].map(i => {
-      const f = filas[i];
-      if (!f) return '<div></div>';
-      return `<div class="podio__caja podio__caja--${i + 1}">
+    const topPodio = filas.slice(0, 3);
+    podio.innerHTML = topPodio.map((f, i) => `<div class="podio__caja podio__caja--${i + 1}">
         <div class="podio__top">
           <span class="podio__rank">${ranks[i]}</span>
           <span class="etiqueta">${labels[i]}</span>
@@ -115,8 +113,7 @@ import { CONFIG } from './js/config.js?v=31';
           <div class="pts">${f.pts}<small>pts</small></div>
           <div class="ayuda">${f.exactos} exactos</div>
         </div>
-      </div>`;
-    }).join('');
+      </div>`).join('');
 
     document.getElementById('cuerpo').innerHTML = vista.length ? vista.map(f => {
       const esYo = f.uid === yo.uid;

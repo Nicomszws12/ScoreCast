@@ -6,11 +6,14 @@
   <title>Créditos, Autores y Fuentes — ScoreCast</title>
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0846f0">
+  <meta name="theme-color" content="#0B0E11">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=31">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css?v=32">
 </head>
 <body>
 
@@ -29,7 +32,10 @@
 
   <!-- ====== ENCABEZADO INSTITUCIONAL ====== -->
   <section class="cred-hero">
-    <div class="cred-hero__badge">🎓 PROYECTO INTEGRADOR (PICS) · ETITC 2026</div>
+    <div class="cred-hero__badge">
+      <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      PROYECTO INTEGRADOR (PICS) · ETITC 2026
+    </div>
     <h1>ScoreCast: Créditos, Autores y Fuentes</h1>
     <p class="cred-hero__sub">
       <b>Escuela Tecnológica Instituto Técnico Central (ETITC)</b> · Facultad de Sistemas · Tecnología en Desarrollo de Software · Bogotá, D. C., noviembre de 2026
@@ -38,15 +44,24 @@
       Plataforma Web Multi-Competición para la Gestión de Pronósticos y Marcadores Deportivos concebida bajo estándares web abiertos, arquitectura serverless de costo mínimo ($0 COP en etapa piloto) y enfoque comunitario responsable.
     </p>
     <div class="cred-hero__links">
-      <a class="boton boton--verde boton--mini" href="https://github.com/Nicomszws12/ScoreCast" target="_blank" rel="noopener noreferrer">💻 Repositorio oficial en GitHub</a>
-      <a class="boton boton--fantasma boton--mini" href="reglas.html">📖 Ver Reglas del Juego</a>
+      <a class="boton boton--verde boton--mini" href="https://github.com/Nicomszws12/ScoreCast" target="_blank" rel="noopener noreferrer">
+        <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Repositorio oficial en GitHub
+      </a>
+      <a class="boton boton--fantasma boton--mini" href="reglas.html">
+        <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Ver Reglas del Juego
+      </a>
     </div>
   </section>
 
   <!-- ====== AUTORES DEL PROYECTO PICS ====== -->
-  <section class="panel panel--relleno" style="margin-top:22px;">
-    <h2 style="margin:0 0 6px;">👥 Equipo de Autores (Proyecto Integrador PICS)</h2>
-    <p class="sub" style="margin:0 0 18px;">Créditos oficiales conforme al documento integrador de la Facultad de Sistemas de la Escuela Tecnológica Instituto Técnico Central (ETITC).</p>
+  <section class="panel panel--relleno" style="margin-top:22px">
+    <h2 class="sec-h2">
+      <svg class="ico" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Equipo de Autores (Proyecto Integrador PICS)
+    </h2>
+    <p class="sub">Créditos oficiales conforme al documento integrador de la Facultad de Sistemas de la Escuela Tecnológica Instituto Técnico Central (ETITC).</p>
 
     <div class="cred-autores-grid">
       <article class="cred-autor-card">
@@ -88,15 +103,18 @@
   </section>
 
   <!-- ====== FUENTES DE DATOS DEPORTIVOS Y SERVICIOS ====== -->
-  <section class="panel panel--relleno" style="margin-top:22px;">
-    <h2 style="margin:0 0 6px;">🌐 Fuentes de Datos Deportivos, APIs y Tecnología</h2>
-    <p class="sub" style="margin:0 0 16px;">Origen de los calendarios, resultados en vivo, infraestructura en la nube y estándares abiertos utilizados por ScoreCast.</p>
+  <section class="panel panel--relleno" style="margin-top:22px">
+    <h2 class="sec-h2">
+      <svg class="ico" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+      Fuentes de Datos Deportivos, APIs y Tecnología
+    </h2>
+    <p class="sub">Origen de los calendarios, resultados en vivo, infraestructura en la nube y estándares abiertos utilizados por ScoreCast.</p>
 
     <div class="tabla-envoltura">
-      <table class="tabla" style="min-width:0;">
+      <table class="tabla" style="min-width:0">
         <thead>
           <tr>
-            <th>Fuente / Proveedor</th>
+            <th style="text-align:left;width:auto">Fuente / Proveedor</th>
             <th>Categoría</th>
             <th>Información / Servicio Aportado</th>
             <th>Enlace Oficial</th>
@@ -104,43 +122,43 @@
         </thead>
         <tbody>
           <tr>
-            <td><b>API-Football (API-Sports v3)</b></td>
+            <td style="text-align:left;width:auto"><b>API-Football (API-Sports v3)</b></td>
             <td>Datos deportivos en vivo</td>
             <td>Calendarios oficiales, marcadores en tiempo real, minutos, estados de partido, alineaciones y eventos de las 7 competiciones.</td>
             <td><a href="https://www.api-football.com/documentation-v3" target="_blank" rel="noopener noreferrer">api-football.com</a></td>
           </tr>
           <tr>
-            <td><b>Google Firebase</b></td>
+            <td style="text-align:left;width:auto"><b>Google Firebase</b></td>
             <td>BaaS en la nube</td>
             <td>Firebase Authentication (identidad y roles), Cloud Firestore (base de datos NoSQL en tiempo real con reglas en servidor) y Firebase Hosting (HTTPS/CDN).</td>
             <td><a href="https://firebase.google.com/docs" target="_blank" rel="noopener noreferrer">firebase.google.com</a></td>
           </tr>
           <tr>
-            <td><b>Cloudflare Workers</b></td>
+            <td style="text-align:left;width:auto"><b>Cloudflare Workers</b></td>
             <td>Proxy Serverless</td>
             <td>Intermediario seguro para resguardar credenciales de API y controlar cuotas operativas en capa gratuita.</td>
             <td><a href="https://developers.cloudflare.com/workers/" target="_blank" rel="noopener noreferrer">developers.cloudflare.com</a></td>
           </tr>
           <tr>
-            <td><b>EmailJS</b></td>
+            <td style="text-align:left;width:auto"><b>EmailJS</b></td>
             <td>Mensajería</td>
             <td>Envío de correos transaccionales de bienvenida, recordatorios de cierre y resúmenes de tabla (~200 envíos/mes en capa gratuita).</td>
             <td><a href="https://www.emailjs.com/docs/" target="_blank" rel="noopener noreferrer">emailjs.com</a></td>
           </tr>
           <tr>
-            <td><b>Organizadores de Competiciones</b></td>
+            <td style="text-align:left;width:auto"><b>Organizadores de Competiciones</b></td>
             <td>Referencias de torneos</td>
             <td>Datos históricos, formatos oficiales, escudos referenciales y estadísticas públicas de <b>DIMAYOR</b> (Liga BetPlay), <b>Premier League</b>, <b>LaLiga EA Sports</b>, <b>Bundesliga (DFL)</b>, <b>UEFA</b> (Champions League) y <b>CONMEBOL</b> (Libertadores y Sudamericana).</td>
             <td>Uso informativo y académico sin ánimo de lucro</td>
           </tr>
           <tr>
-            <td><b>HLS.js &amp; Streams Abiertos de Prueba</b></td>
+            <td style="text-align:left;width:auto"><b>HLS.js &amp; Streams Abiertos de Prueba</b></td>
             <td>Módulo En Vivo (BETA)</td>
             <td>Librería open-source HLS.js (Apache 2.0) y flujos públicos libres de derechos (Mux / Unified Streaming / Tears of Steel) para demostración técnica de reproductor web.</td>
             <td><a href="https://github.com/video-dev/hls.js" target="_blank" rel="noopener noreferrer">video-dev/hls.js</a></td>
           </tr>
           <tr>
-            <td><b>Estándares Web &amp; GitHub</b></td>
+            <td style="text-align:left;width:auto"><b>Estándares Web &amp; GitHub</b></td>
             <td>Desarrollo y Control</td>
             <td>HTML5, CSS3, JavaScript (ES Modules), PWA Service Worker, Visual Studio Code y control de versiones colaborativo en Git/GitHub.</td>
             <td><a href="https://github.com/Nicomszws12/ScoreCast" target="_blank" rel="noopener noreferrer">GitHub ScoreCast</a></td>
@@ -151,13 +169,19 @@
   </section>
 
   <!-- ====== REFERENCIAS ACADÉMICAS Y NORMATIVAS (APA 7) ====== -->
-  <section class="panel panel--relleno" style="margin-top:22px;">
-    <h2 style="margin:0 0 6px;">📚 Referencias Bibliográficas y Marco Normativo (APA 7.ª ed.)</h2>
-    <p class="sub" style="margin:0 0 16px;">Fuentes científicas, jurídicas y periodísticas que fundamentan el diseño social, ético, técnico y legal del proyecto PICS.</p>
+  <section class="panel panel--relleno" style="margin-top:22px">
+    <h2 class="sec-h2">
+      <svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+      Referencias Bibliográficas y Marco Normativo (APA 7.ª ed.)
+    </h2>
+    <p class="sub">Fuentes científicas, jurídicas y periodísticas que fundamentan el diseño social, ético, técnico y legal del proyecto PICS.</p>
 
-    <div class="rejilla rejilla--2" style="align-items:start;">
+    <div class="rejilla rejilla--2" style="align-items:start">
       <div class="cred-ref-col">
-        <h3>🔬 Estudios Académicos y Gamificación</h3>
+        <h3>
+          <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+          Estudios Académicos y Gamificación
+        </h3>
         <ul class="cred-ref-list">
           <li><b>Wilkins, L., Churchyard, J., Zaborski, Z., Dowsett, R., &amp; Britton, G. (2025).</b> <i>The revised model for initial and continued involvement in fantasy football</i>. Entertainment Computing, 52, Artículo 100917. <a href="https://doi.org/10.1016/j.entcom.2024.100917" target="_blank" rel="noopener noreferrer">DOI</a></li>
           <li><b>Drayer, J., Shapiro, S. L., Dwyer, B., Morse, A. L., &amp; White, J. (2010).</b> <i>The effects of fantasy football participation on NFL consumption: A qualitative analysis</i>. Sport Management Review, 13(2), 129–141.</li>
@@ -169,7 +193,10 @@
       </div>
 
       <div class="cred-ref-col">
-        <h3>⚖️ Marco Legal, Institucional y Contexto Colombia</h3>
+        <h3>
+          <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+          Marco Legal, Institucional y Contexto Colombia
+        </h3>
         <ul class="cred-ref-list">
           <li><b>Congreso de la República de Colombia (2001).</b> <i>Ley 643 de 2001</i>, por la cual se fija el régimen propio del monopolio rentístico de juegos de suerte y azar (Diario Oficial No. 44.294), y <b>Código Sustantivo del Trabajo</b> (arts. 59–60).</li>
           <li><b>Escuela Tecnológica Instituto Técnico Central – ETITC (2013).</b> <i>Acuerdo número 08 de 2013</i>, Reglamento de Propiedad Intelectual de la ETITC (Consejo Directivo ETITC, arts. 6, 7, 8, 10 y 18).</li>
@@ -183,18 +210,19 @@
   </section>
 
   <!-- ====== AVISO ÉTICO Y PROPIEDAD INTELECTUAL ====== -->
-  <div class="aviso aviso--dorado" style="margin-top:20px; line-height:1.65;">
-    🛡️ <b>Propiedad Intelectual, Marcas y Uso Responsable:</b> ScoreCast es un proyecto académico desarrollado en la Facultad de Sistemas de la <b>ETITC</b> sin ánimo de lucro ($0 COP de costo operativo), amparado por los derechos morales y patrimoniales del <b>Acuerdo 08 de 2013 de la ETITC</b>. La plataforma <b>no es una casa de apuestas</b>, no contiene publicidad comercial de apuestas, no procesa pagos ni retransmite señales deportivas con derechos reservados. Todos los nombres, marcas comerciales y escudos de clubes o federaciones mencionados pertenecen a sus respectivos propietarios y se emplean exclusivamente con fines informativos, estadísticos y académicos.
+  <div class="aviso aviso--dorado aviso-ico" style="margin-top:20px">
+    <svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+    <span><b>Propiedad Intelectual, Marcas y Uso Responsable:</b> ScoreCast es un proyecto académico desarrollado en la Facultad de Sistemas de la <b>ETITC</b> sin ánimo de lucro ($0 COP de costo operativo), amparado por los derechos morales y patrimoniales del <b>Acuerdo 08 de 2013 de la ETITC</b>. La plataforma <b>no es una casa de apuestas</b>, no contiene publicidad comercial de apuestas, no procesa pagos ni retransmite señales deportivas con derechos reservados. Todos los nombres, marcas comerciales y escudos de clubes o federaciones mencionados pertenecen a sus respectivos propietarios y se emplean exclusivamente con fines informativos, estadísticos y académicos.</span>
   </div>
 
   <footer class="pie">
-    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--acento-vivo); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=31"></script>
-<script type="module" src="js/utils.js?v=31"></script>
-<script type="module" src="js/store.js?v=31"></script>
+<script type="module" src="js/config.js?v=32"></script>
+<script type="module" src="js/utils.js?v=32"></script>
+<script type="module" src="js/store.js?v=32"></script>
 <script type="module">
   (async () => {
     try {
@@ -204,14 +232,16 @@
       const logo = document.getElementById('link-logo');
       if (yo && nav) {
         if (logo) logo.href = 'app.html';
+        const svgGrid = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`;
+        const svgGear = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>`;
         nav.innerHTML = `
           <a href="app.html">Partidos</a>
           <a href="tabla.html">Tabla</a>
           <a href="cuentas.html">Cuentas</a>
           <a href="reglas.html">Reglas</a>
           <a href="creditos.html" class="activo">Créditos</a>
-          <a href="lobby.html" style="color:var(--verde);">🏟 Salas</a>
-          ${yo.rol === 'admin' ? '<a href="admin.html">🛠 Admin</a>' : ''}`;
+          <a href="lobby.html">${svgGrid} Salas</a>
+          ${yo.rol === 'admin' ? `<a href="admin.html">${svgGear} Admin</a>` : ''}`;
       }
     } catch (_) {}
   })();

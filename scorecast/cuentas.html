@@ -6,11 +6,14 @@
   <title>La Vaca (Cuentas) — ScoreCast</title>
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0846f0">
+  <meta name="theme-color" content="#0B0E11">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=31">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css?v=32">
 </head>
 <body>
 
@@ -22,7 +25,7 @@
       <a href="tabla.html">Tabla</a>
       <a href="cuentas.html" class="activo">Cuentas</a>
       <a href="reglas.html">Reglas</a>
-      <a href="lobby.html">🏟 Salas</a>
+      <a href="lobby.html"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Salas</a>
     </nav>
     <div class="usuario-mini">
       <div class="avatar" id="avatar">?</div>
@@ -34,55 +37,74 @@
 <main class="contenedor">
 
   <section style="margin-top:26px">
-    <h1 style="margin:0;font-size:26px">💰 Las cuentas claras (y el chocolate espeso)</h1>
-    <p class="sub">La app <b>solo lleva un registro informativo</b>: ScoreCast no realiza transacciones bancarias, no maneja billeteras virtuales ni recauda dinero. Cualquier acuerdo externo entre amigos es administrado por fuera por el organizador de la sala — <b id="tesorero"></b>.</p>
+    <h1 class="sec-h1">
+      <svg class="ico ico--lg" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+      Las cuentas claras (y el chocolate espeso)
+    </h1>
+    <p class="sub" style="margin-top:6px">La app <b>solo lleva un registro informativo</b>: ScoreCast no realiza transacciones bancarias, no maneja billeteras virtuales ni recauda dinero. Cualquier acuerdo externo entre amigos es administrado por fuera por el organizador de la sala — <b id="tesorero"></b>.</p>
   </section>
 
-  <div class="aviso aviso--etico" style="margin:14px 0;">
-    🛡️ <b>Uso recreativo y comunitario responsable:</b> ScoreCast es una plataforma gratuita para comunidades cerradas sin ánimo de lucro, sin comisiones ni vínculos con casas de apuestas (en concordancia con la Ley 643 de 2001 y los arts. 59–60 del CST).
+  <div class="aviso aviso--etico aviso-ico" style="margin:14px 0">
+    <svg class="ico" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+    <span><b>Uso recreativo y comunitario responsable:</b> ScoreCast es una plataforma gratuita para comunidades cerradas sin ánimo de lucro, sin comisiones ni vínculos con casas de apuestas (en concordancia con la Ley 643 de 2001 y los arts. 59–60 del CST).</span>
   </div>
 
   <div class="aviso" id="mi-estado"></div>
 
   <div id="bloque-cuotas-activas">
-  <h2 style="font-size:19px;margin:26px 0 4px">🏦 Acumulado informativo de la sala</h2>
-  <p class="sub">Cada participante registra su moneda de referencia. El detalle se organiza de forma transparente entre los miembros al día.</p>
-  <div class="rejilla rejilla--3" id="botes"></div>
+    <h2 class="sec-h2" style="margin:26px 0 4px">
+      <svg class="ico" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+      Acumulado informativo de la sala
+    </h2>
+    <p class="sub">Cada participante registra su moneda de referencia. El detalle se organiza de forma transparente entre los miembros al día.</p>
+    <div class="rejilla rejilla--3" id="botes"></div>
 
-  <h2 style="font-size:19px;margin:30px 0 4px">📒 Estado de cuotas en la sala</h2>
-  <p class="sub">Participantes registrados y su estado de aporte con el organizador. Al cierre de cada competición o temporada activa, el organizador entrega los reconocimientos acordados por el grupo.</p>
-  <div class="tabla-envoltura">
-    <table class="tabla">
-      <thead><tr><th>Participante</th><th>Cuota</th><th>Estado</th><th>Movimiento</th></tr></thead>
-      <tbody id="cuerpo-pagos"></tbody>
-    </table>
-  </div>
+    <h2 class="sec-h2" style="margin:30px 0 4px">
+      <svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
+      Estado de cuotas en la sala
+    </h2>
+    <p class="sub">Participantes registrados y su estado de aporte con el organizador. Al cierre de cada competición o temporada activa, el organizador entrega los reconocimientos acordados por el grupo.</p>
+    <div class="tabla-envoltura">
+      <table class="tabla" style="min-width:0">
+        <thead><tr><th style="text-align:left;width:auto">Participante</th><th class="num">Cuota</th><th>Estado</th><th>Movimiento</th></tr></thead>
+        <tbody id="cuerpo-pagos"></tbody>
+      </table>
+    </div>
 
-  <h2 style="font-size:19px;margin:30px 0 4px">🏆 Proyección de distribución</h2>
-  <p class="sub" id="nota-premios"></p>
-  <div class="rejilla rejilla--3" id="premios"></div>
+    <h2 class="sec-h2" style="margin:30px 0 4px">
+      <svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+      Proyección de distribución
+    </h2>
+    <p class="sub" id="nota-premios"></p>
+    <div class="rejilla rejilla--3" id="premios"></div>
   </div>
 
   <footer class="pie">
-    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--azul-claro); text-decoration:underline;">Créditos y Fuentes</a></p>
+    <p class="creditos">ScoreCast · Proyecto Integrador (PICS) ETITC · Nicolás Nieto Daza, Alejandro Rodríguez Rubio, Angie Marcela Pinzón Moncada y Catalina Alarcón Medina · <a href="creditos.html" style="color:var(--acento-vivo); text-decoration:underline;">Créditos y Fuentes</a></p>
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=31"></script>
-<script type="module" src="js/fixture.js?v=31"></script>
-<script type="module" src="js/utils.js?v=31"></script>
-<script type="module" src="js/store.js?v=31"></script>
-<script type="module" src="js/puntos.js?v=31"></script>
+<script type="module" src="js/config.js?v=32"></script>
+<script type="module" src="js/fixture.js?v=32"></script>
+<script type="module" src="js/utils.js?v=32"></script>
+<script type="module" src="js/store.js?v=32"></script>
+<script type="module" src="js/puntos.js?v=32"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=31';
+import { CONFIG } from './js/config.js?v=32';
 (async () => {
   await Store.init();
   const yo = await Store.sesion();
   if (!U.requiereSesion(yo)) return;
   document.getElementById('avatar').textContent = U.iniciales(yo.nombre);
   document.getElementById('salir').onclick = async () => { await Store.logout(); location.href = 'index.html'; };
+
+  const svgGear = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>`;
+  const svgCheck = `<svg class="ico ico--sm" style="color:var(--acento-vivo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>`;
+  const svgClock = `<svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+  const svgUser = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+
   if (yo.rol === 'admin') {
-    const a = document.createElement('a'); a.href = 'admin.html'; a.textContent = '🛠 Admin';
+    const a = document.createElement('a'); a.href = 'admin.html'; a.innerHTML = `${svgGear} Admin`;
     document.getElementById('nav').appendChild(a);
   }
   const salaId = new URLSearchParams(location.search).get('sala') || localStorage.getItem('salaActiva') || 'scorecast';
@@ -108,8 +130,8 @@ import { CONFIG } from './js/config.js?v=31';
     const tabla = Puntos.tabla(usuarios, todas, resultados, ajustes);
 
     if (sala?.esGratuita) {
-      document.getElementById('mi-estado').className = 'aviso aviso--verde';
-      document.getElementById('mi-estado').innerHTML = `🆓 <b>Sala 100% recreativa y gratuita (${U.esc(sala.nombre || 'Sala Privada')})</b>: aquí no se manejan cuotas ni aportes. ¡Se compite exclusivamente por el honor, los puntos y las insignias!`;
+      document.getElementById('mi-estado').className = 'aviso aviso--verde aviso-ico';
+      document.getElementById('mi-estado').innerHTML = `${svgCheck}<span><b>Sala 100% recreativa y gratuita (${U.esc(sala.nombre || 'Sala Privada')}):</b> aquí no se manejan cuotas ni aportes. Se compite exclusivamente por el honor, los puntos y las insignias.</span>`;
       const blk = document.getElementById('bloque-cuotas-activas');
       if (blk) blk.style.display = 'none';
       return;
@@ -125,21 +147,19 @@ import { CONFIG } from './js/config.js?v=31';
       miMoneda = yo.moneda;
     }
     const yoActual = usuarios.find(u => u.uid === yo.uid) || yo;
-    document.getElementById('mi-estado').className = 'aviso ' + (yoActual.pagado ? 'aviso--verde' : 'aviso--dorado');
+    document.getElementById('mi-estado').className = 'aviso aviso-ico ' + (yoActual.pagado ? 'aviso--verde' : 'aviso--dorado');
     document.getElementById('mi-estado').innerHTML = yoActual.pagado
-      ? `✅ Tu cuota de <b>${U.moneda(miCuota, miMoneda)}</b> ya figura como pagada. ¡A jugar tranquilo!`
-      : `⏳ Tienes pendiente tu cuota de <b>${U.moneda(miCuota, miMoneda)}</b>. Entrégala al tesorero (${tesorero}) y él la marcará como pagada.`;
+      ? `${svgCheck}<span>Tu cuota de <b class="tabular">${U.moneda(miCuota, miMoneda)}</b> ya figura como pagada. ¡A jugar tranquilo!</span>`
+      : `${svgClock}<span>Tienes pendiente tu cuota de <b class="tabular">${U.moneda(miCuota, miMoneda)}</b>. Entrégala al tesorero (${U.esc(tesorero)}) y él la marcará como pagada.</span>`;
 
     /* --- botes por moneda ------------------------------------- */
     document.getElementById('botes').innerHTML = Object.entries(botes).map(([cod, b]) => `
       <div class="panel panel--relleno">
-        <div class="kpi" style="border:0;padding:0;background:transparent">
-          <div class="valor">${U.moneda(b.total, cod)}</div>
-          <div class="titulo">${U.esc((CONFIG.CUOTAS[cod] || { nombre: cod }).nombre)} · en la vaca</div>
-        </div>
-        <p class="ayuda" style="margin-top:10px">
-          Recaudado: <b style="color:var(--verde-claro)">${U.moneda(b.pagado, cod)}</b> ·
-          Pendiente: <b style="color:var(--dorado)">${U.moneda(b.total - b.pagado, cod)}</b><br>
+        <div class="cuentas-kpi-val">${U.moneda(b.total, cod)}</div>
+        <div class="ayuda" style="margin-top:4px;text-transform:uppercase;letter-spacing:0.6px;font-weight:700">${U.esc((CONFIG.CUOTAS[cod] || { nombre: cod }).nombre)} · en la vaca</div>
+        <p class="ayuda tabular" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--borde)">
+          Recaudado: <b style="color:var(--acento-vivo)">${U.moneda(b.pagado, cod)}</b> ·
+          Pendiente: <b style="color:var(--oro)">${U.moneda(b.total - b.pagado, cod)}</b><br>
           ${b.alDia} de ${b.personas} participante(s) al día.
         </p>
       </div>`).join('') || '<div class="aviso">Aún no hay participantes activos.</div>';
@@ -158,14 +178,14 @@ import { CONFIG } from './js/config.js?v=31';
           monedaUsuario = u.moneda;
         }
         return `<tr class="${u.uid === yo.uid ? 'yo' : ''}">
-          <td><b>${U.esc(u.nombre)}</b></td>
-          <td class="num">${U.moneda(cuota, monedaUsuario)}</td>
+          <td style="text-align:left;width:auto"><b>${U.esc(u.nombre)}</b></td>
+          <td class="num tabular">${U.moneda(cuota, monedaUsuario)}</td>
           <td>${u.pagado
-            ? '<span class="etiqueta etiqueta--fin">PAGADO ✓</span>'
+            ? '<span class="etiqueta etiqueta--fin">PAGADO</span>'
             : '<span class="etiqueta etiqueta--dorada">PENDIENTE</span>'}</td>
-          <td class="sub">${u.pagado
+          <td class="sub tabular">${u.pagado
             ? 'Nada pendiente'
-            : `${U.esc(u.nombre.split(' ')[0])} → le debe ${U.moneda(cuota, monedaUsuario)} al tesorero (${tesorero})`}</td>
+            : `${U.esc(u.nombre.split(' ')[0])} → le debe ${U.moneda(cuota, monedaUsuario)} al tesorero (${U.esc(tesorero)})`}</td>
         </tr>`;
       }).join('');
     document.getElementById('cuerpo-pagos').innerHTML =
@@ -182,15 +202,18 @@ import { CONFIG } from './js/config.js?v=31';
       if (pos === 'ultimo') return tabla[tabla.length - 1];
       return tabla[pos];
     };
+    const rankLabels = ['01', '02', '03', 'UL'];
     document.getElementById('premios').innerHTML = CONFIG.PREMIOS.map((p, i) => {
       const f = ganadores(i === CONFIG.PREMIOS.length - 1 ? 'ultimo' : i);
       const montos = Object.entries(botes)
         .map(([cod, b]) => U.moneda(Math.round(b.total * p.pct / 100), cod)).join(' · ') || '—';
+      const tituloLimpio = p.puesto.replace(/^\S+\s/, '');
+      const rankNum = rankLabels[i] || String(i + 1).padStart(2, '0');
       return `<div class="panel panel--relleno centro">
-        <div style="font-size:30px">${p.puesto.split(' ')[0]}</div>
-        <div style="font-weight:800;margin:4px 0">${U.esc(p.puesto.replace(/^\S+\s/, ''))} · ${p.pct}%</div>
-        <div class="sub">${f ? '👤 ' + U.esc(f.nombre) + ` (${f.pts} pts)` : 'Por definir'}</div>
-        <div class="ayuda" style="margin-top:8px">${montos}</div>
+        <div class="cuentas-premio-rank cuentas-premio-rank--${Math.min(i + 1, 4)}">${rankNum}</div>
+        <div class="tabular" style="font-weight:800;margin:4px 0;color:var(--tinta)">${U.esc(tituloLimpio)} · ${p.pct}%</div>
+        <div class="sub tabular" style="display:inline-flex;align-items:center;justify-content:center;gap:6px">${f ? `${svgUser} ${U.esc(f.nombre)} (${f.pts} pts)` : 'Por definir'}</div>
+        <div class="ayuda tabular" style="margin-top:10px;padding-top:8px;border-top:1px solid var(--borde);color:var(--tinta);font-weight:700">${montos}</div>
       </div>`;
     }).join('');
   }

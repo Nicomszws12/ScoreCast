@@ -81,40 +81,101 @@ const IA = {
     }
   },
 
-  /* Convierte Markdown a HTML seguro */
+  /* Convierte Markdown a HTML seguro (parser por bloques para tablas limpias) */
   mdAHtml(md) {
     if (!md) return '';
-    let h = _escHtml(md)
-      // Tablas
-      .replace(/^\|(.+)\|\s*$/gm, '<tr>$1</tr>')
-      .replace(/<tr>(.+)<\/tr>/g, m => {
-        const celdas = m.slice(4, -5).split('|').map(c => c.trim()).filter((_, i, arr) => !(i === 0 && _ === '') && !(i === arr.length - 1 && _ === ''));
-        if (celdas.length && celdas.every(c => /^[-:]+$/.test(c))) return '';
-        return '<tr>' + celdas.map(c => `<td>${c}</td>`).join('') + '</tr>';
-      })
-      // Encabezados
-      .replace(/^### (.+)$/gm, '<h4 style="color:var(--azul-claro);margin:14px 0 6px">$1</h4>')
-      .replace(/^## (.+)$/gm, '<h3 style="color:var(--dorado);margin:18px 0 8px;font-size:16px">$1</h3>')
-      .replace(/^# (.+)$/gm, '<h2 style="color:var(--dorado);margin:20px 0 10px">$1</h2>')
-      // Negritas e itálicas
+    const inline = (txt) => _escHtml(txt)
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-      .replace(/\*(.+?)\*/g, '<i>$1</i>')
-      // Viñetas
-      .replace(/^- (.+)$/gm, '<li>$1</li>')
-      .replace(/^• (.+)$/gm, '<li>$1</li>')
-      // Separadores
-      .replace(/^---+$/gm, '<hr style="border-color:var(--linea);margin:12px 0">')
-      // Párrafos
-      .replace(/\n{2,}/g, '</p><p>')
-      .replace(/\n/g, '<br>');
+      .replace(/\*(.+?)\*/g, '<i>$1</i>');
 
-    h = h.replace(/(<li>.*?<\/li>)+/gs, m => `<ul style="margin:8px 0 8px 20px;line-height:1.75">${m}</ul>`);
-    h = h.replace(/(<tr>.*?<\/tr>)+/gs, m => {
-      const primeraFila = m.replace(/<tr>(.*?)<\/tr>/, (_, inner) => `<thead><tr>${inner.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>')}</tr></thead><tbody>`);
-      return `<div class="tabla-envoltura" style="margin:10px 0"><table class="tabla" style="margin:0;min-width:0">${primeraFila}</tbody></table></div>`;
-    });
+    const esFilaTabla = (l) => /^\|.+\|\s*$/.test(l.trim());
+    const esSepTabla = (l) => {
+      const t = l.trim().replace(/^\||\|$/g, '');
+      const cols = t.split('|').map(c => c.trim());
+      return cols.length > 0 && cols.every(c => /^:?-{2,}:?$/.test(c));
+    };
+    const parseCeldas = (l) => l.trim().replace(/^\||\|$/g, '').split('|').map(c => inline(c.trim()));
 
-    return `<p>${h}</p>`;
+    const lineas = String(md).replace(/\r\n?/g, '\n').split('\n');
+    const out = [];
+    let i = 0;
+
+    while (i < lineas.length) {
+      const raw = lineas[i];
+      const trim = raw.trim();
+
+      if (!trim) { i++; continue; }
+
+      // Bloque de tabla Markdown completa
+      if (esFilaTabla(trim)) {
+        const filas = [];
+        while (i < lineas.length && esFilaTabla(lineas[i].trim())) {
+          const l = lineas[i].trim();
+          if (!esSepTabla(l)) filas.push(parseCeldas(l));
+          i++;
+        }
+        if (filas.length) {
+          const head = `<thead><tr>${filas[0].map(c => `<th>${c}</th>`).join('')}</tr></thead>`;
+          const body = filas.length > 1
+            ? `<tbody>${filas.slice(1).map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>`
+            : '';
+          out.push(`<div class="ia-tabla-wrap"><table class="ia-tabla">${head}${body}</table></div>`);
+        }
+        continue;
+      }
+
+      // Separador horizontal
+      if (/^---+$/.test(trim)) {
+        out.push('<hr class="ia-md-hr">');
+        i++;
+        continue;
+      }
+
+      // Encabezados
+      if (trim.startsWith('### ')) {
+        out.push(`<h4 class="ia-md-h4">${inline(trim.slice(4))}</h4>`);
+        i++;
+        continue;
+      }
+      if (trim.startsWith('## ')) {
+        out.push(`<h3 class="ia-md-h3">${inline(trim.slice(3))}</h3>`);
+        i++;
+        continue;
+      }
+      if (trim.startsWith('# ')) {
+        out.push(`<h2 class="ia-md-h2">${inline(trim.slice(2))}</h2>`);
+        i++;
+        continue;
+      }
+
+      // Lista de viñetas
+      if (/^[-•]\s+/.test(trim)) {
+        const items = [];
+        while (i < lineas.length && /^[-•]\s+/.test(lineas[i].trim())) {
+          items.push(`<li>${inline(lineas[i].trim().replace(/^[-•]\s+/, ''))}</li>`);
+          i++;
+        }
+        out.push(`<ul class="ia-md-list">${items.join('')}</ul>`);
+        continue;
+      }
+
+      // Párrafo normal (junta líneas consecutivas de texto plano)
+      const parr = [];
+      while (
+        i < lineas.length &&
+        lineas[i].trim() &&
+        !esFilaTabla(lineas[i].trim()) &&
+        !/^---+$/.test(lineas[i].trim()) &&
+        !/^#{1,3}\s+/.test(lineas[i].trim()) &&
+        !/^[-•]\s+/.test(lineas[i].trim())
+      ) {
+        parr.push(inline(lineas[i].trim()));
+        i++;
+      }
+      if (parr.length) out.push(`<p class="ia-md-p">${parr.join('<br>')}</p>`);
+    }
+
+    return out.join('');
   },
 
   /* =========================================================

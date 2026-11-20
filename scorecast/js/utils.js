@@ -58,6 +58,19 @@ const U = {
     return new Date(utcISO).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short' });
   },
 
+  fechaLocalKey(utc, fallbackFecha = '') {
+    if (utc) {
+      const d = new Date(utc);
+      if (!isNaN(d.getTime())) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+    }
+    return fallbackFecha || '';
+  },
+
   cuentaRegresiva(utcISO) {               // → {d,h,m,s, ms} hasta el evento
     const ms = new Date(utcISO) - new Date();
     const t = Math.max(0, ms);
