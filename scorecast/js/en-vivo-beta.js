@@ -10,8 +10,8 @@
    • Reproductor Watch Party (solo enlaces legales/oficiales)
    ============================================================ */
 
-import { FIXTURE, COMPETICIONES } from './fixture.js?v=30';
-import { U } from './utils.js?v=30';
+import { FIXTURE, COMPETICIONES } from './fixture.js?v=31';
+import { U } from './utils.js?v=31';
 
 const CANALES_GUIA = {
   betplay: { tv: 'Win Sports+ / Win Play', yt: 'https://www.youtube.com/@WinSportsTV/streams', label: 'Win Sports Oficial' },

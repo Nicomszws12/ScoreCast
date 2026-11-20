@@ -6,11 +6,14 @@
   <title>Tabla de posiciones — ScoreCast</title>
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0846f0">
+  <meta name="theme-color" content="#0B0E11">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=30">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css?v=31">
 </head>
 <body>
 
@@ -22,7 +25,7 @@
       <a href="tabla.html" class="activo">Tabla</a>
       <a href="cuentas.html">Cuentas</a>
       <a href="reglas.html">Reglas</a>
-      <a href="lobby.html">🏟 Salas</a>
+      <a href="lobby.html"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Salas</a>
     </nav>
     <div class="usuario-mini">
       <div class="avatar" id="avatar">?</div>
@@ -34,7 +37,7 @@
 <main class="contenedor">
 
   <section style="margin-top:26px">
-    <h1 style="margin:0;font-size:26px">🏅 Tabla de posiciones</h1>
+    <h1 style="margin:0;font-size:26px;display:flex;align-items:center;gap:10px"><svg class="ico ico--lg" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Tabla de posiciones</h1>
     <p class="sub" id="nota-tabla"></p>
   </section>
 
@@ -44,8 +47,8 @@
     <table class="tabla">
       <thead>
         <tr>
-          <th>#</th><th>Participante</th><th>🏆</th>
-          <th>Pts</th><th>🎯 Exactos</th><th>✔ Resultados</th><th>Jugadas</th>
+          <th>#</th><th>Participante</th><th>Campeón</th>
+          <th class="num">Pts</th><th class="num">Exactos</th><th class="num">Resultados</th><th class="num">Jugadas</th>
         </tr>
       </thead>
       <tbody id="cuerpo"></tbody>
@@ -60,13 +63,13 @@
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=30"></script>
-<script type="module" src="js/fixture.js?v=30"></script>
-<script type="module" src="js/utils.js?v=30"></script>
-<script type="module" src="js/store.js?v=30"></script>
-<script type="module" src="js/puntos.js?v=30"></script>
+<script type="module" src="js/config.js?v=31"></script>
+<script type="module" src="js/fixture.js?v=31"></script>
+<script type="module" src="js/utils.js?v=31"></script>
+<script type="module" src="js/store.js?v=31"></script>
+<script type="module" src="js/puntos.js?v=31"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=30';
+import { CONFIG } from './js/config.js?v=31';
 (async () => {
   await Store.init();
   const yo = await Store.sesion();
@@ -74,7 +77,8 @@ import { CONFIG } from './js/config.js?v=30';
   document.getElementById('avatar').textContent = U.iniciales(yo.nombre);
   document.getElementById('salir').onclick = async () => { await Store.logout(); location.href = 'index.html'; };
   if (yo.rol === 'admin') {
-    const a = document.createElement('a'); a.href = 'admin.html'; a.textContent = '🛠 Admin';
+    const a = document.createElement('a'); a.href = 'admin.html';
+    a.innerHTML = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg> Admin`;
     document.getElementById('nav').appendChild(a);
   }
 
@@ -92,19 +96,25 @@ import { CONFIG } from './js/config.js?v=30';
 
   function pintar() {
     const vista = filas;
+    const svgFlame = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.38 0 2.5-1.12 2.5-2.5 0-1.5-1.2-2.3-2-3.5-.4 1.2-1.8 1.5-3 3.5Z"/><path d="M12 2c.5 4.5-4 6.5-4 11a6 6 0 0 0 12 0c0-3.5-2-6-3.5-7.5-.5 2-2 2.5-2 2.5S15 4.5 12 2Z"/></svg>`;
 
-    /* Podio (siempre con la tabla general) */
+    /* Podio arquitectónico 01 / 02 / 03 */
     const podio = document.getElementById('podio');
-    const medallas = ['🥇', '🥈', '🥉']; // 1st, 2nd, 3rd
+    const ranks = ['01', '02', '03'];
+    const labels = ['Líder', '2.º puesto', '3.º puesto'];
     podio.innerHTML = [0, 1, 2].map(i => {
       const f = filas[i];
       if (!f) return '<div></div>';
-      // La clase podio__caja--1, --2, --3 se usa para estilizar y ordenar con CSS grid
       return `<div class="podio__caja podio__caja--${i + 1}">
-        <div class="medalla">${medallas[i]}</div>
+        <div class="podio__top">
+          <span class="podio__rank">${ranks[i]}</span>
+          <span class="etiqueta">${labels[i]}</span>
+        </div>
         <div class="quien">${U.esc(f.nombre)}</div>
-        <div class="pts">${f.pts} pts</div>
-        <div class="ayuda">${f.exactos} exactos</div>
+        <div class="podio__stats">
+          <div class="pts">${f.pts}<small>pts</small></div>
+          <div class="ayuda">${f.exactos} exactos</div>
+        </div>
       </div>`;
     }).join('');
 
@@ -112,16 +122,16 @@ import { CONFIG } from './js/config.js?v=30';
       const esYo = f.uid === yo.uid;
       const racha = f.racha || 0;
       const rachaHtml = racha >= 5
-        ? ` <span class="racha racha--grande" title="🔥 ¡${racha} partidos seguidos sumando!">🔥🔥🔥</span>`
+        ? ` <span class="racha racha--grande" title="${racha} partidos seguidos sumando">${svgFlame}${racha}</span>`
         : racha >= 3
-        ? ` <span class="racha" title="${racha} partidos seguidos sumando">🔥</span>`
+        ? ` <span class="racha" title="${racha} partidos seguidos sumando">${svgFlame}${racha}</span>`
         : '';
       return `
       <tr class="${esYo ? 'yo' : ''}" data-uid="${f.uid}">
         <td class="pos num">${f.pos}</td>
         <td><b>${U.esc(f.nombre)}</b>${esYo ? ' <span class="etiqueta etiqueta--dorada">TÚ</span>' : ''}${rachaHtml}</td>
-        <td>${f.campeon ? FIXTURE.equipo(f.campeon).b + ' ' + FIXTURE.equipo(f.campeon).n : '—'}</td>
-        <td class="num" style="color:var(--dorado);font-weight:900">${f.pts}</td>
+        <td>${f.campeon ? `<span class="club-celda">${FIXTURE.equipo(f.campeon).b} ${U.esc(FIXTURE.equipo(f.campeon).n)}</span>` : '—'}</td>
+        <td class="num pts-col">${f.pts}</td>
         <td class="num">${f.exactos}</td>
         <td class="num">${f.aciertos}</td>
         <td class="num">${f.jugadas}</td>
@@ -178,39 +188,41 @@ import { CONFIG } from './js/config.js?v=30';
         if (yo.rol !== 'admin' && estado !== 'en_juego' && estado !== 'finalizado') return null;
 
         let color = 'var(--tinta)';
-        let icono = '⏳';
+        let estadoBadge = `<span class="etiqueta">Pendiente</span>`;
         if (res && res.estado === 'finalizado') {
           const cal = Puntos.calificar(pr, res, p.fase);
-          color = cal.tipo === 'exacto' ? 'var(--verde-claro)' : (cal.tipo === 'resultado' ? 'var(--dorado)' : 'var(--rojo)');
-          icono = cal.tipo === 'exacto' ? '🎯' : (cal.tipo === 'resultado' ? '✔' : '❌');
+          color = cal.tipo === 'exacto' ? 'var(--verde-claro)' : (cal.tipo === 'resultado' ? 'var(--oro)' : 'var(--rojo)');
+          estadoBadge = cal.tipo === 'exacto'
+            ? `<span class="etiqueta etiqueta--fin">Exacto</span>`
+            : (cal.tipo === 'resultado' ? `<span class="etiqueta etiqueta--dorada">Resultado</span>` : `<span class="etiqueta" style="color:var(--rojo)">Fallo</span>`);
         } else if (estado === 'en_juego') {
-          icono = '🔴';
+          estadoBadge = `<span class="etiqueta etiqueta--vivo">En vivo</span>`;
         } else if (estado === 'cerrado') {
-          icono = '🔒'; // Cerrado (ya no se puede pronosticar)
+          estadoBadge = `<span class="etiqueta">Cerrado</span>`;
         }
 
         const fechaPronostico = pr.t ? `${U.diaLocal(pr.t)} · ${U.horaLocal(pr.t)}` : '';
 
         return `
-          <div style="background:rgba(0,0,0,0.15); border:1px solid var(--linea); border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:8px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--tinta-2); border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
-              <span style="display:flex; align-items:center; gap:6px;">${L.b} ${U.esc(L.n)} vs ${U.esc(V.n)} ${V.b}</span>
-              <span title="Estado del pronóstico">${icono}</span>
+          <div style="background:var(--superficie); border:1px solid var(--borde); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:12px; color:var(--tinta-2); border-bottom:1px solid var(--borde); padding-bottom:6px;">
+              <span style="display:inline-flex; align-items:center; gap:6px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${L.b} ${U.esc(L.n)} vs ${U.esc(V.n)} ${V.b}</span>
+              ${estadoBadge}
             </div>
-            <div style="display:flex; justify-content:space-around; align-items:center;">
+            <div style="display:flex; justify-content:space-around; align-items:center; font-variant-numeric:tabular-nums;">
               <div style="text-align:center;">
                 <div style="font-size:10px; color:var(--tinta-3); letter-spacing:1px; text-transform:uppercase;">Pronóstico</div>
-                <div style="font-size:18px; font-family:var(--fuente-marcador); font-weight:900; color:${color}; margin-top:2px;">${pr.gl} – ${pr.gv}</div>
+                <div style="font-size:20px; font-family:var(--fuente-marcador); font-weight:800; color:${color}; margin-top:2px;">${pr.gl} – ${pr.gv}</div>
                 ${fechaPronostico ? `<div style="font-size:10px; color:var(--tinta-3); margin-top:4px;">${fechaPronostico}</div>` : ''}
               </div>
               ${res && res.estado === 'finalizado' ? `
-              <div style="text-align:center; border-left:1px solid var(--linea); padding-left:15px;">
+              <div style="text-align:center; border-left:1px solid var(--borde); padding-left:15px;">
                 <div style="font-size:10px; color:var(--tinta-3); letter-spacing:1px; text-transform:uppercase;">Real</div>
-                <div style="font-size:18px; font-family:var(--fuente-marcador); font-weight:900; color:var(--tinta); margin-top:2px;">${res.gl} – ${res.gv}</div>
+                <div style="font-size:20px; font-family:var(--fuente-marcador); font-weight:800; color:var(--tinta); margin-top:2px;">${res.gl} – ${res.gv}</div>
               </div>` : `
-              <div style="text-align:center; border-left:1px solid var(--linea); padding-left:15px; opacity:0.4;">
+              <div style="text-align:center; border-left:1px solid var(--borde); padding-left:15px; opacity:0.45;">
                 <div style="font-size:10px; color:var(--tinta-3); letter-spacing:1px; text-transform:uppercase;">Real</div>
-                <div style="font-size:14px; font-family:var(--fuente-marcador); font-weight:700; color:var(--tinta); margin-top:4px;">VS</div>
+                <div style="font-size:15px; font-family:var(--fuente-marcador); font-weight:700; color:var(--tinta); margin-top:4px;">VS</div>
               </div>`}
             </div>
           </div>`;
@@ -222,9 +234,9 @@ import { CONFIG } from './js/config.js?v=30';
 
     const trDetalle = document.createElement('tr');
     trDetalle.className = 'fila-pronosticos';
-    trDetalle.innerHTML = `<td colspan="8" style="padding:18px; background:var(--superficie-2); border-bottom:3px solid var(--azul); box-shadow:inset 0 4px 15px rgba(0,0,0,0.15);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h4 style="margin:0; color:var(--dorado); font-size:16px;">🔮 Pronósticos de ${U.esc(usuario.nombre.split(' ')[0])}</h4>
+    trDetalle.innerHTML = `<td colspan="7" style="padding:18px; background:var(--superficie-2); border-bottom:2px solid var(--acento);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <h4 style="margin:0; color:var(--tinta); font-size:15px; display:flex; align-items:center; gap:8px;"><svg class="ico ico--sm" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Pronósticos de ${U.esc(usuario.nombre.split(' ')[0])}</h4>
         ${nota}
       </div>
       ${lista.length

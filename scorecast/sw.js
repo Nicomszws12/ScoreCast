@@ -7,7 +7,7 @@
    • Sincronización periódica en background (Periodic Sync)
    • Actualización automática del SW
    ============================================================ */
-const CACHE_NAME = 'scorecast-cache-v30';
+const CACHE_NAME = 'scorecast-cache-v31';
 const APP_SHELL = [
   '/',
   'index.html',

@@ -7,11 +7,14 @@
   <meta name="description" content="Pronostica, compite y celebra con tus compañeros en tus competiciones favoritas.">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0846f0">
+  <meta name="theme-color" content="#0B0E11">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=30">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css?v=31">
 </head>
 <body>
 
@@ -28,9 +31,12 @@
 <main class="contenedor">
 
   <section class="heroe">
-    <div class="heroe__copa">🏆</div>
-    <h1><span class="acento">ScoreCast</span></h1>
-    <button id="install-pwa-button" class="boton" style="display: none;">📲 Instalar App en tu celular</button>
+    <div class="heroe__kicker"><span class="heroe__kicker-dot"></span> TEMPORADA 2026/27 · QUINIELA DE FÚTBOL</div>
+    <h1>Pronostica cada jornada en <span class="acento">ScoreCast</span></h1>
+    <button id="install-pwa-button" class="boton" style="display: none;">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      Instalar App en tu celular
+    </button>
     <p class="bajada">Champions, La Liga, Premier League, Bundesliga, Liga Colombiana, Libertadores y Sudamericana. Una sola tabla que importa: la nuestra.</p>
     <div class="hero-banner" id="hero-banner"></div>
     <p class="hero-cta" id="hero-cta"></p>
@@ -55,10 +61,10 @@
           <label for="l-clave">Contraseña</label>
           <div class="campo-clave">
             <input id="l-clave" name="l-clave" type="password" required minlength="8" autocomplete="current-password">
-            <button type="button" class="toggle-clave" aria-label="Mostrar contraseña">👁️</button>
+            <button type="button" class="toggle-clave" aria-label="Mostrar contraseña"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
           </div>
         </div>
-        <button class="boton boton--bloque" type="submit">Entrar a la cancha ⚽</button>
+        <button class="boton boton--bloque" type="submit">Entrar a la cancha <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
         <button class="boton boton--google boton--bloque" type="button" id="btn-google">Entrar con Google</button>
         <p class="sub" style="margin-top:8px"><a href="#" id="forgot-pass">¿Olvidaste tu contraseña?</a></p>
       </form>
@@ -83,16 +89,16 @@
           <label for="r-clave">Contraseña (mín. 8 caracteres)</label>
           <div class="campo-clave">
             <input id="r-clave" name="r-clave" type="password" required minlength="8" autocomplete="new-password">
-            <button type="button" class="toggle-clave" aria-label="Mostrar contraseña">👁️</button>
+            <button type="button" class="toggle-clave" aria-label="Mostrar contraseña"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
           </div>
         </div>
-        <button class="boton boton--verde boton--bloque" type="submit">Inscribirme en ScoreCast 🎟</button>
+        <button class="boton boton--verde boton--bloque" type="submit">Inscribirme en ScoreCast <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
         <p class="ayuda centro" style="margin-top:10px">Al registrarte aceptas las <a href="reglas.html">reglas del juego</a>.
           La plata de la cuota se entrega por fuera de la app al tesorero.</p>
       </form>
 
       <div style="border-top: 1px solid var(--linea); margin-top: 22px; padding-top: 22px;">
-        <h2 style="margin:0 0 6px">🔑 Unirse con código</h2>
+        <h2 style="margin:0 0 6px;display:flex;align-items:center;gap:8px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.3-9.3"/><path d="m17 6 3 3"/></svg> Unirse con código</h2>
         <p class="sub" style="margin:0 0 14px">¿Te invitaron a una sala privada? Ingresa el código que te compartieron.</p>
         <form id="f-unirse-public" autocomplete="off">
           <div class="campo">
@@ -107,15 +113,24 @@
     <!-- ====== CÓMO FUNCIONA ====== -->
     <div class="panel panel--relleno">
       <h2>¿Cómo se juega?</h2>
-      <p class="sub">Tres pasos y a gozarse el fútbol:</p>
-      <p>1️⃣ &nbsp;<b>Pronostica el marcador</b> de cada partido antes de que empiece.
-        Marcador exacto en fase de grupos vale <b>3 puntos</b>; acertar quién gana (o el empate) vale <b>1 punto</b>.
-        En eliminatorias sube a <b>5</b> y <b>2</b>.</p>
-      <p>2️⃣ &nbsp;<b>Elige tu campeón</b> antes del pitazo inicial: si lo aciertas, son <b>10 puntos</b> extra al final.</p>
-      <p>3️⃣ &nbsp;<b>Sigue la tabla en vivo</b>: los marcadores se actualizan en tiempo real y los puntos se calculan solos.</p>
-      <div class="aviso aviso--dorado">💰 La cuota se registra en tu moneda (pesos colombianos, mexicanos, chilenos,
+      <p class="sub">Tres pasos simples para competir toda la temporada:</p>
+      <div class="pasos-juego">
+        <div class="paso-item">
+          <span class="paso-num">01</span>
+          <div class="paso-txt"><b>Pronostica el marcador</b> de cada partido antes de que empiece. Marcador exacto en fase de grupos vale <b>3 puntos</b>; acertar quién gana (o el empate) vale <b>1 punto</b>. En eliminatorias sube a <b>5</b> y <b>2</b>.</div>
+        </div>
+        <div class="paso-item">
+          <span class="paso-num">02</span>
+          <div class="paso-txt"><b>Elige tu campeón</b> antes del pitazo inicial: si lo aciertas, son <b>10 puntos</b> extra al final.</div>
+        </div>
+        <div class="paso-item">
+          <span class="paso-num">03</span>
+          <div class="paso-txt"><b>Sigue la tabla en vivo</b>: los marcadores se actualizan en tiempo real y los puntos se calculan solos.</div>
+        </div>
+      </div>
+      <div class="aviso aviso--dorado" style="display:flex;gap:10px;align-items:flex-start"><svg class="ico" style="margin-top:2px;color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8"/><path d="M9.5 10.5c0-1.1 1.1-2 2.5-2s2.5.9 2.5 2-1.1 1.5-2.5 2-2.5.9-2.5 2 1.1 2 2.5 2 2.5-.9 2.5-2"/></svg><span>La cuota se registra en tu moneda (pesos colombianos, mexicanos, chilenos,
         uruguayos, bolívares y más). La app lleva las cuentas de quién pagó y de cuánto es la vaca,
-        pero <b>no mueve plata</b>.</div>
+        pero <b>no mueve plata</b>.</span></div>
       <div class="kpis">
         <div class="kpi"><div class="valor">Top</div><div class="titulo">Ligas y Copas</div></div>
         <div class="kpi"><div class="valor">100%</div><div class="titulo">En Vivo</div></div>
@@ -129,14 +144,14 @@
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=30"></script>
-<script type="module" src="js/fixture.js?v=30"></script>
-<script type="module" src="js/utils.js?v=30"></script>
-<script type="module" src="js/store.js?v=30"></script>
-<script type="module" src="js/puntos.js?v=30"></script>
-<script type="module" src="js/email.js?v=30"></script>
+<script type="module" src="js/config.js?v=31"></script>
+<script type="module" src="js/fixture.js?v=31"></script>
+<script type="module" src="js/utils.js?v=31"></script>
+<script type="module" src="js/store.js?v=31"></script>
+<script type="module" src="js/puntos.js?v=31"></script>
+<script type="module" src="js/email.js?v=31"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=30';
+import { CONFIG } from './js/config.js?v=31';
 
 (async () => {
   await Store.init();
@@ -172,36 +187,49 @@ import { CONFIG } from './js/config.js?v=30';
     if (!match) return;
 
     const L = FIXTURE.equipo(match.local), V = FIXTURE.equipo(match.visitante);
-    const horaStr = match.utc ? ` · ${U.horaLocal(match.utc)} (tu hora)` : '';
-      const estadioStr = match.estadio ? `🏟 ${match.estadio}${horaStr}` : '';
-      let cierrePronosticoStr = '';
-      if (!match.horaOk) {
-        cierrePronosticoStr = '<div class="hero-banner__cierre">Cierre pronósticos: 11:00 a. m. Colombia</div>';
-      }
+    const shieldSvg = `<svg class="ico ico--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>`;
+    const horaStr = match.utc ? U.horaLocal(match.utc) : '';
+    const diaStr = match.utc ? U.diaLocal(match.utc) : '';
+    const estadoTag = esLive
+      ? `<span class="bcard__live"><span class="live-dot"></span> EN VIVO AHORA</span>`
+      : esFuturo
+        ? `<span class="bcard__status">PRÓXIMO PARTIDO</span>`
+        : `<span>ÚLTIMO PARTIDO</span>`;
+    const cierrePronosticoStr = !match.horaOk
+      ? `<span class="hero-banner__cierre">Cierre: 11:00 a.m. COL</span>`
+      : '';
+    const venueHtml = match.estadio
+      ? `<span class="bcard__venue"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>${U.esc(match.estadio)}${horaStr ? ` · ${horaStr}` : ''}</span>`
+      : (horaStr ? `<span class="bcard__venue">${horaStr} (tu hora)</span>` : '');
 
-      document.getElementById('hero-banner').innerHTML = `
-        ${esLive ? `<div class="hero-banner__vivo"><span class="live-dot"></span> EN VIVO AHORA</div>` : ''}
-        <div class="hero-banner__match">
-          <div class="hero-banner__equipo">
-            <div class="hero-banner__ban">${L.b || '⚽'}</div>
-            <div class="hero-banner__nom">${U.esc(L.n)}</div>
-          </div>
-          <div class="hero-banner__vs">VS</div>
-          <div class="hero-banner__equipo">
-            <div class="hero-banner__ban">${V.b || '⚽'}</div>
-            <div class="hero-banner__nom">${U.esc(V.n)}</div>
-          </div>
+    document.getElementById('hero-banner').innerHTML = `
+      <div class="bcard__head">
+        ${estadoTag}
+        <span>${U.esc(match.etapa || '')}</span>
+      </div>
+      <div class="bcard__body">
+        <div class="bcard__team">
+          <span class="bcard__crest">${L.b || shieldSvg}</span>
+          <span class="bcard__name">${U.esc(L.n)}</span>
         </div>
-        ${estadioStr ? `<div class="hero-banner__estadio">${estadioStr}</div>` : ''}
-        ${cierrePronosticoStr}`;
+        <div class="bcard__center">
+          <span class="bcard__vs">${match.horaOk && horaStr ? horaStr : 'VS'}</span>
+          ${diaStr ? `<span class="bcard__sub">${diaStr}</span>` : ''}
+        </div>
+        <div class="bcard__team bcard__team--v">
+          <span class="bcard__name">${U.esc(V.n)}</span>
+          <span class="bcard__crest">${V.b || shieldSvg}</span>
+        </div>
+      </div>
+      ${(venueHtml || cierrePronosticoStr) ? `<div class="bcard__foot">${venueHtml}${cierrePronosticoStr}</div>` : ''}`;
 
     const ctaEl = document.getElementById('hero-cta');
     if (esLive) {
-      ctaEl.innerHTML = `¡El balón ya rueda y estamos en el partido <b>${U.esc(L.n)} vs ${U.esc(V.n)}</b>! ⚽<br>Entra, pronostica tu marcador y participa por el premio mayor.`;
+      ctaEl.innerHTML = `El balón ya rueda en <b>${U.esc(L.n)} vs ${U.esc(V.n)}</b>. Entra, sigue el marcador en directo y compite por el liderato.`;
     } else if (esFuturo) {
-      ctaEl.innerHTML = `⚽ Próximo partido: <b>${U.esc(L.n)} vs ${U.esc(V.n)}</b> — ¡entra y pronostica antes de que empiece!`;
+      ctaEl.innerHTML = `Próximo encuentro: <b>${U.esc(L.n)} vs ${U.esc(V.n)}</b> — entra y registra tu marcador antes del cierre.`;
     } else {
-      ctaEl.innerHTML = `¡El fútbol no para! ⚽ Entra, revisa los resultados y sigue sumando puntos en la tabla.`;
+      ctaEl.innerHTML = `Revisa los últimos resultados y sigue sumando puntos en la clasificación general.`;
     }
   }
 
@@ -342,12 +370,14 @@ import { CONFIG } from './js/config.js?v=30';
   };
 
   // Toggle para ver/ocultar contraseña
+  const svgEye = `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const svgEyeOff = `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.2A10.7 10.7 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.2 3.2"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="M17.9 17.9A10.9 10.9 0 0 1 12 20c-6.5 0-10-8-10-8a18.5 18.5 0 0 1 5.1-5.9"/><path d="m2 2 20 20"/></svg>`;
   document.querySelectorAll('.toggle-clave').forEach(btn => {
     btn.onclick = () => {
       const input = btn.previousElementSibling;
       const esPassword = input.type === 'password';
       input.type = esPassword ? 'text' : 'password';
-      btn.textContent = esPassword ? '🙈' : '👁️';
+      btn.innerHTML = esPassword ? svgEyeOff : svgEye;
       btn.setAttribute('aria-label', esPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
     };
   });

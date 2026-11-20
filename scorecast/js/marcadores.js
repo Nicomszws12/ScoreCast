@@ -20,8 +20,11 @@ export const Marcadores = {
 
     this.container.innerHTML = `
       <div class="mrc-widget">
-        <div class="mrc-header" style="margin-bottom: 15px;">
-          <div class="mrc-titulo">⏱ Partidos de Hoy</div>
+        <div class="mrc-header">
+          <div class="mrc-titulo">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            Partidos de Hoy
+          </div>
         </div>
         <div id="marcadores-hoy-lista">
           <div class="aviso">Cargando partidos de hoy...</div>

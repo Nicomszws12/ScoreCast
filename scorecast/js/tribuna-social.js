@@ -7,8 +7,8 @@
      • Insignias y logros dinámicos de gamificación
    ============================================================ */
 
-import { FIXTURE } from './fixture.js?v=30';
-import { U } from './utils.js?v=30';
+import { FIXTURE } from './fixture.js?v=31';
+import { U } from './utils.js?v=31';
 
 const ENCUESTAS_ACTIVAS = [
   {

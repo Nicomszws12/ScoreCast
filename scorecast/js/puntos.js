@@ -9,8 +9,8 @@
                4) quien se registró primero.
    ============================================================ */
 
-import { CONFIG } from './config.js?v=30';
-import { FIXTURE } from './fixture.js?v=30';
+import { CONFIG } from './config.js?v=31';
+import { FIXTURE } from './fixture.js?v=31';
 
 const Puntos = {
 

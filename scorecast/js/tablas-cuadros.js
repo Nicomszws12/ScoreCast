@@ -11,10 +11,10 @@
      - Copa Sudamericana (🥈)
    ============================================================ */
 
-import { FIXTURE, COMPETICIONES } from './fixture.js?v=30';
-import { U } from './utils.js?v=30';
-import { EquiposInfo } from './equipos-info.js?v=30';
-import { CompeticionesInfo } from './competiciones-info.js?v=30';
+import { FIXTURE, COMPETICIONES } from './fixture.js?v=31';
+import { U } from './utils.js?v=31';
+import { EquiposInfo } from './equipos-info.js?v=31';
+import { CompeticionesInfo } from './competiciones-info.js?v=31';
 
 export const TablasCuadros = {
   competicionActiva: 'betplay',

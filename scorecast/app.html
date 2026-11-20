@@ -6,11 +6,14 @@
   <title>Partidos — ScoreCast</title>
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0846f0">
+  <meta name="theme-color" content="#0B0E11">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=30">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css?v=31">
 </head>
 <body>
 
@@ -22,7 +25,7 @@
       <a href="tabla.html">Tabla</a>
       <a href="cuentas.html">Cuentas</a>
       <a href="reglas.html">Reglas</a>
-      <a href="lobby.html" style="color:var(--verde);">🏟 Salas</a>
+      <a href="lobby.html"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Salas</a>
     </nav>
     <div class="usuario-mini">
       <div class="avatar" id="avatar">?</div>
@@ -35,22 +38,22 @@
 
   <section class="fila-flex" style="margin-top:22px">
     <div>
-      <div id="badge-sala-activa" style="margin-bottom: 6px; display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 255, 135, 0.08); border: 1px solid rgba(0, 255, 135, 0.25); padding: 4px 12px; border-radius: 20px; font-size: 13px;">
-        <span>🏟 Sala: <b id="nombre-sala-activa" style="color: var(--verde);">ScoreCast Principal</b></span>
+      <div id="badge-sala-activa" class="sala-pill">
+        <span style="display:inline-flex;align-items:center;gap:6px"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Sala: <b id="nombre-sala-activa">ScoreCast Principal</b></span>
         <a href="lobby.html" class="boton boton--mini boton--fantasma" style="padding: 2px 8px; font-size: 11px; text-decoration: none;">Cambiar sala</a>
       </div>
-      <h1 style="margin:0;font-size:26px" id="saludo">Hola 👋</h1>
+      <h1 style="margin:0;font-size:26px" id="saludo">Hola</h1>
       <p class="sub" style="margin:4px 0 0" id="resumen-yo"></p>
     </div>
-    <div class="empuja panel panel--relleno" style="padding:12px 18px" id="proximo-cierre"></div>
+    <div class="empuja ticker-cierre" id="proximo-cierre"></div>
   </section>
 
   <div class="tabs" role="tablist" style="margin-top:18px">
-    <button class="activo" data-tab="partidos" type="button">⚽ Partidos</button>
-    <button data-tab="tablas" type="button">📊 Tablas y Cuadros</button>
-    <button data-tab="envivo" type="button">📺 En Vivo <span class="tab-beta-pill">BETA</span></button>
-    <button data-tab="tribuna" type="button">💬 Tribuna</button>
-    <button data-tab="campeon" type="button">🏆 Mi campeón</button>
+    <button class="activo" data-tab="partidos" type="button"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg> Partidos</button>
+    <button data-tab="tablas" type="button"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Tablas y Cuadros</button>
+    <button data-tab="envivo" type="button"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14"/></svg> En Vivo <span class="tab-beta-pill">BETA</span></button>
+    <button data-tab="tribuna" type="button"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Tribuna</button>
+    <button data-tab="campeon" type="button"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Mi campeón</button>
   </div>
 
   <!-- ============ TAB PARTIDOS ============ -->
@@ -71,14 +74,14 @@
       </select>
       <select class="mini-input" id="f-fecha" aria-label="Filtrar por jornada" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todas las fechas (1–19 + Cuadrangulares)</option>
-        <option value="hoy_reciente">🔥 Cuadrangulares (todas las fechas)</option>
+        <option value="hoy_reciente">Cuadrangulares (todas las fechas)</option>
         <option value="20">Cuadrangulares · Fecha 1 (20–21 nov)</option>
         <option value="21">Cuadrangulares · Fecha 2</option>
         <option value="22">Cuadrangulares · Fecha 3</option>
         <option value="23">Cuadrangulares · Fecha 4</option>
         <option value="24">Cuadrangulares · Fecha 5</option>
         <option value="25">Cuadrangulares · Fecha 6</option>
-        <option value="26">🏆 Gran Final</option>
+        <option value="26">Gran Final</option>
         <option value="1">Fecha 1</option>
         <option value="2">Fecha 2</option>
         <option value="3">Fecha 3</option>
@@ -101,7 +104,7 @@
       </select>
       <select class="mini-input" id="f-fecha-premier" aria-label="Filtrar por jornada Premier League" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todas las jornadas (1–38)</option>
-        <option value="11">🔥 Jornada 11 (Próxima: 21–23 nov)</option>
+        <option value="11">Jornada 11 (Próxima: 21–23 nov)</option>
         <option value="1">Jornada 1</option>
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
@@ -143,7 +146,7 @@
       </select>
       <select class="mini-input" id="f-fecha-laliga" aria-label="Filtrar por jornada LaLiga" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todas las jornadas (1–38)</option>
-        <option value="13">🔥 Jornada 13 (Próxima: 20–23 nov)</option>
+        <option value="13">Jornada 13 (Próxima: 20–23 nov)</option>
         <option value="1">Jornada 1</option>
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
@@ -185,7 +188,7 @@
       </select>
       <select class="mini-input" id="f-fecha-bundesliga" aria-label="Filtrar por jornada Bundesliga" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todas las jornadas (1–34)</option>
-        <option value="10">🔥 Jornada 10 (Próxima: 20–22 nov)</option>
+        <option value="10">Jornada 10 (Próxima: 20–22 nov)</option>
         <option value="1">Jornada 1</option>
         <option value="2">Jornada 2</option>
         <option value="3">Jornada 3</option>
@@ -223,7 +226,7 @@
       </select>
       <select class="mini-input" id="f-fecha-ucl" aria-label="Filtrar por etapa Champions League" style="display:none; font-weight: 700; border-radius: 20px; padding: 4px 10px; background: var(--superficie-2); color: var(--tinta);">
         <option value="">Todo el torneo (Play-off, Liga y KO)</option>
-        <option value="j5">🔥 Fase de Liga: Jornada 5 (24–25 nov)</option>
+        <option value="j5">Fase de Liga: Jornada 5 (24–25 nov)</option>
         <option value="po">Ronda Play-off (Finalizada)</option>
         <option value="j1">Fase de Liga: Jornada 1</option>
         <option value="j2">Fase de Liga: Jornada 2</option>
@@ -261,7 +264,7 @@
     <div class="panel panel--relleno" style="margin-bottom:18px">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px">
         <div>
-          <h2 style="margin:0 0 4px; display:flex; align-items:center; gap:8px">🏆 ¿Quién levanta la copa?</h2>
+          <h2 style="margin:0 0 4px; display:flex; align-items:center; gap:8px"><svg class="ico" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> ¿Quién levanta la copa?</h2>
           <p class="sub" style="margin:0">Elige a tu campeón en cada competición oficial. ¡Cada acierto suma <b style="color:var(--dorado)">+10 puntos</b> al acumulado!</p>
         </div>
         <div id="campeon-progreso-global" class="campeon-badge campeon-badge--abierto">0 / 7 torneos elegidos</div>
@@ -292,7 +295,7 @@
   <div class="modal-contenido" style="max-width:520px">
     <div class="modal-header">
       <h3 style="margin:0;font-size:16px;color:var(--dorado)" id="modal-det-titulo">Resumen del partido</h3>
-      <button class="modal-cerrar" id="modal-det-cerrar" type="button">✕</button>
+      <button class="modal-cerrar" id="modal-det-cerrar" type="button" aria-label="Cerrar"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
     </div>
     <div id="modal-det-cuerpo" style="padding:0 16px 16px"></div>
   </div>
@@ -303,7 +306,7 @@
   <div class="modal-contenido">
     <div class="modal-header">
       <h3 style="margin:0; font-size: 16px; color:var(--dorado)" id="modal-pron-titulo">Pronósticos</h3>
-      <button class="modal-cerrar" id="modal-pron-cerrar" type="button">✕</button>
+      <button class="modal-cerrar" id="modal-pron-cerrar" type="button" aria-label="Cerrar"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
     </div>
     <div id="modal-pron-lista"></div>
   </div>
@@ -312,7 +315,7 @@
 <!-- Modal Perfil de Equipo (Estilo Sofascore / OneFootball) -->
 <div class="modal-overlay modal-perfil-overlay" id="modal-equipo-perfil">
   <div class="modal-contenido modal-perfil-contenido">
-    <button class="modal-cerrar modal-perfil-cerrar" id="btn-cerrar-perfil" type="button" aria-label="Cerrar">✕</button>
+    <button class="modal-cerrar modal-perfil-cerrar" id="btn-cerrar-perfil" type="button" aria-label="Cerrar"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
     <div id="perfil-cuerpo"></div>
   </div>
 </div>
@@ -321,32 +324,32 @@
 <audio id="sonido-gol" src="sounds/gol.mp3" preload="auto"></audio>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script type="module" src="js/config.js?v=30"></script>
-<script type="module" src="js/fixture.js?v=30"></script>
-<script type="module" src="js/utils.js?v=30"></script>
-<script type="module" src="js/store.js?v=30"></script>
-<script type="module" src="js/puntos.js?v=30"></script>
-<script type="module" src="js/api-futbol.js?v=30"></script>
-<script type="module" src="js/email.js?v=30"></script>
-<script type="module" src="js/grupos-api.js?v=30"></script>
-<script type="module" src="js/notificaciones.js?v=30"></script>
-<script type="module" src="js/equipos-info.js?v=30"></script>
-<script type="module" src="js/competiciones-info.js?v=30"></script>
-<script type="module" src="js/tablas-cuadros.js?v=30"></script>
-<script type="module" src="js/en-vivo-beta.js?v=30"></script>
-<script type="module" src="js/tribuna-social.js?v=30"></script>
+<script type="module" src="js/config.js?v=31"></script>
+<script type="module" src="js/fixture.js?v=31"></script>
+<script type="module" src="js/utils.js?v=31"></script>
+<script type="module" src="js/store.js?v=31"></script>
+<script type="module" src="js/puntos.js?v=31"></script>
+<script type="module" src="js/api-futbol.js?v=31"></script>
+<script type="module" src="js/email.js?v=31"></script>
+<script type="module" src="js/grupos-api.js?v=31"></script>
+<script type="module" src="js/notificaciones.js?v=31"></script>
+<script type="module" src="js/equipos-info.js?v=31"></script>
+<script type="module" src="js/competiciones-info.js?v=31"></script>
+<script type="module" src="js/tablas-cuadros.js?v=31"></script>
+<script type="module" src="js/en-vivo-beta.js?v=31"></script>
+<script type="module" src="js/tribuna-social.js?v=31"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=30';
-import { EquiposInfo } from './js/equipos-info.js?v=30';
-import { CompeticionesInfo } from './js/competiciones-info.js?v=30';
-import { TablasCuadros } from './js/tablas-cuadros.js?v=30';
-import { EnVivoBeta } from './js/en-vivo-beta.js?v=30';
-import { TribunaSocial } from './js/tribuna-social.js?v=30';
+import { CONFIG } from './js/config.js?v=31';
+import { EquiposInfo } from './js/equipos-info.js?v=31';
+import { CompeticionesInfo } from './js/competiciones-info.js?v=31';
+import { TablasCuadros } from './js/tablas-cuadros.js?v=31';
+import { EnVivoBeta } from './js/en-vivo-beta.js?v=31';
+import { TribunaSocial } from './js/tribuna-social.js?v=31';
 
 (async () => {
   try {
-    if (localStorage.getItem('sc_cache_ver') !== 'v30') {
-      localStorage.setItem('sc_cache_ver', 'v30');
+    if (localStorage.getItem('sc_cache_ver') !== 'v31') {
+      localStorage.setItem('sc_cache_ver', 'v31');
       if ('caches' in window) {
         const ks = await caches.keys();
         await Promise.all(ks.map(k => caches.delete(k)));
@@ -368,9 +371,10 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
 
   /* --- encabezado --------------------------------------------- */
   document.getElementById('avatar').textContent = U.iniciales(yo.nombre);
-  document.getElementById('saludo').textContent = `Hola, ${yo.nombre.split(' ')[0]} 👋`;
+  document.getElementById('saludo').textContent = `Hola, ${yo.nombre.split(' ')[0]}`;
   if (yo.rol === 'admin') {
-    const a = document.createElement('a'); a.href = 'admin.html'; a.textContent = '🛠 Admin';
+    const a = document.createElement('a'); a.href = 'admin.html';
+    a.innerHTML = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg> Admin`;
     document.getElementById('nav').appendChild(a);
   }
   document.getElementById('salir').onclick = async () => {
@@ -417,10 +421,12 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
       : 'Aún no hay puntos en juego. ¡Pronostica!';
   }
 
-  /* --- cuenta regresiva al próximo cierre ---------------------- */
+  /* --- Matchday Ticker: cuenta regresiva al próximo cierre ---- */
   function pintarProximoCierre() {
     const caja = document.getElementById('proximo-cierre');
     const todosLosPartidos = partidosEf().sort((a, b) => (a.utc || 'z').localeCompare(b.utc || 'z'));
+    const svgClock = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+    const svgAlert = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>`;
 
     // 1. Buscar el próximo partido ABIERTO para pronosticar
     const proxAbierto = todosLosPartidos.find(p => U.abierto(p, resultados[p.id]) === true);
@@ -433,13 +439,18 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
                             : `${String(t.h).padStart(2, '0')}:${String(t.m).padStart(2, '0')}:${String(t.s).padStart(2, '0')}`;
 
       const alertaPronostico = !misPred[proxAbierto.id]
-        ? `<div style="margin-top:8px; padding:4px 10px; background:rgba(224,53,75,0.2); border:1px solid rgba(224,53,75,0.5); border-radius:8px; font-size:12px; color:#fff; font-weight:bold; display:inline-block; animation: latido 1.5s infinite;">⚠️ ¡Ojo! Te falta pronosticar este partido</div>`
+        ? `<span class="ticker__warn">${svgAlert} Sin pronosticar</span>`
         : '';
 
       caja.innerHTML = `
-        <div style="font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--tinta-3)">Próximo cierre · ${L.b} vs ${V.b}</div>
-        <div style="font-family:var(--fuente-marcador);font-size:26px;font-weight:700;color:var(--dorado)">FALTAN ${reloj}</div>
-        ${alertaPronostico}`;
+        <div class="ticker__meta">
+          <span class="ticker__kicker">${svgClock} Próximo cierre</span>
+          <span class="ticker__match">${L.b} ${U.esc(L.n)} <span class="ticker__vs">vs</span> ${U.esc(V.n)} ${V.b}</span>
+        </div>
+        <div class="ticker__right">
+          ${alertaPronostico}
+          <span class="ticker__clock">FALTAN ${reloj}</span>
+        </div>`;
       return;
     }
 
@@ -447,25 +458,26 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const proxCronologico = todosLosPartidos.find(p => p.utc && new Date(p.utc) > new Date());
 
     if (proxCronologico) {
-        const L = proxCronologico.local ? FIXTURE.equipo(proxCronologico.local) : null;
-        const V = proxCronologico.visitante ? FIXTURE.equipo(proxCronologico.visitante) : null;
-        const t = U.cuentaRegresiva(proxCronologico.utc);
-        const reloj = t.d > 0 ? `${t.d}d ${String(t.h).padStart(2, '0')}h`
-                              : `${String(t.h).padStart(2, '0')}:${String(t.m).padStart(2, '0')}:${String(t.s).padStart(2, '0')}`;
-        
-        const motivo = (L && V) 
-            ? 'El partido está por comenzar.' 
-            : 'Esperando definición de equipos.';
+      const L = proxCronologico.local ? FIXTURE.equipo(proxCronologico.local) : null;
+      const V = proxCronologico.visitante ? FIXTURE.equipo(proxCronologico.visitante) : null;
+      const t = U.cuentaRegresiva(proxCronologico.utc);
+      const reloj = t.d > 0 ? `${t.d}d ${String(t.h).padStart(2, '0')}h`
+                            : `${String(t.h).padStart(2, '0')}:${String(t.m).padStart(2, '0')}:${String(t.s).padStart(2, '0')}`;
+      const motivo = (L && V) ? 'Por comenzar' : 'Equipos por definir';
 
-        caja.innerHTML = `
-            <div style="font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--tinta-3)">Próximo partido · ${L ? L.b : '?'} vs ${V ? V.b : '?'}</div>
-            <div style="font-family:var(--fuente-marcador);font-size:26px;font-weight:700;color:var(--dorado)">EN ${reloj}</div>
-            <div style="margin-top:8px; font-size:12px; color:var(--tinta-2);">${motivo}</div>`;
-        return;
+      caja.innerHTML = `
+        <div class="ticker__meta">
+          <span class="ticker__kicker">${svgClock} Próximo partido · ${motivo}</span>
+          <span class="ticker__match">${L ? L.b + ' ' + U.esc(L.n) : 'Por definir'} <span class="ticker__vs">vs</span> ${V ? U.esc(V.n) + ' ' + V.b : 'Por definir'}</span>
+        </div>
+        <div class="ticker__right">
+          <span class="ticker__clock">EN ${reloj}</span>
+        </div>`;
+      return;
     }
 
     // 3. Si no hay partidos futuros, mostrar mensaje final.
-    caja.innerHTML = '<span class="sub">No hay cierres próximos.</span>';
+    caja.innerHTML = '<span class="sub" style="margin:0">No hay cierres próximos.</span>';
   }
   setInterval(pintarProximoCierre, 1000);
 
@@ -517,7 +529,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const grupos = Object.keys(FIXTURE.grupos || {});
     if (grupos.length > 0) {
       selGrupo.innerHTML += grupos.map(g => `<option value="${g}">Grupo ${g}</option>`).join('');
-      selGrupo.innerHTML += `<option value="elim">⚡ Eliminatorias / Play-offs / Final</option>`;
+      selGrupo.innerHTML += `<option value="elim">Eliminatorias / Play-offs / Final</option>`;
       selGrupo.onchange = () => { filtroGrupo = selGrupo.value; pintarPartidos(); };
     } else {
       selGrupo.style.display = 'none';
@@ -625,16 +637,16 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     pintarPartidos();
   });
 
-  /* Mensaje divertido según resultado del pronóstico */
+  /* Mensaje según resultado del pronóstico */
   function mensajePuntos(cal, pred) {
-    if (!pred) return `<span class="msg-sin">Sin pronóstico 😅</span>`;
+    if (!pred) return `<span class="msg-sin">Sin pronóstico</span>`;
     if (!cal || cal.tipo === null) return `<span class="pronostico__guardado">Tu pronóstico: <b>${pred.gl}–${pred.gv}</b></span>`;
     if (cal.tipo === 'fallo')
-      return `<span class="msg-fallo">¡Qué mala suerte! Pero la pelota sigue rodando, sigue intentando 😅</span>`;
+      return `<span class="msg-fallo">Tu pronóstico: <b>${pred.gl}–${pred.gv}</b> · Sin acierto</span>`;
     if (cal.tipo === 'resultado')
-      return `<span class="msg-resultado">¡Uff, te salvaste en el palo! Sumaste <b>${cal.pts} punto${cal.pts !== 1 ? 's' : ''}</b>. Sigue intentando y de seguro mejoras 🔥</span>`;
+      return `<span class="msg-resultado">Tu pronóstico: <b>${pred.gl}–${pred.gv}</b> · Resultado acertado</span>`;
     if (cal.tipo === 'exacto')
-      return `<span class="msg-exacto">¡Uy! ¿Eres el nuevo Nostradamus? 🔮 Qué bien lo hiciste, ¡sumaste <b>${cal.pts} puntos exactos</b>! 🎯</span>`;
+      return `<span class="msg-exacto">Tu pronóstico: <b>${pred.gl}–${pred.gv}</b> · Marcador exacto</span>`;
     return `<span class="pronostico__guardado">Tu pronóstico: <b>${pred.gl}–${pred.gv}</b></span>`;
   }
 
@@ -690,40 +702,39 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     return out;
   }
 
-  /* --- TARJETA DE PARTIDO ---------------------------------------- */
+  /* --- TARJETA DE PARTIDO (SCOREBOARD UNIFICADO) --------------- */
   function cardPartido(p) {
     const res = resultados[p.id] || p.resultado || null;
     const est = U.estadoPartido(p, res);
     const L = FIXTURE.equipo(p.local), V = FIXTURE.equipo(p.visitante);
     const pred = misPred[p.id];
     const sinEquipos = !p.local || !p.visitante;
+    const esAbierto = U.abierto(p, res) === true;
+
+    const svgShield = `<svg class="ico ico--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>`;
+    const svgClock = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`;
+    const svgPin = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+    const svgCheck = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>`;
+    const svgDoc = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>`;
+    const svgBall = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polygon points="12 8 15 10.5 14 14 10 14 9 10.5 12 8"/></svg>`;
+    const svgSub = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>`;
 
     /* etiqueta de estado */
     let badge = '';
-    if (est === 'iniciando') badge = `<span class="etiqueta etiqueta--vivo">INICIANDO...</span>`;
-    if (est === 'en_juego')  badge = `<span class="etiqueta etiqueta--vivo">● EN VIVO ${res.minuto ? res.minuto + '′' : ''}</span>`;
-    if (est === 'finalizado') badge = `<span class="etiqueta etiqueta--fin">FINAL</span>`;
-    if (est === 'aplazado')   badge = `<span class="etiqueta etiqueta--aplazado">APLAZADO</span>`;
-    if (est === 'cerrado')    badge = `<span class="etiqueta">CERRADO</span>`;
+    if (est === 'iniciando')   badge = `<span class="etiqueta etiqueta--vivo">INICIANDO...</span>`;
+    if (est === 'finalizado')  badge = `<span class="etiqueta etiqueta--fin">FINAL</span>`;
+    if (est === 'aplazado')    badge = `<span class="etiqueta etiqueta--aplazado">APLAZADO</span>`;
+    if (est === 'cerrado')     badge = `<span class="etiqueta">CERRADO</span>`;
     if (est === 'sin_definir') badge = `<span class="etiqueta">POR DEFINIR</span>`;
 
     /* hora */
     const hora = !p.utc
-      ? `📆 ${U.esc(p.ventana || p.fecha)} · hora por definir`
+      ? `${svgClock} ${U.esc(p.ventana || p.fecha)} · hora por definir`
       : p.horaOk
-        ? `🕐 ${U.diaLocal(p.utc)} · ${U.horaLocal(p.utc)} (tu hora)`
-        : `🕐 ${U.diaLocal(p.utc)} · <b>hora por confirmar</b> — cierra 11:00 a.m. Colombia`;
+        ? `${svgClock} ${U.diaLocal(p.utc)} · ${U.horaLocal(p.utc)}`
+        : `${svgClock} ${U.diaLocal(p.utc)} · <b>hora por confirmar</b> (cierra 11:00 a.m. COL)`;
 
-    /* marcador central */
-    let centro;
-    if (res && (est === 'en_juego' || est === 'finalizado')) {
-      centro = `<div class="marcador ${est === 'en_juego' ? 'marcador--vivo' : 'marcador--fin'}">${res.gl} – ${res.gv}</div>`;
-    } else {
-      centro = `<div class="marcador"><span class="vs">VS</span></div>`;
-    }
-
-    /* ENCABEZADO DINÁMICO */
-    let encabezado = '';
+    let tarjetasL = '', tarjetasV = '', eventosHTML = '', statsWidgetHTML = '';
     if (est === 'en_juego') {
       const PERIODOS = {'1H':'1ª Parte','2H':'2ª Parte','HT':'Descanso','ET':'Prórroga','BT':'Pausa ET','P':'Penales'};
       const periodoLabel = PERIODOS[res?.periodo] || '';
@@ -733,9 +744,12 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
         : res?.minuto ? `${periodoLabel ? periodoLabel + ' · ' : ''}${res.minuto}′`
         : (periodoLabel || 'En Vivo');
 
-      const eventos = res?.eventos || [];
+      badge = `<span class="etiqueta etiqueta--vivo"
+        data-min-base="${res?.minuto ?? ''}"
+        data-min-at="${res?.minutoAt ?? ''}"
+        data-periodo="${res?.periodo ?? ''}">● ${U.esc(tiempoStr)}</span>`;
 
-      /* — tarjetas por equipo — */
+      const eventos = res?.eventos || [];
       const rojasLEv     = eventos.filter(e => e.eq === p.local     && e.t === 'roja');
       const rojasVEv     = eventos.filter(e => e.eq === p.visitante && e.t === 'roja');
       const amarillasLEv = eventos.filter(e => e.eq === p.local     && e.t === 'amarilla');
@@ -744,22 +758,16 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
       const numRojasV    = Math.max(rojasVEv.length,     res?.tarjetas?.[p.visitante]?.rojas  || 0);
       const numAmarL     = Math.max(amarillasLEv.length, res?.tarjetas?.[p.local]?.amarillas  || 0);
       const numAmarV     = Math.max(amarillasVEv.length, res?.tarjetas?.[p.visitante]?.amarillas || 0);
-      const tarjetasL    = (numAmarL  > 0 ? '🟨'.repeat(Math.min(numAmarL,3))  : '') + (numRojasL > 0 ? '🟥' : '');
-      const tarjetasV    = (numAmarV  > 0 ? '🟨'.repeat(Math.min(numAmarV,3))  : '') + (numRojasV > 0 ? '🟥' : '');
+      const buildCards = (am, ro) => {
+        if (!am && !ro) return '';
+        return `<span class="sb-cards">${'<i class="sb-card-y"></i>'.repeat(Math.min(am, 3))}${ro > 0 ? '<i class="sb-card-r"></i>' : ''}</span>`;
+      };
+      tarjetasL = buildCards(numAmarL, numRojasL);
+      tarjetasV = buildCards(numAmarV, numRojasV);
 
       /* — eventos ordenados por minuto por lado — */
       const evL = eventos.filter(e => e.eq === p.local).sort((a,b) => a.m - b.m);
       const evV = eventos.filter(e => e.eq === p.visitante).sort((a,b) => a.m - b.m);
-
-      // Emoji para subtipo de gol
-      const _golIcon = (e) => {
-        if (e.t !== 'gol') return '';
-        if (e.subtipo === 'penal') return ' ⚪';
-        if (e.subtipo === 'autogol') return ' 🚫';
-        if (e.subtipo === 'tiro_libre') return ' 🥾';
-        if (e.subtipo === 'cabeza') return ' 🤕';
-        return '';
-      };
       const _golLabel = (e) => {
         if (e.t !== 'gol') return '';
         if (e.subtipo === 'penal') return ' (P)';
@@ -768,179 +776,160 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
         if (e.subtipo === 'cabeza') return ' (CAB)';
         return '';
       };
-      const evIcon = t => t==='gol'?'⚽':t==='roja'?'🟥':t==='amarilla'?'🟨':t==='gol_anulado'?'⚽❌':'🔄';
+      const evIcon = t => t === 'gol' ? svgBall : t === 'roja' ? '<i class="sb-card-r"></i>' : t === 'amarilla' ? '<i class="sb-card-y"></i>' : t === 'gol_anulado' ? svgBall : svgSub;
       const minStr = e => `${e.m}${e.x ? '+' + e.x : ''}′`;
       const fmtL = e => e.t === 'cambio'
-        ? `<div class="evento"><span class="evento-icono">🔄</span><span class="evento-jugador"><span class="ev-sale">${U.esc(e.j)}</span> <span class="ev-flecha">→</span> <span class="ev-entra">${U.esc(e.a||'')}</span></span><span class="evento-min">${minStr(e)}</span></div>`
-        : `<div class="evento ${e.t === 'gol_anulado' ? 'evento--anulado' : ''}"><span class="evento-icono">${evIcon(e.t)}${_golIcon(e)}</span><span class="evento-jugador">${U.esc(e.j)}<span class="ev-subtipo">${_golLabel(e)}</span></span><span class="evento-min">${minStr(e)}</span></div>`;
+        ? `<div class="evento"><span class="evento-icono">${svgSub}</span><span class="evento-jugador"><span class="ev-sale">${U.esc(e.j)}</span> <span class="ev-flecha">→</span> <span class="ev-entra">${U.esc(e.a||'')}</span></span><span class="evento-min">${minStr(e)}</span></div>`
+        : `<div class="evento ${e.t === 'gol_anulado' ? 'evento--anulado' : ''}"><span class="evento-icono">${evIcon(e.t)}</span><span class="evento-jugador">${U.esc(e.j)}<span class="ev-subtipo">${_golLabel(e)}</span></span><span class="evento-min">${minStr(e)}</span></div>`;
       const fmtV = e => e.t === 'cambio'
-        ? `<div class="evento evento--v"><span class="evento-min">${minStr(e)}</span><span class="evento-jugador"><span class="ev-entra">${U.esc(e.a||'')}</span> <span class="ev-flecha">←</span> <span class="ev-sale">${U.esc(e.j)}</span></span><span class="evento-icono">🔄</span></div>`
-        : `<div class="evento evento--v ${e.t === 'gol_anulado' ? 'evento--anulado' : ''}"><span class="evento-min">${minStr(e)}</span><span class="evento-jugador">${U.esc(e.j)}<span class="ev-subtipo">${_golLabel(e)}</span></span><span class="evento-icono">${evIcon(e.t)}${_golIcon(e)}</span></div>`;
+        ? `<div class="evento evento--v"><span class="evento-min">${minStr(e)}</span><span class="evento-jugador"><span class="ev-entra">${U.esc(e.a||'')}</span> <span class="ev-flecha">←</span> <span class="ev-sale">${U.esc(e.j)}</span></span><span class="evento-icono">${svgSub}</span></div>`
+        : `<div class="evento evento--v ${e.t === 'gol_anulado' ? 'evento--anulado' : ''}"><span class="evento-min">${minStr(e)}</span><span class="evento-jugador">${U.esc(e.j)}<span class="ev-subtipo">${_golLabel(e)}</span></span><span class="evento-icono">${evIcon(e.t)}</span></div>`;
 
       const tieneEvs = evL.length > 0 || evV.length > 0;
-      const eventosHTML = (tieneEvs || esDescanso) ? `
+      eventosHTML = (tieneEvs || esDescanso) ? `
         <div class="eventos-partido">
-          ${esDescanso ? '<div class="ev-descanso">⏸ DESCANSO</div>' : ''}
+          ${esDescanso ? '<div class="ev-descanso">DESCANSO</div>' : ''}
           <div class="eventos-col">${evL.map(fmtL).join('')}</div>
           <div class="eventos-col eventos-col--v">${evV.map(fmtV).join('')}</div>
         </div>` : '';
 
-      // NUEVO: Widget de estadísticas en vivo
       const tieneStats = res?.tarjetas && Object.keys(res.tarjetas).length > 0;
-      const statsWidgetHTML = tieneStats
-        ? `<div class="stats-en-vivo" style="padding: 16px 0 8px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 16px;">
-            <h3 class="subtitulo-polla" style="margin: 0 16px 10px; padding: 0; font-size: 14px;">📊 Estadísticas en Vivo</h3>
+      statsWidgetHTML = tieneStats
+        ? `<div class="stats-en-vivo" style="padding: 12px 0 4px; border-top: 1px solid var(--borde); margin-top: 4px;">
+            <h3 class="subtitulo-polla" style="margin: 0 0 8px; padding: 0; font-size: 13px;">Estadísticas en vivo</h3>
             ${renderMatchStats(p, res)}
           </div>` : '';
-
-      encabezado = `
-        <div class="vivo-encabezado">
-          <div class="vivo-meta">
-            <span class="etiqueta etiqueta--vivo"
-              data-min-base="${res?.minuto ?? ''}"
-              data-min-at="${res?.minutoAt ?? ''}"
-              data-periodo="${res?.periodo ?? ''}">● ${U.esc(tiempoStr)}</span>
-            <span class="etiqueta etiqueta--dorada">${U.esc(p.etapa)}</span>
-          </div>
-          <div class="vivo-marcador">
-            <div class="vivo-equipo" ${p.local ? `data-equipo="${p.local}" title="Ver perfil de ${U.esc(L.n)}"` : ''}>
-              <div class="vivo-bandera">${p.local ? (L.b || '⚽') : `<span class="etiq">${U.esc(p.etiqL)}</span>`}</div>
-              <div class="vivo-nombre">${U.esc(p.local ? L.n : p.etiqL)}</div>
-              <div class="vivo-tarjetas">${tarjetasL}</div>
-            </div>
-            <div class="vivo-centro">
-              <div class="vivo-goles">${res.gl} − ${res.gv}</div>
-            </div>
-            <div class="vivo-equipo" ${p.visitante ? `data-equipo="${p.visitante}" title="Ver perfil de ${U.esc(V.n)}"` : ''}>
-              <div class="vivo-bandera">${p.visitante ? (V.b || '⚽') : `<span class="etiq">${U.esc(p.etiqV)}</span>`}</div>
-              <div class="vivo-nombre">${U.esc(p.visitante ? V.n : p.etiqV)}</div>
-              <div class="vivo-tarjetas">${tarjetasV}</div>
-            </div>
-          </div>
-          ${(p.estadio || p.sede) ? `<div class="vivo-estadio">🏟 ${U.esc(p.estadio || p.sede)}</div>` : ''}
-          ${eventosHTML}
-          ${statsWidgetHTML}
-        </div>
-      `;
-    } else {
-      encabezado = `
-        <div class="partido__meta">
-          <span class="etiqueta etiqueta--dorada">${U.esc(p.etapa)}</span>
-          ${badge}
-          <span>${hora}</span>
-          <span class="empuja">🏟 ${U.esc(p.estadio || p.sede)}</span>
-        </div>
-        <div class="partido__centro">
-          <div class="equipo" ${p.local ? `data-equipo="${p.local}" title="Ver perfil de ${U.esc(L.n)}"` : ''}><span class="bandera">${p.local ? (L.b || '⚽') : `<span class="etiq">${U.esc(p.etiqL)}</span>`}</span><span class="nombre">${U.esc(p.local ? L.n : p.etiqL)}</span></div>
-          ${centro}
-          <div class="equipo equipo--v" ${p.visitante ? `data-equipo="${p.visitante}" title="Ver perfil de ${U.esc(V.n)}"` : ''}><span class="nombre">${U.esc(p.visitante ? V.n : p.etiqV)}</span><span class="bandera">${p.visitante ? (V.b || '⚽') : `<span class="etiq">${U.esc(p.etiqV)}</span>`}</span></div>
-        </div>
-      `;
     }
-
-    /* ---- TARJETA COMPACTA para partidos finalizados ---- */
+    /* Goleadores si finalizado */
+    let golL = '', golV = '';
     if (est === 'finalizado' && !sinEquipos) {
-      const eventos = res?.eventos || [];
-      const goles = eventos.filter(e => e.t === 'gol');
-      const golL = goles.filter(e => e.eq === p.local).map(e => `${U.esc(e.j)} ${e.m}′`).join(', ');
-      const golV = goles.filter(e => e.eq === p.visitante).map(e => `${U.esc(e.j)} ${e.m}′`).join(', ');
-      const cal = Puntos.calificar(pred, res, p.fase);
-      const predHtml = mensajePuntos(cal, pred);
-      return `
-        <article class="partido partido--fin-compacto" id="p-${p.id}">
-          <div class="fin-cabeza">
-            <span class="etiqueta etiqueta--dorada">${U.esc(p.etapa)}</span>
-            <span class="etiqueta etiqueta--fin">FINAL</span>
-          </div>
-          <div class="fin-fila">
-            <div class="fin-equipo fin-equipo--l" data-equipo="${p.local}" title="Ver perfil de ${U.esc(L.n)}">
-              <div class="fin-ban">${L.b||'⚽'}</div>
-              <div class="fin-nom">${U.esc(L.n)}</div>
-              ${golL ? `<div class="fin-goles">${golL}</div>` : '<div class="fin-goles"></div>'}
-            </div>
-            <div class="fin-score">${res.gl} – ${res.gv}</div>
-            <div class="fin-equipo fin-equipo--v" data-equipo="${p.visitante}" title="Ver perfil de ${U.esc(V.n)}">
-              <div class="fin-ban">${V.b||'⚽'}</div>
-              <div class="fin-nom">${U.esc(V.n)}</div>
-              ${golV ? `<div class="fin-goles">${golV}</div>` : '<div class="fin-goles"></div>'}
-            </div>
-          </div>
-          <div class="fin-pred">${predHtml}</div>
-          <div style="text-align:center;margin-top:8px">
-            <button class="boton boton--fantasma boton--mini" data-ver-detalle="${p.id}" type="button">📋 Ver resumen</button>
-          </div>
-        </article>`;
+      const goles = (res?.eventos || []).filter(e => e.t === 'gol');
+      golL = goles.filter(e => e.eq === p.local).map(e => `${U.esc(e.j)} ${e.m}′`).join(', ');
+      golV = goles.filter(e => e.eq === p.visitante).map(e => `${U.esc(e.j)} ${e.m}′`).join(', ');
     }
 
-    /* zona de pronóstico */
-    let zona;
-    const esAbierto = U.abierto(p, res) === true;
-    if (sinEquipos) {
-      zona = `<div class="pronostico"><span class="pronostico__guardado">Los equipos se definen al cerrar la fase anterior.</span></div>`;
-    } else if (esAbierto) {
+    /* Cabecera meta unificada */
+    const metaHtml = `
+      <div class="sb-meta">
+        <span class="etiqueta etiqueta--dorada">${U.esc(p.etapa)}</span>
+        ${badge}
+        ${(est !== 'en_juego' && est !== 'finalizado') ? `<span class="sb-meta__hora">${hora}</span>` : ''}
+        ${(p.estadio || p.sede) ? `<span class="sb-meta__sede">${svgPin}${U.esc(p.estadio || p.sede)}</span>` : ''}
+      </div>`;
+
+    /* Bloque central: steppers si abierto, marcador si en_juego/finalizado, o VS */
+    let centroHtml;
+    if (esAbierto && !sinEquipos) {
       const gl = pred ? pred.gl : '', gv = pred ? pred.gv : '';
-      zona = `
-        <div class="pronostico pronostico--filas" data-pid="${p.id}">
-          <div class="pronostico__fila">
-            <div class="equipo"><span class="bandera">${L.b || '⚽'}</span><span class="nombre">${U.esc(L.n)}</span></div>
+      centroHtml = `
+        <div class="sb-center">
+          <div class="sb-steppers">
             <div class="stepper">
               <button type="button" data-st="l-">−</button>
               <input inputmode="numeric" data-in="l" value="${gl}" placeholder="–" aria-label="Goles ${U.esc(L.n)}">
               <button type="button" data-st="l+">+</button>
             </div>
-          </div>
-          <div class="pronostico__fila">
-            <div class="equipo"><span class="bandera">${V.b || '⚽'}</span><span class="nombre">${U.esc(V.n)}</span></div>
+            <span class="sb-sep">:</span>
             <div class="stepper">
               <button type="button" data-st="v-">−</button>
               <input inputmode="numeric" data-in="v" value="${gv}" placeholder="–" aria-label="Goles ${U.esc(V.n)}">
               <button type="button" data-st="v+">+</button>
             </div>
           </div>
-          <div class="pronostico__acciones">
-            <button class="boton boton--verde" data-guardar type="button">${pred ? 'Actualizar' : 'Guardar'} ✓</button>
-            ${pred ? `<span class="pronostico__guardado">Guardado: ${pred.gl}–${pred.gv} ✓</span>` : ''}
+        </div>`;
+    } else if (res && (est === 'en_juego' || est === 'finalizado')) {
+      centroHtml = `<div class="sb-center"><div class="sb-score ${est === 'en_juego' ? 'sb-score--live' : 'sb-score--fin'}">${res.gl} – ${res.gv}</div></div>`;
+    } else {
+      centroHtml = `<div class="sb-center"><div class="sb-score sb-score--vs">VS</div></div>`;
+    }
+
+    /* Fila única 1fr auto 1fr en desktop / 2 filas limpias en móvil (sin duplicar equipos) */
+    const mainRowHtml = `
+      <div class="sb-main">
+        <div class="sb-team sb-team--l" ${p.local ? `data-equipo="${p.local}" title="Ver perfil de ${U.esc(L.n)}"` : ''}>
+          <span class="sb-crest">${p.local ? (L.b || svgShield) : `<span class="etiqueta">${U.esc(p.etiqL)}</span>`}</span>
+          <div class="sb-info">
+            <span class="sb-name">${U.esc(p.local ? L.n : p.etiqL)}${tarjetasL}</span>
+            ${golL ? `<span class="sb-sub">${golL}</span>` : ''}
           </div>
+        </div>
+        ${centroHtml}
+        <div class="sb-team sb-team--v" ${p.visitante ? `data-equipo="${p.visitante}" title="Ver perfil de ${U.esc(V.n)}"` : ''}>
+          <div class="sb-info">
+            <span class="sb-name">${tarjetasV}${U.esc(p.visitante ? V.n : p.etiqV)}</span>
+            ${golV ? `<span class="sb-sub">${golV}</span>` : ''}
+          </div>
+          <span class="sb-crest">${p.visitante ? (V.b || svgShield) : `<span class="etiqueta">${U.esc(p.etiqV)}</span>`}</span>
+        </div>
+      </div>`;
+
+    /* Pie compacto de tarjeta según estado */
+    let footHtml = '';
+    if (sinEquipos) {
+      footHtml = `<div class="sb-foot"><span class="sb-pending">Los equipos se definen al cerrar la fase anterior.</span></div>`;
+    } else if (esAbierto) {
+      footHtml = `
+        <div class="sb-foot">
+          <div class="sb-status">
+            ${pred
+              ? `<span class="sb-saved">${svgCheck} Guardado: <b>${pred.gl}–${pred.gv}</b></span>`
+              : `<span class="sb-pending">Pronóstico pendiente</span>`}
+          </div>
+          <button class="boton boton--verde boton--guardar-sm" data-guardar type="button">${svgCheck} ${pred ? 'Actualizar' : 'Guardar'}</button>
+        </div>`;
+    } else if (est === 'finalizado') {
+      const cal = Puntos.calificar(pred, res, p.fase);
+      footHtml = `
+        <div class="sb-foot">
+          <div class="sb-status">
+            ${mensajePuntos(cal, pred)}
+            ${pred ? `<span class="puntos-ganados">${cal.pts > 0 ? '+' + cal.pts + ' pts' : '0 pts'}</span>` : ''}
+          </div>
+          <button class="boton boton--fantasma boton--mini" data-ver-detalle="${p.id}" type="button">${svgDoc} Ver resumen</button>
         </div>`;
     } else {
-      const cal = Puntos.calificar(pred, res, p.fase);
-      const estadoTexto = est === 'aplazado' ? '⏸️ Partido aplazado' : est === 'cerrado' ? '🔒 Partido cerrado' : est === 'en_juego' ? '● Partido en juego' : est === 'finalizado' ? '🏁 Partido finalizado' : '';
-      const motivoAplazamiento = (est === 'aplazado' && (res?.motivoAplazamiento || p.motivoAplazamiento)) ? `<span class="pronostico__guardado" style="font-size:11px;color:var(--tinta-2)">Motivo: ${U.esc(res?.motivoAplazamiento || p.motivoAplazamiento)}</span>` : '';
-      zona = `
-        <div class="pronostico">
-          ${estadoTexto ? `<span class="pronostico__guardado" style="color:var(--dorado)">${estadoTexto}</span>` : ''}
-          ${motivoAplazamiento}
-          ${pred
-            ? `<span class="pronostico__guardado">Tu pronóstico: <b>${pred.gl}–${pred.gv}</b></span>`
-            : `<span class="pronostico__guardado">No alcanzaste a pronosticar 😅</span>`}
-          ${est === 'finalizado' && pred ? `<span class="puntos-ganados">${cal.pts > 0 ? '+' + cal.pts + ' pts' : '0 pts'} ${cal.tipo === 'exacto' ? '🎯 ¡Exacto!' : cal.tipo === 'resultado' ? '✔ Resultado' : ''}</span>` : ''}
+      const estadoTexto = est === 'aplazado' ? 'Partido aplazado' : est === 'cerrado' ? 'Partido cerrado' : est === 'en_juego' ? 'Partido en juego' : '';
+      const motivoAplazamiento = (est === 'aplazado' && (res?.motivoAplazamiento || p.motivoAplazamiento))
+        ? `<span class="pronostico__guardado" style="font-size:11px;color:var(--tinta-3)">Motivo: ${U.esc(res?.motivoAplazamiento || p.motivoAplazamiento)}</span>`
+        : '';
+      footHtml = `
+        <div class="sb-foot">
+          <div class="sb-status">
+            ${estadoTexto ? `<span class="pronostico__guardado" style="color:var(--oro);font-weight:600">${estadoTexto}</span>` : ''}
+            ${motivoAplazamiento}
+          </div>
+          <div>
+            ${pred
+              ? `<span class="pronostico__guardado">Tu pronóstico: <b>${pred.gl}–${pred.gv}</b></span>`
+              : `<span class="sb-pending">Sin pronóstico</span>`}
+          </div>
         </div>`;
     }
 
-    // NUEVO LAYOUT SPLIT: dividir en dos columnas
-    const contenidoSplit = `
+    const contenidoSplit = (est === 'finalizado' && !sinEquipos) ? '' : `
       <details class="partido-detalles">
-        <summary>Ver análisis y estadísticas del partido</summary>
+        <summary><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Ver análisis y estadísticas del partido</summary>
         <div class="polla-layout-split" style="padding-top: 10px;">
-          <!-- COLUMNA IZQUIERDA: Datos oficiales del partido -->
           <div class="columna-split-izquierda">
-            <h3 class="subtitulo-polla" style="margin-bottom: 10px;">📋 Datos Oficiales del Partido (API)</h3>
+            <h3 class="subtitulo-polla" style="margin-bottom: 10px;">Datos oficiales del partido (API)</h3>
             ${renderProStats(p, res)}
           </div>
-
-          <!-- COLUMNA DERECHA: Datos de la polla y comunidad -->
           <div class="columna-split-derecha">
-            <h3 class="subtitulo-polla" style="margin-bottom: 10px;">🔮 Predicciones de la Comunidad</h3>
+            <h3 class="subtitulo-polla" style="margin-bottom: 10px;">Predicciones de la comunidad</h3>
             ${renderStatsCompacto(p)}
           </div>
         </div>
-      </details>
-    `;
+      </details>`;
 
     return `
-      <article class="partido ${est === 'en_juego' ? 'partido--vivo' : ''}" id="p-${p.id}">
-        ${encabezado}
-        ${zona}
+      <article class="partido ${est === 'en_juego' ? 'partido--vivo' : ''} ${est === 'finalizado' ? 'partido--fin' : ''}" id="p-${p.id}">
+        ${metaHtml}
+        <div class="${esAbierto && !sinEquipos ? 'pronostico sb-body' : 'sb-body'}" ${esAbierto && !sinEquipos ? `data-pid="${p.id}"` : ''}>
+          ${mainRowHtml}
+          ${eventosHTML}
+          ${statsWidgetHTML}
+          ${footHtml}
+        </div>
         ${contenidoSplit}
       </article>`;
   }
@@ -967,23 +956,23 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
       iaCompacto = `
         <div class="tarjeta-polla-info ia-analisis-box">
           <div class="ia-header">
-            <span class="ia-badge">🤖 IA</span>
+            <span class="ia-badge">IA</span>
             <strong>Análisis Predictivo</strong>
           </div>
           <div class="ia-cuerpo">
             <p>Nivel de Confianza: <span class="confianza-texto">Media</span></p>
-            <p class="ia-prediccion-texto">💡 Tendencia Pro: Análisis generado por IA disponible.</p>
+            <p class="ia-prediccion-texto">Tendencia Pro: Análisis generado por IA disponible.</p>
           </div>
         </div>`;
     } else if (window.IA?.disponible()) {
       iaCompacto = `
         <div class="tarjeta-polla-info ia-analisis-box" style="border-left-style: dashed;">
           <div class="ia-header">
-            <span class="ia-badge">🤖 IA</span>
+            <span class="ia-badge">IA</span>
             <strong>Análisis Predictivo</strong>
           </div>
           <div class="ia-cuerpo">
-            <button class="boton boton--mini" data-generar-ia="${p.id}" type="button">🤖 Generar análisis</button>
+            <button class="boton boton--mini" data-generar-ia="${p.id}" type="button">Generar análisis</button>
           </div>
         </div>`;
     }
@@ -996,7 +985,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
         comunidad = `
           <div class="tarjeta-polla-info">
             <div class="comunidad-header">
-              <h3>📊 ¿Qué opina la mayoría?</h3>
+              <h3>¿Qué opina la mayoría?</h3>
               <span class="badge-votos">Ver ${preds.length} pron.</span>
             </div>
             <div style="text-align: center; padding: 10px 0; font-size: 12px; color: var(--tinta-3);">
@@ -1023,7 +1012,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
       comunidad = `
         <div class="tarjeta-polla-info">
           <div class="comunidad-header">
-            <h3>📊 ¿Qué opina la mayoría?</h3>
+            <h3>¿Qué opina la mayoría?</h3>
             <span class="badge-votos">Ver ${processed} pron.</span>
           </div>
           <div class="barra-progreso-comunidad">
@@ -1043,12 +1032,13 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const preds = predsByPartido[pid] || [];
     if (!preds.length) return `<div class="partido__stats" style="text-align:center; padding: 12px; color: var(--tinta-3); font-size: 12.5px; background: rgba(0,0,0,0.15); border-radius: 10px; margin-top: 14px; border: 1px dashed rgba(255,255,255,0.1);">Aún no hay pronósticos para este partido. ¡Sé el primero!</div>`;
     
+    const svgEyeSm = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`;
     const abierto = U.abierto(p, resultados[pid]) === true;
     if (abierto) {
-        return `<div class="partido__stats" style="background: rgba(0,0,0,0.15); padding: 14px; border-radius: 10px; margin-top: 14px; border: 1px solid rgba(255,255,255,0.05);">
+        return `<div class="partido__stats" style="background: rgba(0,0,0,0.15); padding: 14px; border-radius: 10px; margin-top: 14px; border: 1px solid var(--borde);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <strong style="font-size: 13px; color: var(--tinta-2); letter-spacing: 0.5px;">📊 ¿Qué opina la mayoría?</strong>
-                <button class="boton boton--fantasma boton--mini" data-ver-prons="${pid}" type="button" style="padding: 4px 10px; font-size: 11.5px; z-index: 2; position: relative;">👀 Ver ${preds.length} pron.</button>
+                <strong style="font-size: 13px; color: var(--tinta-2); letter-spacing: 0.3px;">¿Qué opina la mayoría?</strong>
+                <button class="boton boton--fantasma boton--mini" data-ver-prons="${pid}" type="button" style="padding: 4px 10px; font-size: 11.5px; z-index: 2; position: relative;">${svgEyeSm} Ver ${preds.length} pron.</button>
             </div>
             <div style="text-align: center; padding: 10px; font-size: 12px; color: var(--tinta-3);">
                 Las predicciones de la comunidad se revelarán cuando comience el partido.
@@ -1082,7 +1072,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const bar = `<div class="stat-bar" style="height: 6px; margin-bottom: 10px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; display: flex;">
       <div class="stat-seg" style="width:${pct(local)}%; background: var(--verde-claro);"></div>
       <div class="stat-seg" style="width:${pct(draw)}%; background: var(--tinta-3);"></div>
-      <div class="stat-seg" style="width:${pct(away)}%; background: var(--azul-claro);"></div>
+      <div class="stat-seg" style="width:${pct(away)}%; background: var(--oro);"></div>
     </div>`;
 
     const L = FIXTURE.equipo(p.local);
@@ -1091,23 +1081,23 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const nomV = p.visitante ? V.n : 'Visitante';
     
     let datoPro = '';
-    if (pctMasDeDos > 60) datoPro = `🔥 <b>Tendencia Pro:</b> El ${pctMasDeDos}% cree que será un partido con muchos goles (3+).`;
-    else if (pctMasDeDos < 35) datoPro = `🛡️ <b>Tendencia Pro:</b> El ${100 - pctMasDeDos}% espera un partido cerrado (0 a 2 goles).`;
-    else if (pctAmbosAnotan > 65) datoPro = `⚔️ <b>Tendencia Pro:</b> El ${pctAmbosAnotan}% confía en que AMBOS equipos anotarán.`;
-    else datoPro = `⚖️ <b>Tendencia Pro:</b> Pronósticos muy divididos. El marcador promedio es ${avgGl}-${avgGv}.`;
+    if (pctMasDeDos > 60) datoPro = `<b>Tendencia Pro:</b> El ${pctMasDeDos}% cree que será un partido con muchos goles (3+).`;
+    else if (pctMasDeDos < 35) datoPro = `<b>Tendencia Pro:</b> El ${100 - pctMasDeDos}% espera un partido cerrado (0 a 2 goles).`;
+    else if (pctAmbosAnotan > 65) datoPro = `<b>Tendencia Pro:</b> El ${pctAmbosAnotan}% confía en que ambos equipos anotarán.`;
+    else datoPro = `<b>Tendencia Pro:</b> Pronósticos muy divididos. El marcador promedio es ${avgGl}–${avgGv}.`;
 
-    return `<div class="partido__stats" style="background: rgba(0,0,0,0.15); padding: 14px; border-radius: 10px; margin-top: 14px; border: 1px solid rgba(255,255,255,0.05);">
+    return `<div class="partido__stats" style="background: rgba(0,0,0,0.15); padding: 14px; border-radius: 10px; margin-top: 14px; border: 1px solid var(--borde);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <strong style="font-size: 13px; color: var(--tinta-2); letter-spacing: 0.5px;">📊 ¿Qué opina la mayoría?</strong>
-        <button class="boton boton--fantasma boton--mini" data-ver-prons="${pid}" type="button" style="padding: 4px 10px; font-size: 11.5px; z-index: 2; position: relative;">👀 Ver ${processed} pron.</button>
+        <strong style="font-size: 13px; color: var(--tinta-2); letter-spacing: 0.3px;">¿Qué opina la mayoría?</strong>
+        <button class="boton boton--fantasma boton--mini" data-ver-prons="${pid}" type="button" style="padding: 4px 10px; font-size: 11.5px; z-index: 2; position: relative;">${svgEyeSm} Ver ${processed} pron.</button>
       </div>
       ${bar}
-      <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--tinta-3); margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-        <span style="color: var(--verde-claro);">🏠 ${U.esc(nomL)}: <b>${pct(local)}%</b></span>
-        <span>🤝 Empate: <b>${pct(draw)}%</b></span>
-        <span style="color: var(--azul-claro);">✈ ${U.esc(nomV)}: <b>${pct(away)}%</b></span>
+      <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--tinta-3); margin-bottom: 12px; flex-wrap: wrap; gap: 8px; font-variant-numeric: tabular-nums;">
+        <span style="color: var(--verde-claro);">${U.esc(nomL)}: <b>${pct(local)}%</b></span>
+        <span>Empate: <b>${pct(draw)}%</b></span>
+        <span style="color: var(--oro);">${U.esc(nomV)}: <b>${pct(away)}%</b></span>
       </div>
-      <div style="font-size: 12px; color: var(--tinta-2); border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
+      <div style="font-size: 12px; color: var(--tinta-2); border-top: 1px solid var(--borde); padding-top: 10px;">
         ${datoPro}
       </div>
     </div>`;
@@ -1163,14 +1153,14 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const [eqL, eqV] = alin[0].cod === p.local ? [alin[0], alin[1]] : [alin[1], alin[0]];
     const L = FIXTURE.equipo(p.local);
     const V = FIXTURE.equipo(p.visitante);
-    const posI = {G:'🧤',D:'🛡',M:'⚙️',F:'⚡'};
+    const posI = {G:'POR',D:'DEF',M:'MED',F:'DEL'};
     
     const jug = (eq, izq) => eq.xi.map(j =>
-      `<div class="lineup-j ${izq ? '' : 'lineup-j--v'}"><span class="lineup-num">${j.num}</span><span class="lineup-pos">${posI[j.pos]||''}</span><span>${U.esc(j.n)}</span></div>`
+      `<div class="lineup-j ${izq ? '' : 'lineup-j--v'}"><span class="lineup-num">${j.num}</span><span class="etiqueta" style="font-size:9px;padding:1px 5px">${posI[j.pos]||''}</span><span>${U.esc(j.n)}</span></div>`
     ).join('');
     
     return `<div class="tarjeta-polla-info">
-      <h3 class="subtitulo-polla">👕 Alineaciones Confirmadas</h3>
+      <h3 class="subtitulo-polla">Alineaciones confirmadas</h3>
       <div class="lineup-grid">
         <div class="lineup-col">
           <div class="lineup-form">${L.b} ${U.esc(eqL.f)}</div>
@@ -1209,7 +1199,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     };
     
     return `<div class="tarjeta-polla-info">
-      <h3 class="subtitulo-polla">📊 Estadísticas en Vivo</h3>
+      <h3 class="subtitulo-polla">Estadísticas en vivo</h3>
       ${barra('Posesión', stL.posesion || 0, stV.posesion || 0, 100, '%')}
       ${barra('Tiros al arco', stL.tirosArc || 0, stV.tirosArc || 0, Math.max(stL.tirosArc, stV.tirosArc, 1))}
       ${barra('Tiros totales', stL.tirosTot || 0, stV.tirosTot || 0, Math.max(stL.tirosTot, stV.tirosTot, 1))}
@@ -1226,7 +1216,9 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
 
     if (!evL.length && !evV.length) return '';
 
-    const evIcon = t => t==='gol'?'⚽':t==='roja'?'🟥':t==='amarilla'?'🟨':t==='gol_anulado'?'⚽❌':'🔄';
+    const svgBallSm = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polygon points="12 8 15 10.5 14 14 10 14 9 10.5 12 8"/></svg>`;
+    const svgSubSm = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>`;
+    const evIcon = t => t === 'gol' ? svgBallSm : t === 'roja' ? '<i class="sb-card-r"></i>' : t === 'amarilla' ? '<i class="sb-card-y"></i>' : t === 'gol_anulado' ? svgBallSm : svgSubSm;
     const minStr = e => `${e.m}${e.x ? '+' + e.x : ''}′`;
 
     const fmt = (e, esVisitante) => {
@@ -1241,7 +1233,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     };
       
     return `<div class="tarjeta-polla-info">
-      <h3 class="subtitulo-polla">⚡ Incidencias en Vivo</h3>
+      <h3 class="subtitulo-polla">Incidencias en vivo</h3>
       <div class="lineup-grid" style="gap: 12px; margin-top: 10px;">
         <div class="lineup-col">
           ${evL.map(e => fmt(e, false)).join('')}
@@ -1262,7 +1254,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     
     return `<div class="tarjeta-polla-info ia-analisis-box">
       <div class="ia-header">
-        <span class="ia-badge">🤖 API</span>
+        <span class="ia-badge">API</span>
         <strong>Predicción del Modelo</strong>
       </div>
       <div class="ia-cuerpo">
@@ -1335,12 +1327,12 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const L = FIXTURE.equipo(p.local), V = FIXTURE.equipo(p.visitante);
     const [eqL, eqV] = alin[0].cod === p.local ? [alin[0], alin[1]] : [alin[1], alin[0]];
     if (!eqL || !eqV) return '';
-    const posI = {G:'🧤',D:'🛡',M:'⚙️',F:'⚡'};
+    const posI = {G:'POR',D:'DEF',M:'MED',F:'DEL'};
     const jug = (eq, izq) => (eq.xi||[]).map(j =>
-      `<div class="lineup-j ${izq?'':'lineup-j--v'}"><span class="lineup-num">${j.num}</span><span class="lineup-pos">${posI[j.pos]||''}</span><span>${U.esc(j.n)}</span></div>`
+      `<div class="lineup-j ${izq?'':'lineup-j--v'}"><span class="lineup-num">${j.num}</span><span class="etiqueta" style="font-size:9px;padding:1px 5px">${posI[j.pos]||''}</span><span>${U.esc(j.n)}</span></div>`
     ).join('');
     return `<div class="pro-panel pro-panel--lineup">
-      <div class="pro-header">👕 Alineaciones</div>
+      <div class="pro-header">Alineaciones</div>
       <div class="lineup-grid">
         <div class="lineup-col"><div class="lineup-form">${L.b} ${U.esc(eqL.f)}</div>${jug(eqL,true)}</div>
         <div class="lineup-sep"></div>
@@ -1355,14 +1347,16 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     const eventos = res?.eventos || [];
     const pred = misPred[p.id];
     const cal = pred ? Puntos.calificar(pred, res, p.fase) : null;
+    const svgShieldLg = `<svg class="ico ico--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>`;
+    const svgBallSm = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polygon points="12 8 15 10.5 14 14 10 14 9 10.5 12 8"/></svg>`;
 
     // Cabecera marcador
     const cabHtml = `
       <div style="text-align:center;padding:16px 0 8px">
-        <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px">
-          <div style="text-align:center"><div style="font-size:36px">${L.b||'⚽'}</div><div style="font-size:13px;color:var(--tinta-2)">${U.esc(L.n)}</div></div>
-          <div style="font-family:var(--fuente-marcador);font-size:38px;color:var(--tinta);padding:0 8px">${res.gl} – ${res.gv}</div>
-          <div style="text-align:center"><div style="font-size:36px">${V.b||'⚽'}</div><div style="font-size:13px;color:var(--tinta-2)">${U.esc(V.n)}</div></div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px">
+          <div style="text-align:center"><div>${L.b||svgShieldLg}</div><div style="font-size:13px;font-weight:600;color:var(--tinta-2);margin-top:4px">${U.esc(L.n)}</div></div>
+          <div style="font-family:var(--fuente-marcador);font-size:38px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--tinta);padding:0 8px">${res.gl} – ${res.gv}</div>
+          <div style="text-align:center"><div>${V.b||svgShieldLg}</div><div style="font-size:13px;font-weight:600;color:var(--tinta-2);margin-top:4px">${U.esc(V.n)}</div></div>
         </div>
         <div><span class="etiqueta etiqueta--dorada">${U.esc(p.etapa)}</span> <span class="etiqueta etiqueta--fin">FINAL</span></div>
       </div>`;
@@ -1378,7 +1372,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
     let evHtml = '';
     if (evImportantes.length) {
       const filas = evImportantes.map(e => {
-        const ico = e.t === 'gol' ? '⚽' : '🟥';
+        const ico = e.t === 'gol' ? svgBallSm : '<i class="sb-card-r"></i>';
         const esL = e.eq === p.local;
         return esL
           ? `<div class="detalle-ev">${ico} <b>${U.esc(e.j)}</b> <span class="ev-min">${e.m}${e.x?'+'+e.x:''}′</span></div>`
@@ -1426,7 +1420,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
       return (a.utc || a.fecha + 'T23').localeCompare(b.utc || b.fecha + 'T23');
     });
     if (!lista.length) {
-      cont.innerHTML = `<div class="aviso">No hay partidos con este filtro. Prueba con otro 👆</div>`;
+      cont.innerHTML = `<div class="aviso">No hay partidos con este filtro. Prueba seleccionando otra opción arriba.</div>`;
       return;
     }
     let html = '', diaActual = '', grupoActual = -1;
@@ -1435,7 +1429,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
       if (g !== grupoActual) {
         grupoActual = g;
         diaActual = '';
-        if (g === 2) html += `<h3 class="dia-titulo" style="opacity:.6;font-size:13px">✅ Partidos finalizados</h3>`;
+        if (g === 2) html += `<h3 class="dia-titulo" style="opacity:.7;font-size:13px"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Partidos finalizados</h3>`;
       }
       const fechaItem = p.fecha || (p.utc ? p.utc.substring(0, 10) : '');
       if (fechaItem && fechaItem !== diaActual && g !== 2) {
@@ -1753,8 +1747,8 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
           </div>
           <div>
             ${abierto 
-              ? '<span class="campeon-badge campeon-badge--abierto">🟢 Abierto para elegir</span>' 
-              : '<span class="campeon-badge campeon-badge--cerrado">🔒 Elección cerrada</span>'}
+              ? '<span class="campeon-badge campeon-badge--abierto"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Abierto para elegir</span>' 
+              : '<span class="campeon-badge campeon-badge--cerrado"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Elección cerrada</span>'}
           </div>
         </div>
 
@@ -1762,13 +1756,13 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
           <div class="campeon-banner-elegido">
             <img src="${eqImg(eqElegido)}" class="escudo-img" alt="${eqElegido.n}" onerror="this.onerror=null;this.src='icons/icon-192.png'">
             <div class="info">
-              <b>${U.esc(eqElegido.n)} 🏆</b>
+              <b style="display:inline-flex;align-items:center;gap:6px">${U.esc(eqElegido.n)} <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></b>
               <span>${abierto ? 'Tu campeón seleccionado. Si deseas cambiarlo, toca otro club abajo.' : 'Elección confirmada y protegida.'}</span>
             </div>
           </div>
         ` : `
           <div class="aviso aviso--dorado" style="display:flex; align-items:center; gap:12px; margin-bottom:18px">
-            <span style="font-size:24px">⚠️</span>
+            <svg class="ico ico--lg" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
             <div><b>Aún no has elegido tu campeón para ${compInfo.nombre}</b>. Toca tu club favorito abajo para asegurar tus +10 puntos de bonificación.</div>
           </div>
         `}
@@ -1781,7 +1775,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=30';
               <button class="campeon-op ${elegido ? 'elegido' : ''}" data-comp="${compInfo.id}" data-eq="${eqId}" ${abierto ? '' : 'disabled'} type="button">
                 <img src="${eqImg(eq)}" class="escudo-img" alt="${eq.n}" onerror="this.onerror=null;this.src='icons/icon-192.png'">
                 <span class="campeon-op-nom">${U.esc(eq.n)}</span>
-                ${elegido ? '<span style="color:var(--dorado); font-size:16px; margin-left:auto">👑</span>' : ''}
+                ${elegido ? '<span style="color:var(--dorado); margin-left:auto; display:inline-flex"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>' : ''}
               </button>
             `;
           }).join('')}
