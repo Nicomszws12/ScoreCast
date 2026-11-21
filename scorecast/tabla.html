@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/estilos.css?v=32">
+  <link rel="stylesheet" href="css/estilos.css?v=33">
 </head>
 <body>
 
@@ -36,9 +36,15 @@
 
 <main class="contenedor">
 
-  <section style="margin-top:26px">
-    <h1 style="margin:0;font-size:26px;display:flex;align-items:center;gap:10px"><svg class="ico ico--lg" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Tabla de posiciones</h1>
-    <p class="sub" id="nota-tabla"></p>
+  <section class="fila-flex" style="margin-top:26px">
+    <div>
+      <h1 style="margin:0;font-size:26px;display:flex;align-items:center;gap:10px"><svg class="ico ico--lg" style="color:var(--oro)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Tabla de posiciones</h1>
+      <p class="sub" id="nota-tabla"></p>
+    </div>
+    <button class="boton boton--fantasma boton--mini empuja" id="btn-compartir-tabla" type="button">
+      <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Compartir posición
+    </button>
   </section>
 
   <div class="podio" id="podio"></div>
@@ -63,13 +69,15 @@
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=32"></script>
-<script type="module" src="js/fixture.js?v=32"></script>
-<script type="module" src="js/utils.js?v=32"></script>
-<script type="module" src="js/store.js?v=32"></script>
-<script type="module" src="js/puntos.js?v=32"></script>
+<script type="module" src="js/config.js?v=33"></script>
+<script type="module" src="js/fixture.js?v=33"></script>
+<script type="module" src="js/utils.js?v=33"></script>
+<script type="module" src="js/store.js?v=33"></script>
+<script type="module" src="js/puntos.js?v=33"></script>
+<script type="module" src="js/compartir-card.js?v=33"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=32';
+import { CONFIG } from './js/config.js?v=33';
+import { CompartirCard } from './js/compartir-card.js?v=33';
 (async () => {
   await Store.init();
   const yo = await Store.sesion();
@@ -82,7 +90,22 @@ import { CONFIG } from './js/config.js?v=32';
     document.getElementById('nav').appendChild(a);
   }
 
-  let filas = [], filtro = '';
+  let filas = [], filtro = '', nombreSala = 'ScoreCast Principal';
+  const salaId = new URLSearchParams(location.search).get('sala') || localStorage.getItem('salaActiva') || 'scorecast';
+  if (salaId && salaId !== 'scorecast') {
+    try {
+      const infoSala = await Store.obtenerSala(salaId);
+      if (infoSala && infoSala.nombre) nombreSala = infoSala.nombre;
+    } catch (_) {}
+  }
+
+  document.getElementById('btn-compartir-tabla')?.addEventListener('click', () => {
+    if (!filas.length) {
+      U.toast('Todavía no hay posiciones registradas en esta sala para compartir.', 'info');
+      return;
+    }
+    CompartirCard.abrirTabla({ yo, filas, nombreSala });
+  });
 
   async function cargar() {
     const [usuarios, todas, resultados, ajustes, puntosManuales] = await Promise.all([

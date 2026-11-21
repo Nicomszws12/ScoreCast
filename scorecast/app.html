@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/estilos.css?v=32">
+  <link rel="stylesheet" href="css/estilos.css?v=33">
 </head>
 <body>
 
@@ -38,9 +38,15 @@
 
   <section class="fila-flex" style="margin-top:22px">
     <div>
-      <div id="badge-sala-activa" class="sala-pill">
-        <span style="display:inline-flex;align-items:center;gap:6px"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Sala: <b id="nombre-sala-activa">ScoreCast Principal</b></span>
-        <a href="lobby.html" class="boton boton--mini boton--fantasma" style="padding: 2px 8px; font-size: 11px; text-decoration: none;">Cambiar sala</a>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+        <div id="badge-sala-activa" class="sala-pill" style="margin-bottom:0">
+          <span style="display:inline-flex;align-items:center;gap:6px"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Sala: <b id="nombre-sala-activa">ScoreCast Principal</b></span>
+          <a href="lobby.html" class="boton boton--mini boton--fantasma" style="padding: 2px 8px; font-size: 11px; text-decoration: none;">Cambiar sala</a>
+        </div>
+        <button class="boton boton--fantasma boton--mini" id="btn-compartir-pronosticos" type="button" style="padding:5px 11px;font-size:12px;border-radius:999px">
+          <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Compartir pronósticos
+        </button>
       </div>
       <h1 style="margin:0;font-size:26px" id="saludo">Hola</h1>
       <p class="sub" style="margin:4px 0 0" id="resumen-yo"></p>
@@ -324,33 +330,35 @@
 <audio id="sonido-gol" src="sounds/gol.mp3" preload="auto"></audio>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script type="module" src="js/config.js?v=32"></script>
-<script type="module" src="js/fixture.js?v=32"></script>
-<script type="module" src="js/utils.js?v=32"></script>
-<script type="module" src="js/store.js?v=32"></script>
-<script type="module" src="js/puntos.js?v=32"></script>
-<script type="module" src="js/api-futbol.js?v=32"></script>
-<script type="module" src="js/ia.js?v=32"></script>
-<script type="module" src="js/email.js?v=32"></script>
-<script type="module" src="js/grupos-api.js?v=32"></script>
-<script type="module" src="js/notificaciones.js?v=32"></script>
-<script type="module" src="js/equipos-info.js?v=32"></script>
-<script type="module" src="js/competiciones-info.js?v=32"></script>
-<script type="module" src="js/tablas-cuadros.js?v=32"></script>
-<script type="module" src="js/en-vivo-beta.js?v=32"></script>
-<script type="module" src="js/tribuna-social.js?v=32"></script>
+<script type="module" src="js/config.js?v=33"></script>
+<script type="module" src="js/fixture.js?v=33"></script>
+<script type="module" src="js/utils.js?v=33"></script>
+<script type="module" src="js/store.js?v=33"></script>
+<script type="module" src="js/puntos.js?v=33"></script>
+<script type="module" src="js/api-futbol.js?v=33"></script>
+<script type="module" src="js/ia.js?v=33"></script>
+<script type="module" src="js/email.js?v=33"></script>
+<script type="module" src="js/grupos-api.js?v=33"></script>
+<script type="module" src="js/notificaciones.js?v=33"></script>
+<script type="module" src="js/equipos-info.js?v=33"></script>
+<script type="module" src="js/competiciones-info.js?v=33"></script>
+<script type="module" src="js/tablas-cuadros.js?v=33"></script>
+<script type="module" src="js/en-vivo-beta.js?v=33"></script>
+<script type="module" src="js/tribuna-social.js?v=33"></script>
+<script type="module" src="js/compartir-card.js?v=33"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=32';
-import { EquiposInfo } from './js/equipos-info.js?v=32';
-import { CompeticionesInfo } from './js/competiciones-info.js?v=32';
-import { TablasCuadros } from './js/tablas-cuadros.js?v=32';
-import { EnVivoBeta } from './js/en-vivo-beta.js?v=32';
-import { TribunaSocial } from './js/tribuna-social.js?v=32';
+import { CONFIG } from './js/config.js?v=33';
+import { EquiposInfo } from './js/equipos-info.js?v=33';
+import { CompeticionesInfo } from './js/competiciones-info.js?v=33';
+import { TablasCuadros } from './js/tablas-cuadros.js?v=33';
+import { EnVivoBeta } from './js/en-vivo-beta.js?v=33';
+import { TribunaSocial } from './js/tribuna-social.js?v=33';
+import { CompartirCard } from './js/compartir-card.js?v=33';
 
 (async () => {
   try {
-    if (localStorage.getItem('sc_cache_ver') !== 'v32') {
-      localStorage.setItem('sc_cache_ver', 'v32');
+    if (localStorage.getItem('sc_cache_ver') !== 'v33') {
+      localStorage.setItem('sc_cache_ver', 'v33');
       if ('caches' in window) {
         const ks = await caches.keys();
         await Promise.all(ks.map(k => caches.delete(k)));
@@ -411,6 +419,61 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
   } else {
     window.document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: true }));
   }
+
+  function resolverContextoPronosticos() {
+    const chipTxt = document.querySelector('#chips .chip.activo')?.textContent?.trim() || 'Todos';
+    const selects = [
+      ['betplay', 'f-fecha'],
+      ['premier', 'f-fecha-premier'],
+      ['laliga', 'f-fecha-laliga'],
+      ['bundesliga', 'f-fecha-bundesliga'],
+      ['ucl', 'f-fecha-ucl'],
+      ['libertadores', 'f-grupo'],
+      ['sudamericana', 'f-grupo']
+    ];
+    for (const [comp, selId] of selects) {
+      if (filtro === comp) {
+        const sel = document.getElementById(selId);
+        if (sel && sel.value) {
+          const optTxt = sel.options[sel.selectedIndex]?.textContent?.replace(/\s*\(.*?\)\s*/g, '').trim();
+          if (optTxt) return `${chipTxt} · ${optTxt}`;
+        }
+        return chipTxt;
+      }
+    }
+    if (filtro === 'hoy') return 'Jornada de hoy';
+    if (filtro === 'pendientes' || filtro === 'todos') return 'Mis pronósticos activos';
+    return chipTxt;
+  }
+
+  document.getElementById('btn-compartir-pronosticos')?.addEventListener('click', () => {
+    const totalGuardados = Object.keys(misPred || {}).length;
+    if (!totalGuardados) {
+      U.toast('Aún no tienes pronósticos guardados para compartir. Guarda al menos un marcador primero.', 'info');
+      return;
+    }
+    const nombreSala = document.getElementById('nombre-sala-activa')?.textContent?.trim() || 'ScoreCast Principal';
+    const todos = partidosEf();
+    const esCompActiva = Boolean(FIXTURE.competiciones && FIXTURE.competiciones[filtro]);
+    let candidatos = (filtro === 'pendientes') ? todos : filtrar(todos);
+    let contextoFiltro = resolverContextoPronosticos();
+
+    // Si el filtro automático 'hoy' no tiene pronósticos guardados pero el usuario sí tiene en otros días, mostrar sus pronósticos activos
+    const conPred = candidatos.filter(p => p.local && p.visitante && misPred[p.id] != null);
+    if (!conPred.length && !esCompActiva) {
+      candidatos = todos;
+      contextoFiltro = 'Mis pronósticos activos';
+    }
+
+    CompartirCard.abrirPronosticos({
+      yo,
+      partidos: candidatos,
+      misPred,
+      resultados,
+      nombreSala,
+      contextoFiltro
+    });
+  });
 
   async function pintarResumenYo() {
     const [usuarios, todas] = await Promise.all([Store.usuariosSala(), Store.todasPrediccionesSala()]);
@@ -703,6 +766,186 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
     return out;
   }
 
+  /* --- HELPERS DE EVENTOS EN VIVO Y ALINEACIONES PÚBLICAS ------ */
+  const SVG_BALL_EV = `<svg class="ico ico--sm live-events__ball" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polygon points="12 7.5 15.2 9.8 14 13.6 10 13.6 8.8 9.8 12 7.5"/></svg>`;
+  const SVG_CARD_Y = `<svg class="live-events__card" viewBox="0 0 12 16" aria-hidden="true"><rect x="1" y="1" width="10" height="14" rx="2" fill="#EAB308"/></svg>`;
+  const SVG_CARD_R = `<svg class="live-events__card" viewBox="0 0 12 16" aria-hidden="true"><rect x="1" y="1" width="10" height="14" rx="2" fill="#EF4444"/></svg>`;
+  const SVG_CARD_2Y = `<svg class="live-events__card live-events__card--double" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="9" height="12" rx="1.8" fill="#EAB308"/><rect x="6" y="1" width="9" height="13" rx="1.8" fill="#EF4444"/></svg>`;
+  const SVG_LINEUP_ICO = `<svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+
+  function normalizarEventoTarjeta(ev, p) {
+    if (!ev) return null;
+    const min = Number(ev.min ?? ev.m ?? 0) || 0;
+    const rawExtra = ev.extra ?? ev.x ?? null;
+    const extra = (rawExtra !== null && rawExtra !== undefined && Number(rawExtra) > 0) ? Number(rawExtra) : null;
+
+    let equipo = (ev.equipo === 'local' || ev.equipo === 'visitante') ? ev.equipo : null;
+    if (!equipo) {
+      if (ev.eq && ev.eq === p.local) equipo = 'local';
+      else if (ev.eq && ev.eq === p.visitante) equipo = 'visitante';
+    }
+    if (!equipo) return null;
+
+    let tipo = null;
+    if (['gol', 'autogol', 'penal', 'amarilla', 'roja', 'doble_amarilla'].includes(ev.tipo)) {
+      tipo = ev.tipo;
+    } else if (ev.t === 'gol') {
+      tipo = ev.subtipo === 'penal' ? 'penal' : ev.subtipo === 'autogol' ? 'autogol' : 'gol';
+    } else if (ev.t === 'amarilla') {
+      tipo = 'amarilla';
+    } else if (ev.t === 'roja') {
+      tipo = String(ev.detail || '').toLowerCase().includes('second yellow') ? 'doble_amarilla' : 'roja';
+    }
+    if (!tipo) return null;
+
+    const jugador = String(ev.jugador || ev.j || ev.n || '').trim();
+    if (!jugador) return null;
+
+    return {
+      min,
+      extra,
+      equipo,
+      tipo,
+      jugador,
+      asistencia: ev.asistencia ? String(ev.asistencia).trim() : null
+    };
+  }
+
+  function obtenerEventosNormalizados(p, res) {
+    const crudos = Array.isArray(res?.eventos) ? res.eventos : [];
+    return crudos
+      .map(e => normalizarEventoTarjeta(e, p))
+      .filter(Boolean)
+      .sort((a, b) => (a.min - b.min) || ((a.extra || 0) - (b.extra || 0)));
+  }
+
+  function renderLiveEventsStrip(p, res, est) {
+    if (est !== 'en_juego' && est !== 'finalizado') return '';
+    const esDescanso = est === 'en_juego' && ['HT', 'BT'].includes(res?.periodo);
+    const lista = obtenerEventosNormalizados(p, res);
+    const evL = lista.filter(e => e.equipo === 'local');
+    const evV = lista.filter(e => e.equipo === 'visitante');
+    if (!evL.length && !evV.length && !esDescanso) return '';
+
+    const iconoEv = (tipo) => {
+      if (tipo === 'gol' || tipo === 'penal' || tipo === 'autogol') return SVG_BALL_EV;
+      if (tipo === 'amarilla') return SVG_CARD_Y;
+      if (tipo === 'doble_amarilla') return SVG_CARD_2Y;
+      return SVG_CARD_R;
+    };
+    const sufijoTipo = (tipo) => tipo === 'penal'
+      ? ' <span class="live-events__tag">(P)</span>'
+      : tipo === 'autogol'
+        ? ' <span class="live-events__tag live-events__tag--og">(AG)</span>'
+        : '';
+    const fmtMin = (e) => `${e.min}${e.extra ? '+' + e.extra : ''}'`;
+
+    const filaLocal = (e) => {
+      const esGol = e.tipo === 'gol' || e.tipo === 'penal' || e.tipo === 'autogol';
+      return `<div class="live-events__item ${esGol ? 'live-events__item--goal' : 'live-events__item--card'}">
+        <span class="live-events__ico">${iconoEv(e.tipo)}</span>
+        <span class="live-events__player">${U.esc(e.jugador)}${sufijoTipo(e.tipo)}</span>
+        <span class="live-events__min">${fmtMin(e)}</span>
+      </div>`;
+    };
+
+    const filaVis = (e) => {
+      const esGol = e.tipo === 'gol' || e.tipo === 'penal' || e.tipo === 'autogol';
+      return `<div class="live-events__item live-events__item--away ${esGol ? 'live-events__item--goal' : 'live-events__item--card'}">
+        <span class="live-events__min">${fmtMin(e)}</span>
+        <span class="live-events__player">${U.esc(e.jugador)}${sufijoTipo(e.tipo)}</span>
+        <span class="live-events__ico">${iconoEv(e.tipo)}</span>
+      </div>`;
+    };
+
+    return `
+      <div class="live-events ${est === 'en_juego' ? 'live-events--live' : ''}">
+        ${esDescanso ? '<div class="live-events__ht">DESCANSO</div>' : ''}
+        <div class="live-events__col live-events__col--l">${evL.map(filaLocal).join('')}</div>
+        <div class="live-events__col live-events__col--v">${evV.map(filaVis).join('')}</div>
+      </div>`;
+  }
+
+  function normalizarAlineacionesPartido(p, res) {
+    if (res?.alineaciones && (res.alineaciones.local?.titulares?.length || res.alineaciones.visitante?.titulares?.length)) {
+      return res.alineaciones;
+    }
+    if (Array.isArray(res?.alineacion) && res.alineacion.length >= 2) {
+      const [eqL, eqV] = res.alineacion[0].cod === p.local
+        ? [res.alineacion[0], res.alineacion[1]]
+        : [res.alineacion[1], res.alineacion[0]];
+      if (!eqL || !eqV) return null;
+      const mapLegacy = (eq) => ({
+        formacion: eq.f || '',
+        dt: eq.dt || '',
+        titulares: (eq.xi || []).map(j => ({ num: j.num ?? '', nombre: j.n || '', pos: j.pos || '' })),
+        suplentes: []
+      });
+      return { local: mapLegacy(eqL), visitante: mapLegacy(eqV) };
+    }
+    return null;
+  }
+
+  function renderLineupsPublicas(p, res, mostrarNotaEspera = false) {
+    const alin = normalizarAlineacionesPartido(p, res);
+    if (!alin) {
+      if (!mostrarNotaEspera) return '';
+      return `<div class="lineups-empty-note">${SVG_LINEUP_ICO}<span>Alineaciones disponibles aprox. 1 hora antes del inicio</span></div>`;
+    }
+    const L = FIXTURE.equipo(p.local), V = FIXTURE.equipo(p.visitante);
+    const posMap = { G: 'POR', D: 'DEF', M: 'MED', F: 'DEL' };
+
+    const renderEquipoCol = (datos, eqInfo, esVis) => {
+      const tit = datos?.titulares || [];
+      const sup = datos?.suplentes || [];
+      const form = datos?.formacion ? `<span class="lineups__formation">${U.esc(datos.formacion)}</span>` : '';
+      const dtHtml = datos?.dt ? `<div class="lineups__coach"><span>DT</span> <strong>${U.esc(datos.dt)}</strong></div>` : '';
+
+      const filasTit = tit.map(j => `
+        <div class="lineups__row ${esVis ? 'lineups__row--away' : ''}">
+          <span class="lineups__num">${U.esc(j.num !== '' && j.num !== null ? j.num : '—')}</span>
+          ${j.pos ? `<span class="lineups__pos">${U.esc(posMap[j.pos] || j.pos)}</span>` : ''}
+          <span class="lineups__name">${U.esc(j.nombre)}</span>
+        </div>`).join('');
+
+      const filasSup = sup.length ? `
+        <details class="lineups__bench" data-bench="${esVis ? 'v' : 'l'}">
+          <summary>Suplentes (${sup.length})</summary>
+          <div class="lineups__bench-list">
+            ${sup.map(j => `
+              <div class="lineups__row lineups__row--sub ${esVis ? 'lineups__row--away' : ''}">
+                <span class="lineups__num">${U.esc(j.num !== '' && j.num !== null ? j.num : '—')}</span>
+                ${j.pos ? `<span class="lineups__pos">${U.esc(posMap[j.pos] || j.pos)}</span>` : ''}
+                <span class="lineups__name">${U.esc(j.nombre)}</span>
+              </div>`).join('')}
+          </div>
+        </details>` : '';
+
+      return `
+        <div class="lineups__col ${esVis ? 'lineups__col--away' : ''}">
+          <div class="lineups__team-head ${esVis ? 'lineups__team-head--away' : ''}">
+            <span class="lineups__team-ident">${esVis ? `${U.esc(eqInfo.n)} ${eqInfo.b || ''}` : `${eqInfo.b || ''} ${U.esc(eqInfo.n)}`}</span>
+            ${form}
+          </div>
+          ${dtHtml}
+          <div class="lineups__list">${filasTit}</div>
+          ${filasSup}
+        </div>`;
+    };
+
+    return `
+      <div class="lineups">
+        <div class="lineups__head">
+          <div class="lineups__title">${SVG_LINEUP_ICO}<span>Alineaciones (${U.esc(L.n)} vs ${U.esc(V.n)})</span></div>
+          <span class="lineups__confirmed-tag">11 titulares confirmados</span>
+        </div>
+        <div class="lineups__grid">
+          ${renderEquipoCol(alin.local, L, false)}
+          ${renderEquipoCol(alin.visitante, V, true)}
+        </div>
+      </div>`;
+  }
+
   /* --- TARJETA DE PARTIDO (SCOREBOARD UNIFICADO) --------------- */
   function cardPartido(p) {
     const res = resultados[p.id] || p.resultado || null;
@@ -735,85 +978,63 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
         ? `${svgClock} ${U.diaLocal(p.utc)} · ${U.horaLocal(p.utc)}`
         : `${svgClock} ${U.diaLocal(p.utc)} · <b>hora por confirmar</b> (cierra 11:00 a.m. COL)`;
 
-    let tarjetasL = '', tarjetasV = '', eventosHTML = '', statsWidgetHTML = '';
-    if (est === 'en_juego') {
-      const PERIODOS = {'1H':'1ª Parte','2H':'2ª Parte','HT':'Descanso','ET':'Prórroga','BT':'Pausa ET','P':'Penales'};
-      const periodoLabel = PERIODOS[res?.periodo] || '';
-      const esDescanso = ['HT','BT'].includes(res?.periodo);
-      const tiempoStr = esDescanso
-        ? periodoLabel
-        : res?.minuto ? `${periodoLabel ? periodoLabel + ' · ' : ''}${res.minuto}′`
-        : (periodoLabel || 'En Vivo');
+    let tarjetasL = '', tarjetasV = '', liveEventsHTML = '', statsWidgetHTML = '';
+    const evsNorm = obtenerEventosNormalizados(p, res);
+    const tieneAlineaciones = !!normalizarAlineacionesPartido(p, res);
 
-      badge = `<span class="etiqueta etiqueta--vivo"
-        data-min-base="${res?.minuto ?? ''}"
-        data-min-at="${res?.minutoAt ?? ''}"
-        data-periodo="${res?.periodo ?? ''}">● ${U.esc(tiempoStr)}</span>`;
+    if (est === 'en_juego' || est === 'finalizado') {
+      if (est === 'en_juego') {
+        const PERIODOS = {'1H':'1ª Parte','2H':'2ª Parte','HT':'Descanso','ET':'Prórroga','BT':'Pausa ET','P':'Penales'};
+        const periodoLabel = PERIODOS[res?.periodo] || '';
+        const esDescanso = ['HT','BT'].includes(res?.periodo);
+        const tiempoStr = esDescanso
+          ? periodoLabel
+          : res?.minuto ? `${periodoLabel ? periodoLabel + ' · ' : ''}${res.minuto}′`
+          : (periodoLabel || 'En Vivo');
 
-      const eventos = res?.eventos || [];
-      const rojasLEv     = eventos.filter(e => e.eq === p.local     && e.t === 'roja');
-      const rojasVEv     = eventos.filter(e => e.eq === p.visitante && e.t === 'roja');
-      const amarillasLEv = eventos.filter(e => e.eq === p.local     && e.t === 'amarilla');
-      const amarillasVEv = eventos.filter(e => e.eq === p.visitante && e.t === 'amarilla');
+        badge = `<span class="etiqueta etiqueta--vivo"
+          data-min-base="${res?.minuto ?? ''}"
+          data-min-at="${res?.minutoAt ?? ''}"
+          data-periodo="${res?.periodo ?? ''}">● ${U.esc(tiempoStr)}</span>`;
+      }
+
+      const rojasLEv     = evsNorm.filter(e => e.equipo === 'local'     && (e.tipo === 'roja' || e.tipo === 'doble_amarilla'));
+      const rojasVEv     = evsNorm.filter(e => e.equipo === 'visitante' && (e.tipo === 'roja' || e.tipo === 'doble_amarilla'));
+      const amarillasLEv = evsNorm.filter(e => e.equipo === 'local'     && e.tipo === 'amarilla');
+      const amarillasVEv = evsNorm.filter(e => e.equipo === 'visitante' && e.tipo === 'amarilla');
       const numRojasL    = Math.max(rojasLEv.length,     res?.tarjetas?.[p.local]?.rojas     || 0);
       const numRojasV    = Math.max(rojasVEv.length,     res?.tarjetas?.[p.visitante]?.rojas  || 0);
       const numAmarL     = Math.max(amarillasLEv.length, res?.tarjetas?.[p.local]?.amarillas  || 0);
       const numAmarV     = Math.max(amarillasVEv.length, res?.tarjetas?.[p.visitante]?.amarillas || 0);
       const buildCards = (am, ro) => {
         if (!am && !ro) return '';
-        return `<span class="sb-cards">${'<i class="sb-card-y"></i>'.repeat(Math.min(am, 3))}${ro > 0 ? '<i class="sb-card-r"></i>' : ''}</span>`;
+        return `<span class="sb-cards">${SVG_CARD_Y.repeat(Math.min(am, 3))}${ro > 0 ? SVG_CARD_R.repeat(Math.min(ro, 2)) : ''}</span>`;
       };
       tarjetasL = buildCards(numAmarL, numRojasL);
       tarjetasV = buildCards(numAmarV, numRojasV);
 
-      /* — eventos ordenados por minuto por lado — */
-      const evL = eventos.filter(e => e.eq === p.local).sort((a,b) => a.m - b.m);
-      const evV = eventos.filter(e => e.eq === p.visitante).sort((a,b) => a.m - b.m);
-      const _golLabel = (e) => {
-        if (e.t !== 'gol') return '';
-        if (e.subtipo === 'penal') return ' (P)';
-        if (e.subtipo === 'autogol') return ' (AG)';
-        if (e.subtipo === 'tiro_libre') return ' (TL)';
-        if (e.subtipo === 'cabeza') return ' (CAB)';
-        return '';
-      };
-      const evIcon = t => t === 'gol' ? svgBall : t === 'roja' ? '<i class="sb-card-r"></i>' : t === 'amarilla' ? '<i class="sb-card-y"></i>' : t === 'gol_anulado' ? svgBall : svgSub;
-      const minStr = e => `${e.m}${e.x ? '+' + e.x : ''}′`;
-      const fmtL = e => e.t === 'cambio'
-        ? `<div class="evento"><span class="evento-icono">${svgSub}</span><span class="evento-jugador"><span class="ev-sale">${U.esc(e.j)}</span> <span class="ev-flecha">→</span> <span class="ev-entra">${U.esc(e.a||'')}</span></span><span class="evento-min">${minStr(e)}</span></div>`
-        : `<div class="evento ${e.t === 'gol_anulado' ? 'evento--anulado' : ''}"><span class="evento-icono">${evIcon(e.t)}</span><span class="evento-jugador">${U.esc(e.j)}<span class="ev-subtipo">${_golLabel(e)}</span></span><span class="evento-min">${minStr(e)}</span></div>`;
-      const fmtV = e => e.t === 'cambio'
-        ? `<div class="evento evento--v"><span class="evento-min">${minStr(e)}</span><span class="evento-jugador"><span class="ev-entra">${U.esc(e.a||'')}</span> <span class="ev-flecha">←</span> <span class="ev-sale">${U.esc(e.j)}</span></span><span class="evento-icono">${svgSub}</span></div>`
-        : `<div class="evento evento--v ${e.t === 'gol_anulado' ? 'evento--anulado' : ''}"><span class="evento-min">${minStr(e)}</span><span class="evento-jugador">${U.esc(e.j)}<span class="ev-subtipo">${_golLabel(e)}</span></span><span class="evento-icono">${evIcon(e.t)}</span></div>`;
+      liveEventsHTML = renderLiveEventsStrip(p, res, est);
 
-      const tieneEvs = evL.length > 0 || evV.length > 0;
-      eventosHTML = (tieneEvs || esDescanso) ? `
-        <div class="eventos-partido">
-          ${esDescanso ? '<div class="ev-descanso">DESCANSO</div>' : ''}
-          <div class="eventos-col">${evL.map(fmtL).join('')}</div>
-          <div class="eventos-col eventos-col--v">${evV.map(fmtV).join('')}</div>
-        </div>` : '';
+      if (est === 'en_juego') {
+        const tieneStats = res?.tarjetas && Object.keys(res.tarjetas).length > 0;
+        statsWidgetHTML = tieneStats
+          ? `<div class="stats-en-vivo" style="padding: 12px 0 4px; border-top: 1px solid var(--borde); margin-top: 4px;">
+              <h3 class="subtitulo-polla" style="margin: 0 0 8px; padding: 0; font-size: 13px;">Estadísticas en vivo</h3>
+              ${renderMatchStats(p, res)}
+            </div>` : '';
+      }
+    }
 
-      const tieneStats = res?.tarjetas && Object.keys(res.tarjetas).length > 0;
-      statsWidgetHTML = tieneStats
-        ? `<div class="stats-en-vivo" style="padding: 12px 0 4px; border-top: 1px solid var(--borde); margin-top: 4px;">
-            <h3 class="subtitulo-polla" style="margin: 0 0 8px; padding: 0; font-size: 13px;">Estadísticas en vivo</h3>
-            ${renderMatchStats(p, res)}
-          </div>` : '';
-    }
-    /* Goleadores si finalizado */
-    let golL = '', golV = '';
-    if (est === 'finalizado' && !sinEquipos) {
-      const goles = (res?.eventos || []).filter(e => e.t === 'gol');
-      golL = goles.filter(e => e.eq === p.local).map(e => `${U.esc(e.j)} ${e.m}′`).join(', ');
-      golV = goles.filter(e => e.eq === p.visitante).map(e => `${U.esc(e.j)} ${e.m}′`).join(', ');
-    }
+    const badgeAlineaciones = (!sinEquipos && tieneAlineaciones)
+      ? `<span class="lineups-pill">${SVG_LINEUP_ICO}<span>Alineaciones confirmadas</span></span>`
+      : '';
 
     /* Cabecera meta unificada */
     const metaHtml = `
       <div class="sb-meta">
         <span class="etiqueta etiqueta--dorada">${U.esc(p.etapa)}</span>
         ${badge}
+        ${badgeAlineaciones}
         ${(est !== 'en_juego' && est !== 'finalizado') ? `<span class="sb-meta__hora">${hora}</span>` : ''}
         ${(p.estadio || p.sede) ? `<span class="sb-meta__sede">${svgPin}${U.esc(p.estadio || p.sede)}</span>` : ''}
       </div>`;
@@ -851,14 +1072,12 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
           <span class="sb-crest">${p.local ? (L.b || svgShield) : `<span class="etiqueta">${U.esc(p.etiqL)}</span>`}</span>
           <div class="sb-info">
             <span class="sb-name">${U.esc(p.local ? L.n : p.etiqL)}${tarjetasL}</span>
-            ${golL ? `<span class="sb-sub">${golL}</span>` : ''}
           </div>
         </div>
         ${centroHtml}
         <div class="sb-team sb-team--v" ${p.visitante ? `data-equipo="${p.visitante}" title="Ver perfil de ${U.esc(V.n)}"` : ''}>
           <div class="sb-info">
             <span class="sb-name">${tarjetasV}${U.esc(p.visitante ? V.n : p.etiqV)}</span>
-            ${golV ? `<span class="sb-sub">${golV}</span>` : ''}
           </div>
           <span class="sb-crest">${p.visitante ? (V.b || svgShield) : `<span class="etiqueta">${U.esc(p.etiqV)}</span>`}</span>
         </div>
@@ -920,9 +1139,18 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
         </div>`
       : '';
 
-    const contenidoSplit = (est === 'finalizado' && !sinEquipos) ? '' : `
+    const lineupsSectionHtml = !sinEquipos
+      ? renderLineupsPublicas(p, res, est !== 'finalizado')
+      : '';
+
+    const mostrarDetalles = !sinEquipos
+      ? (est !== 'finalizado' || tieneAlineaciones || !!analisisMd)
+      : false;
+
+    const contenidoSplit = !mostrarDetalles ? '' : `
       <details class="partido-detalles">
-        <summary><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Ver análisis y estadísticas del partido${analisisMd ? ' <span class="ia-badge-discreto" style="margin-left:4px;">IA</span>' : ''}</summary>
+        <summary><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> ${tieneAlineaciones ? 'Ver alineaciones, análisis y estadísticas' : 'Ver análisis y estadísticas del partido'}${tieneAlineaciones ? ' <span class="lineups-badge-mini">XI</span>' : ''}${analisisMd ? ' <span class="ia-badge-discreto" style="margin-left:4px;">IA</span>' : ''}</summary>
+        ${lineupsSectionHtml}
         ${analisisHtml}
         <div class="polla-layout-split" style="padding-top: 10px;">
           <div class="columna-split-izquierda">
@@ -941,7 +1169,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
         ${metaHtml}
         <div class="${esAbierto && !sinEquipos ? 'pronostico sb-body' : 'sb-body'}" ${esAbierto && !sinEquipos ? `data-pid="${p.id}"` : ''}>
           ${mainRowHtml}
-          ${eventosHTML}
+          ${liveEventsHTML}
           ${statsWidgetHTML}
           ${footHtml}
         </div>
@@ -1106,48 +1334,24 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
     </div>`;
   }
 
-  /* --- ESTADÍSTICAS PRO (predicción IA + alineaciones) --------- */
+  /* --- ESTADÍSTICAS PRO (predicción API + estadísticas) --------- */
   function renderProStats(p, res) {
-    const alin = res?.alineacion;
     const stats = res?.tarjetas;
-    const eventos = res?.eventos;
-    const apiFixtureId = res?.apiId;
     const pred = res?.prediccion;
-    const est = U.estadoPartido(p, res);
-    
-    // Si está en vivo y hay widget, es la mejor experiencia.
-    if (apiFixtureId && est === 'en_juego') {
-      return `
-        <api-sports-widget
-          data-type="game"
-          data-game-id="${apiFixtureId}"
-          data-refresh="15"
-          style="margin-bottom: 16px;">
-        </api-sports-widget>`;
-    }
 
-    // Para cualquier otro caso (programado, o en vivo sin widget),
-    // construir la vista manual con los datos que tengamos.
     let fallbackHtml = '';
     if (pred) {
       fallbackHtml += renderPrediccionAPI(pred, p);
     }
-    if (alin && alin.length) {
-      fallbackHtml += renderAlineaciones(alin, p);
-    }
     if (stats && (stats[p.local] || stats[p.visitante])) {
       fallbackHtml += renderEstadisticas(stats, p);
-    }
-    if (eventos && eventos.length) {
-      fallbackHtml += renderIncidencias(eventos, p);
     }
 
     if (fallbackHtml) {
       return fallbackHtml;
     }
 
-    // Si no hay ni widget ni datos para fallback, mostrar mensaje.
-    return '<p style="font-size:12px; color:var(--tinta-3); text-align:center; padding: 10px 0;">Datos del partido no disponibles aún.</p>';
+    return '<p style="font-size:12px; color:var(--tinta-3); text-align:center; padding: 10px 0;">Estadísticas oficiales disponibles al iniciar el partido.</p>';
   }
 
   /* --- VISUALIZACIONES PERSONALIZADAS DE LA API --------------- */
@@ -1370,24 +1574,13 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
       ${mensajePuntos(cal, pred)}
     </div>`;
 
-    // Eventos (goles + tarjetas rojas)
-    const evImportantes = eventos.filter(e => e.t === 'gol' || e.t === 'roja').sort((a,b) => a.m - b.m);
-    let evHtml = '';
-    if (evImportantes.length) {
-      const filas = evImportantes.map(e => {
-        const ico = e.t === 'gol' ? svgBallSm : '<i class="sb-card-r"></i>';
-        const esL = e.eq === p.local;
-        return esL
-          ? `<div class="detalle-ev">${ico} <b>${U.esc(e.j)}</b> <span class="ev-min">${e.m}${e.x?'+'+e.x:''}′</span></div>`
-          : `<div class="detalle-ev detalle-ev--v"><span class="ev-min">${e.m}${e.x?'+'+e.x:''}′</span> <b>${U.esc(e.j)}</b> ${ico}</div>`;
-      }).join('');
-      evHtml = `<div style="border-top:1px solid var(--linea);padding:10px 0">${filas}</div>`;
-    }
+    // Eventos (goles y tarjetas) en formato broadcast
+    const evHtml = renderLiveEventsStrip(p, res, 'finalizado');
 
-    // Stats + alineación + predicciones comunidad
+    // Stats + alineaciones + predicciones comunidad
     const statsHtml = (res?.tarjetas && Object.keys(res.tarjetas).length)
       ? `<div style="border-top:1px solid var(--linea);padding-top:10px">${renderMatchStats(p, res)}</div>` : '';
-    const lineupHtml = renderLineupSolo(p, res);
+    const lineupHtml = renderLineupsPublicas(p, res, false);
     const comHtml = `<div style="border-top:1px solid var(--linea);padding-top:10px">${renderStats(p)}</div>`;
 
     return cabHtml + predHtml + evHtml + statsHtml + lineupHtml + comHtml;
@@ -1411,9 +1604,15 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
 
     // Guardar el estado de los <details> abiertos para que no se cierren al refrescar
     const abiertos = new Set();
+    const bancasAbiertas = new Set();
     cont.querySelectorAll('details.partido-detalles[open]').forEach(det => {
         const partidoId = det.closest('.partido')?.id;
         if (partidoId) abiertos.add(partidoId);
+    });
+    cont.querySelectorAll('details.lineups__bench[open]').forEach(det => {
+        const partidoId = det.closest('.partido')?.id;
+        const side = det.dataset.bench || '';
+        if (partidoId && side) bancasAbiertas.add(`${partidoId}__${side}`);
     });
 
     const lista = filtrar(partidosEf());
@@ -1447,9 +1646,17 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
     // Restaurar el estado de los <details> que estaban abiertos
     if (abiertos.size > 0) {
         abiertos.forEach(partidoId => {
-            const partidoEl = cont.querySelector(`#${partidoId}`);
+            const partidoEl = document.getElementById(partidoId);
             const detailsEl = partidoEl?.querySelector('details.partido-detalles');
             if (detailsEl) detailsEl.open = true;
+        });
+    }
+    if (bancasAbiertas.size > 0) {
+        bancasAbiertas.forEach(key => {
+            const [partidoId, side] = key.split('__');
+            const partidoEl = document.getElementById(partidoId);
+            const benchEl = partidoEl?.querySelector(`details.lineups__bench[data-bench="${side}"]`);
+            if (benchEl) benchEl.open = true;
         });
     }
   }
@@ -1625,6 +1832,7 @@ import { TribunaSocial } from './js/tribuna-social.js?v=32';
 
   /* --- CLIC GLOBAL EN CUALQUIER ESCUDO, EQUIPO O COMPETICIÓN PARA ABRIR PERFIL --- */
   document.addEventListener('click', e => {
+    if (e.target.closest('#tc-sim-panel')) return;
     const btnComp = e.target.closest('[data-ver-comp]');
     if (btnComp && btnComp.dataset.verComp) {
       e.stopPropagation();

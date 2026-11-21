@@ -1,50 +1,49 @@
-# ⚽ ScoreCast
+# ScoreCast — Documentación Operativa y Guía de Configuración
 
-Aplicación web de pronósticos deportivos, hecha 100 % con
-**HTML + CSS + JavaScript** (sin frameworks ni compiladores).
-
-> Creada por **Nicolas Nieto Daza** y **Alejandro Rodriguez Rubio**
-
----
-
-## 🚀 Probarla YA (modo demo, 0 minutos de configuración)
-
-1. Abre `index.html` en el navegador (doble clic, o `npx serve .` si prefieres un servidor local).
-2. Crea una cuenta con el correo listado como admin en
-   `js/config.js` (`nicolasnieto191213@gmail.com`) para ver también el panel admin.
-3. En **Admin → Cargar datos de ejemplo** tendrás participantes ficticios con pronósticos,
-   y con **▶ Simular** puedes ver un partido "en vivo" minuto a minuto.
-
-En modo demo todo se guarda en el `localStorage` de **ese** navegador: perfecto para
-probar, inútil para competir. Para que toda la empresa juegue, sigue la guía de
-producción (≈ 30 minutos).
+> **Proyecto Integrador (PICS) — ETITC**  
+> Autores: **Nicolás Nieto Daza**, **Alejandro Rodríguez Rubio**, **Angie Marcela Pinzón Moncada** y **Catalina Alarcón Medina**  
+> Para la descripción integral de arquitectura y módulos vigentes consulta el [`README.md` principal en la raíz del repositorio](../README.md).
 
 ---
 
-## 🗂 Estructura del proyecto
+## Probar en modo Demo (0 minutos de configuración)
 
-```
+1. En `js/config.js` ajusta `MODO: 'demo'` y sirve la carpeta con `npx serve .` (desde `scorecast/`).
+2. Registra una cuenta usando un correo incluido en `CONFIG.ADMINS` para habilitar el enlace a **`admin.html`**.
+3. En **Admin → Zona de Control → Cargar datos de ejemplo (demo)** poblarás usuarios y pronósticos de prueba, con simulador minuto a minuto y la pestaña **Salud y Métricas** operativa en memoria.
+
+---
+
+## Estructura vigente de `scorecast/`
+
+```text
 scorecast/
-├─ index.html          Portada: registro e inicio de sesión
-├─ app.html            Partidos, pronósticos, marcadores en vivo, grupos, campeón
-├─ tabla.html          Tabla de posiciones de ScoreCast (con podio)
-├─ cuentas.html        Bote por moneda, pagos y "quién le debe a quién"
-├─ reglas.html         Reglas del juego
-├─ admin.html          Panel de administración (resultados, gente, calendario, correos)
-├─ css/estilos.css     Tema visual
+├─ index.html               Registro e inicio de sesión (Correo y Google)
+├─ app.html                 Partidos, goles/tarjetas en vivo, alineaciones XI, tablas y campeón
+├─ tabla.html               Ranking general, podio y tarjetas compartibles PNG
+├─ lobby.html               Salas privadas con código de invitación
+├─ cuentas.html             Bote multimoneda y liquidación de pagos
+├─ reglas.html              Reglamento de puntuación y desempates
+├─ creditos.html            Créditos académicos PICS — ETITC
+├─ admin.html               Panel Admin (API-Football, IA, Correos y Salud/Métricas)
+├─ sw.js                    Service Worker PWA (scorecast-cache-v33)
+├─ css/estilos.css          Sistema de diseño oscuro deportivo
 ├─ js/
-│  ├─ config.js        ⭐ Configuración de Firebase y administración
-│  ├─ fixture.js       Calendario de partidos y equipos
-│  ├─ utils.js         Utilidades (fechas, seguridad, toasts)
-│  ├─ store.js         Capa de datos: motor demo (localStorage) o Firebase
-│  ├─ puntos.js        Motor de puntuación, tabla, grupos y bote
-│  ├─ api-futbol.js    Marcadores en vivo vía proxy + simulador demo
-│  └─ email.js         Correos con EmailJS (bienvenida, recordatorio, resumen)
-├─ firebase/
-│  ├─ firestore.rules  Reglas de seguridad (copiar/pegar en la consola)
-│  └─ firebase.json    Configuración de Firebase Hosting
-├─ proxy/cloudflare-worker.js   Proxy que protege la llave de la API de fútbol
-└─ docs/               Documentación Word/PDF con diagramas
+│  ├─ config.js             Configuración de entorno y reglas
+│  ├─ store.js              Capa dual Cloud Firestore / localStorage
+│  ├─ fixture.js            Calendario y clubes de las 7 competiciones
+│  ├─ puntos.js             Motor de calificación, desempates y bote
+│  ├─ utils.js              Sanitización anti-XSS (U.esc), fechas UTC y cierres
+│  ├─ api-futbol.js         Marcadores en vivo, eventos y alineaciones (modo ahorro)
+│  ├─ tablas-cuadros.js     Tablas, llaves KO y simulador "¿Qué pasa si...?"
+│  ├─ compartir-card.js     Tarjetas PNG en <canvas>
+│  ├─ ia.js                 Motor estadístico Poisson + Dixon-Coles
+│  ├─ auditoria-pics.js     Telemetría en vivo y suite de pruebas PICS
+│  ├─ tribuna-social.js     Chat y encuestas en tiempo real
+│  ├─ en-vivo-beta.js        Match center interactivo
+│  ├─ notificaciones.js     Alertas de goles, tarjetas rojas y cierres
+│  └─ email.js              Comunicaciones vía EmailJS
+└─ proxy/cloudflare-worker.js Proxy para resguardar llaves externas
 ```
 
 ---

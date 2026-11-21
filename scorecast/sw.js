@@ -7,7 +7,7 @@
    • Sincronización periódica en background (Periodic Sync)
    • Actualización automática del SW
    ============================================================ */
-const CACHE_NAME = 'scorecast-cache-v32';
+const CACHE_NAME = 'scorecast-cache-v33';
 const APP_SHELL = [
   '/',
   'index.html',
@@ -34,6 +34,8 @@ const APP_SHELL = [
   'js/tablas-cuadros.js',
   'js/en-vivo-beta.js',
   'js/tribuna-social.js',
+  'js/compartir-card.js',
+  'js/auditoria-pics.js',
   'img/escudos/betplay/dimayor.png',
   'img/escudos/premier/epl.png',
   'img/escudos/laliga/laliga.png',

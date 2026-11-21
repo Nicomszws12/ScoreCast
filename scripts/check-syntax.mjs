@@ -8,10 +8,14 @@ const files = [
   'scorecast/app.html',
   'scorecast/tabla.html',
   'scorecast/reglas.html',
+  'scorecast/js/api-futbol.js',
+  'scorecast/js/auditoria-pics.js',
+  'scorecast/js/compartir-card.js',
   'scorecast/js/tablas-cuadros.js',
   'scorecast/js/fixture.js',
   'scorecast/js/store.js',
-  'scorecast/js/puntos.js'
+  'scorecast/js/puntos.js',
+  'scorecast/js/utils.js'
 ];
 
 for (const f of files) {

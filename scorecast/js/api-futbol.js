@@ -64,6 +64,7 @@ const ApiFutbol = {
   },
 
   _equiposPorCompCache: null,
+  _lineupsIntentadosAt: {},
   _adminCicloActivo: false,
 
   disponible() {
@@ -670,46 +671,104 @@ const ApiFutbol = {
     }
   },
 
-  /* Trae goles y tarjetas de un partido por su ID de API. */
-  async traerEventos(apiFixtureId, comp = null) {
+  _nombreJugadorCorto(raw) {
+    const limpio = String(raw || '').trim();
+    if (!limpio) return '';
+    if (limpio.length <= 18) return limpio;
+    const partes = limpio.split(/\s+/);
+    if (partes.length === 1) return limpio;
+    return `${partes[0][0]}. ${partes.slice(-1)[0]}`;
+  },
+
+  _ladoEquipoEvento(teamObj, comp, ctx = {}) {
+    const tid = Number(teamObj?.id || 0);
+    if (tid && ctx.localApiId && tid === Number(ctx.localApiId)) return 'local';
+    if (tid && ctx.visitanteApiId && tid === Number(ctx.visitanteApiId)) return 'visitante';
+    const cod = this._codigo(teamObj?.name, comp) || '';
+    if (cod && ctx.localCod && cod === ctx.localCod) return 'local';
+    if (cod && ctx.visitanteCod && cod === ctx.visitanteCod) return 'visitante';
+    return null;
+  },
+
+  /* Trae goles y tarjetas normalizados de un partido por su ID de API. */
+  async traerEventos(apiFixtureId, comp = null, ctxEquipos = {}) {
     if (!apiFixtureId || !this.disponible()) return [];
     try {
       const data = await this._request('/fixtures/events', { fixture: apiFixtureId });
-      return (data.response || [])
-        .filter(ev => ev.type === 'Goal' ||
-          ev.type === 'subst' ||
-          ev.type === 'var' ||
-          (ev.type === 'Card' && ['Red Card', 'Second Yellow card', 'Yellow Card'].includes(ev.detail)))
-        .map(ev => {
-          const ape = n => (n || '').split(' ').slice(-1)[0];
-          let tipo = ev.type === 'Goal' ? 'gol'
-                   : ev.type === 'subst' ? 'cambio'
-                   : ev.detail === 'Yellow Card' ? 'amarilla' : 'roja';
-          let subtipo = '';
+      const ape = n => (n || '').trim().split(/\s+/).slice(-1)[0] || '';
+      const lista = [];
 
-          if (ev.type === 'Goal') {
-            const det = (ev.detail || '').toLowerCase();
-            if (det.includes('penalty')) subtipo = 'penal';
-            else if (det.includes('own goal')) subtipo = 'autogol';
-            else if (det.includes('free kick')) subtipo = 'tiro_libre';
-            else if (det.includes('header')) subtipo = 'cabeza';
-            else subtipo = 'normal';
-          } else if (ev.type === 'var' && (ev.detail || '').toLowerCase().includes('goal cancelled')) {
-            tipo = 'gol_anulado';
+      for (const ev of (data.response || [])) {
+        const rawType = String(ev.type || '');
+        const rawDetail = String(ev.detail || '');
+        const detLower = rawDetail.toLowerCase();
+
+        let tipo = null;
+        let tLegacy = null;
+        let subtipo = '';
+
+        if (rawType === 'Goal') {
+          if (detLower.includes('missed penalty')) continue;
+          tLegacy = 'gol';
+          if (detLower.includes('own goal')) {
+            tipo = 'autogol';
+            subtipo = 'autogol';
+          } else if (detLower.includes('penalty')) {
+            tipo = 'penal';
+            subtipo = 'penal';
+          } else {
+            tipo = 'gol';
+            subtipo = detLower.includes('free kick') ? 'tiro_libre' : detLower.includes('header') ? 'cabeza' : 'normal';
           }
+        } else if (rawType === 'Card') {
+          if (detLower.includes('second yellow')) {
+            tipo = 'doble_amarilla';
+            tLegacy = 'roja';
+          } else if (detLower.includes('red card')) {
+            tipo = 'roja';
+            tLegacy = 'roja';
+          } else if (detLower.includes('yellow card')) {
+            tipo = 'amarilla';
+            tLegacy = 'amarilla';
+          }
+        }
 
-          return {
-            m:       ev.time?.elapsed || 0,
-            x:       ev.time?.extra || null,
-            eq:      this._codigo(ev.team?.name, comp) || '',
-            j:       ape(ev.player?.name),
-            n:       (ev.player?.name || ''),
-            a:       ev.type === 'subst' ? ape(ev.assist?.name) : null,
-            t:       tipo,
-            subtipo,
-            detail:  ev.detail || ''
-          };
+        if (!tipo) continue;
+
+        const min = Number(ev.time?.elapsed) || 0;
+        const extra = (ev.time?.extra !== undefined && ev.time?.extra !== null && Number(ev.time.extra) > 0)
+          ? Number(ev.time.extra)
+          : null;
+        const codEq = this._codigo(ev.team?.name, comp) || '';
+        const lado = this._ladoEquipoEvento(ev.team, comp, ctxEquipos)
+          || (codEq && codEq === ctxEquipos.localCod ? 'local' : codEq && codEq === ctxEquipos.visitanteCod ? 'visitante' : 'local');
+        const jugadorNom = this._nombreJugadorCorto(ev.player?.name) || ape(ev.player?.name) || 'Jugador';
+        const asistenciaNom = (tLegacy === 'gol' && ev.assist?.name)
+          ? this._nombreJugadorCorto(ev.assist.name)
+          : null;
+
+        lista.push({
+          min,
+          extra,
+          equipo: lado,
+          tipo,
+          jugador: jugadorNom,
+          asistencia: asistenciaNom,
+          // Campos cortos de compatibilidad con notificaciones y vistas secundarias
+          m: min,
+          x: extra,
+          eq: lado === 'local' ? (ctxEquipos.localCod || codEq) : (ctxEquipos.visitanteCod || codEq),
+          j: ape(ev.player?.name) || jugadorNom,
+          n: String(ev.player?.name || ''),
+          a: asistenciaNom,
+          t: tLegacy,
+          subtipo,
+          detail: rawDetail
         });
+      }
+
+      lista.sort((a, b) => (a.min - b.min) || ((a.extra || 0) - (b.extra || 0)));
+      return lista;
     } catch (_) { return []; }
   },
 
@@ -757,22 +816,59 @@ const ApiFutbol = {
     } catch { return null; }
   },
 
-  /* Alineaciones confirmadas (disponibles ~1h antes del partido). */
-  async traerAlineacion(apiFixtureId, comp = null) {
+  /* Alineaciones públicas normalizadas ({ local, visitante }) — se consulta máx. 1 vez por partido. */
+  async traerAlineaciones(apiFixtureId, comp = null, ctxEquipos = {}) {
     if (!apiFixtureId || !this.disponible()) return null;
     try {
       const data = await this._request('/fixtures/lineups', { fixture: apiFixtureId });
-      if (!data.response?.length) return null;
+      const resp = data.response || [];
+      if (resp.length < 2) return null;
       const ord = { G: 0, D: 1, M: 2, F: 3 };
-      return data.response.map(eq => ({
-        cod:   this._codigo(eq.team?.name, comp) || '',
-        apiId: eq.team?.id || null,
-        f:     eq.formation || '',
-        xi: (eq.startXI || [])
-          .map(e => ({ n: (e.player?.name || '').split(' ').slice(-1)[0], num: e.player?.number || '', pos: e.player?.pos || '' }))
-          .sort((a, b) => (ord[a.pos] ?? 9) - (ord[b.pos] ?? 9))
-      }));
+      const mapJug = (arr) => (arr || [])
+        .map(item => {
+          const pl = item?.player || item || {};
+          return {
+            num: pl.number ?? '',
+            nombre: this._nombreJugadorCorto(pl.name) || String(pl.name || '').trim(),
+            pos: String(pl.pos || '').toUpperCase()
+          };
+        })
+        .filter(j => j.nombre)
+        .sort((a, b) => (ord[a.pos] ?? 9) - (ord[b.pos] ?? 9));
+
+      const mapEquipo = (eq) => ({
+        formacion: String(eq?.formation || '').trim(),
+        dt: String(eq?.coach?.name || '').trim(),
+        titulares: mapJug(eq?.startXI),
+        suplentes: mapJug(eq?.substitutes)
+      });
+
+      let idxLocal = resp.findIndex(eq => this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'local');
+      let idxVis = resp.findIndex((eq, idx) => idx !== idxLocal && this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'visitante');
+      if (idxLocal === -1 && idxVis === 0) idxLocal = 1;
+      if (idxLocal === -1 && idxVis === 1) idxLocal = 0;
+      if (idxLocal === -1) idxLocal = 0;
+      if (idxVis === -1) idxVis = idxLocal === 0 ? 1 : 0;
+
+      const localObj = mapEquipo(resp[idxLocal]);
+      const visObj = mapEquipo(resp[idxVis]);
+      if (!localObj.titulares.length && !visObj.titulares.length) return null;
+
+      return {
+        local: localObj,
+        visitante: visObj
+      };
     } catch { return null; }
+  },
+
+  /* Compatibilidad con vistas heredadas de alineación */
+  async traerAlineacion(apiFixtureId, comp = null) {
+    const al = await this.traerAlineaciones(apiFixtureId, comp);
+    if (!al) return null;
+    return [
+      { cod: 'local', f: al.local.formacion, xi: al.local.titulares.map(j => ({ n: j.nombre, num: j.num, pos: j.pos })) },
+      { cod: 'visitante', f: al.visitante.formacion, xi: al.visitante.titulares.map(j => ({ n: j.nombre, num: j.num, pos: j.pos })) }
+    ];
   },
 
   /* Historial de enfrentamientos directos entre dos equipos (H2H). */
@@ -924,7 +1020,11 @@ const ApiFutbol = {
     const [ajustes, resActuales] = await Promise.all([Store.ajustes(), Store.resultados()]);
 
     const incluirDetalles = !!opciones.incluirDetalles || !this.esPlanGratis();
-    let calendario = 0, marcadores = 0, emparejados = 0, sinEmparejar = 0;
+    const forzarDetalles = !!opciones.forzarDetalles;
+    let calendario = 0, marcadores = 0, detallesSync = 0, emparejados = 0, sinEmparejar = 0;
+    let detallesConsultadosEnLote = 0;
+    const maxDetallesLote = forzarDetalles ? 8 : 6;
+    const tieneCuotaDetalle = () => (this.cuotaRestante() === null) || this.cuotaRestante() > (forzarDetalles ? 5 : 15);
     const detalle = [];
 
     for (const ap of partidosApi) {
@@ -998,9 +1098,37 @@ const ApiFutbol = {
         }
       }
 
-      // 2. Marcadores en vivo / finalizados / aplazados
+      // 2. Contexto y alineaciones públicas (<= 65 min, en_juego o finalizado, máx 1 vez por partido)
+      const resAnterior = resActuales[p.id] || {};
+      const ctxEquipos = {
+        localCod: m.local || (invertido ? ap.visitante : ap.local),
+        visitanteCod: m.visitante || (invertido ? ap.local : ap.visitante),
+        localApiId: invertido ? ap.visitanteApiTeamId : ap.localApiTeamId,
+        visitanteApiId: invertido ? ap.localApiTeamId : ap.visitanteApiTeamId
+      };
+
+      const inicioEfectivoMs = inicio || (m.utc ? new Date(m.utc).getTime() : 0);
+      const minParaInicio = inicioEfectivoMs > 0 ? (inicioEfectivoMs - ahora) / 60000 : 9999;
+      const yaTieneAlineaciones = !!(resAnterior.alineaciones && resAnterior.alineaciones.local?.titulares?.length);
+      const recienFinGlobal = ap.estado === 'finalizado' && resAnterior.estado !== 'finalizado';
+      const elegibleLineup =
+        (minParaInicio <= 65 && minParaInicio >= -180) ||
+        ap.estado === 'en_juego' ||
+        recienFinGlobal ||
+        (forzarDetalles && ap.estado === 'finalizado' && minParaInicio >= -1440);
+      const enfriamientoLineup = this._lineupsIntentadosAt[p.id]
+        && (ahora - this._lineupsIntentadosAt[p.id] < (forzarDetalles ? 2 * 60000 : 20 * 60000));
+
+      let nuevasAlineaciones = null;
+      if (incluirDetalles && ap.apiId && !yaTieneAlineaciones && elegibleLineup && !enfriamientoLineup
+          && detallesConsultadosEnLote < maxDetallesLote && tieneCuotaDetalle()) {
+        this._lineupsIntentadosAt[p.id] = ahora;
+        detallesConsultadosEnLote++;
+        nuevasAlineaciones = await this.traerAlineaciones(ap.apiId, p.competicion, ctxEquipos);
+      }
+
+      // 3. Marcadores en vivo / finalizados / aplazados
       if (ap.estado) {
-        const resAnterior = resActuales[p.id] || {};
         const glNuevo = invertido ? ap.gv : ap.gl;
         const gvNuevo = invertido ? ap.gl : ap.gv;
 
@@ -1012,6 +1140,23 @@ const ApiFutbol = {
         }
 
         const motivoAplaz = ap.estado === 'aplazado' ? (this._motivoAplazamiento(ap.periodo) || '') : (resAnterior.motivoAplazamiento || '');
+        const golesAnt = (resAnterior.gl || 0) + (resAnterior.gv || 0);
+        const golesNue = (glNuevo || 0) + (gvNuevo || 0);
+        const cambioGol = golesNue > golesAnt;
+        const recienFin = ap.estado === 'finalizado' && resAnterior.estado !== 'finalizado';
+        const tieneGolesGuardados = Array.isArray(resAnterior.eventos)
+          && resAnterior.eventos.some(e => e.tipo === 'gol' || e.tipo === 'penal' || e.tipo === 'autogol' || e.t === 'gol');
+        const faltanEventosGoles = golesNue > 0 && !tieneGolesGuardados && (ap.estado === 'en_juego' || recienFin || (forzarDetalles && minParaInicio >= -1440));
+        const refrescoEventosVivo = ap.estado === 'en_juego'
+          && ((forzarDetalles && ahora - (resAnterior.eventosAt || 0) > 90000) || (ahora - (resAnterior.eventosAt || 0) > 6 * 60000));
+
+        let nuevosEventos = null;
+        if (incluirDetalles && ap.apiId && (ap.estado === 'en_juego' || ap.estado === 'finalizado')
+            && (cambioGol || recienFin || faltanEventosGoles || refrescoEventosVivo)
+            && detallesConsultadosEnLote < maxDetallesLote && tieneCuotaDetalle()) {
+          detallesConsultadosEnLote++;
+          nuevosEventos = await this.traerEventos(ap.apiId, p.competicion, ctxEquipos);
+        }
 
         const cambioReal =
           resAnterior.estado !== ap.estado ||
@@ -1022,9 +1167,11 @@ const ApiFutbol = {
           Number(resAnterior.apiId || 0) !== Number(ap.apiId || 0) ||
           (ganadorPenales && resAnterior.ganadorPenales !== ganadorPenales);
 
-        if (cambioReal) {
+        const hayNuevosDetalles = !!(nuevasAlineaciones || (nuevosEventos && nuevosEventos.length !== (resAnterior.eventos || []).length));
+
+        if (cambioReal || hayNuevosDetalles) {
           const resultado = {
-            apiId:    ap.apiId || null,
+            apiId:    ap.apiId || resAnterior.apiId || null,
             estado:   ap.estado,
             minuto:   ap.minuto !== undefined && ap.minuto !== null ? ap.minuto : null,
             minutoAt: ahora,
@@ -1035,23 +1182,18 @@ const ApiFutbol = {
           if (ap.estado === 'aplazado') resultado.motivoAplazamiento = motivoAplaz;
           if (ganadorPenales) resultado.ganadorPenales = ganadorPenales;
 
-          const golesAnt = (resAnterior.gl || 0) + (resAnterior.gv || 0);
-          const golesNue = (glNuevo || 0) + (gvNuevo || 0);
-          const cambioGol = golesNue > golesAnt;
-          const recienFin = ap.estado === 'finalizado' && resAnterior.estado !== 'finalizado';
-          const cuotaOk = (this.cuotaRestante() === null) || this.cuotaRestante() > 15;
-
-          // Eventos (goles/tarjetas): solo si el admin activó detalles o en plan Pro, respetando cuota
-          if (incluirDetalles && cuotaOk && (cambioGol || recienFin) && ap.apiId) {
-            const evs = await this.traerEventos(ap.apiId, p.competicion);
-            resultado.eventos = evs.length ? evs : (resAnterior.eventos || []);
+          if (nuevosEventos !== null) {
+            resultado.eventos = nuevosEventos.length ? nuevosEventos : (resAnterior.eventos || []);
+            resultado.eventosAt = ahora;
           } else {
             resultado.eventos = resAnterior.eventos || [];
+            if (resAnterior.eventosAt) resultado.eventosAt = resAnterior.eventosAt;
           }
 
           // Estadísticas (posesión, tiros, tarjetas): solo si detalles activos / Pro, cada 10 min o al finalizar
-          if (incluirDetalles && cuotaOk && (ap.estado === 'en_juego' || recienFin) && ap.apiId) {
+          if (incluirDetalles && tieneCuotaDetalle() && detallesConsultadosEnLote < maxDetallesLote && (ap.estado === 'en_juego' || recienFin) && ap.apiId) {
             if (ahora - (resAnterior.statsAt || 0) > 10 * 60000 || recienFin) {
+              detallesConsultadosEnLote++;
               const teamIdMap = {};
               if (ap.localApiTeamId)     teamIdMap[ap.localApiTeamId]     = invertido ? ap.visitante : ap.local;
               if (ap.visitanteApiTeamId) teamIdMap[ap.visitanteApiTeamId] = invertido ? ap.local     : ap.visitante;
@@ -1067,31 +1209,53 @@ const ApiFutbol = {
             if (resAnterior.statsAt)  resultado.statsAt  = resAnterior.statsAt;
           }
 
-          // Preservar campos enriquecidos previos
+          // Preservar campos enriquecidos previos + nuevas alineaciones
+          if (nuevasAlineaciones) {
+            resultado.alineaciones = nuevasAlineaciones;
+            detallesSync++;
+          } else if (resAnterior.alineaciones) {
+            resultado.alineaciones = resAnterior.alineaciones;
+          }
+          if (nuevosEventos && nuevosEventos.length) detallesSync++;
           if (resAnterior.prediccion) resultado.prediccion = resAnterior.prediccion;
           if (resAnterior.alineacion) resultado.alineacion = resAnterior.alineacion;
           if (resAnterior.analisisIA) resultado.analisisIA = resAnterior.analisisIA;
 
           await Store.guardarResultado(p.id, resultado);
-          marcadores++;
+          if (cambioReal) marcadores++;
           itemDiag.actualizado = true;
-          itemDiag.accion = ap.estado === 'en_juego'
+          const sufijoDet = `${nuevasAlineaciones ? ' · XI confirmado' : ''}${nuevosEventos?.length ? ` · ${nuevosEventos.length} ev.` : ''}`;
+          itemDiag.accion = (ap.estado === 'en_juego'
             ? `En vivo ${glNuevo ?? 0}-${gvNuevo ?? 0} (${ap.minuto ?? 0}')`
             : ap.estado === 'finalizado'
               ? `Finalizado ${glNuevo ?? 0}-${gvNuevo ?? 0}`
-              : `Aplazado (${ap.periodo})`;
-          console.log(`⚽ Partido ${p.id}: estado=${ap.estado}, ${glNuevo}-${gvNuevo} (${ap.periodo || ''})`);
+              : `Aplazado (${ap.periodo})`) + sufijoDet;
+          console.log(`Partido ${p.id}: estado=${ap.estado}, ${glNuevo}-${gvNuevo}${sufijoDet}`);
         } else {
           itemDiag.accion = ap.estado === 'finalizado' ? 'Finalizado (al día)' : 'Marcador al día';
         }
       } else if (enLimbo) {
-        const resAnterior = resActuales[p.id] || {};
-        if (resAnterior.estado !== 'en_juego' && resAnterior.estado !== 'finalizado' && resAnterior.estado !== 'iniciando') {
-          await Store.guardarResultado(p.id, { ...resAnterior, apiId: ap.apiId || resAnterior.apiId || null, estado: 'iniciando' });
+        const payloadLimbo = { ...resAnterior, apiId: ap.apiId || resAnterior.apiId || null, estado: 'iniciando' };
+        if (nuevasAlineaciones) {
+          payloadLimbo.alineaciones = nuevasAlineaciones;
+          detallesSync++;
+        }
+        if (resAnterior.estado !== 'en_juego' && resAnterior.estado !== 'finalizado' && (resAnterior.estado !== 'iniciando' || nuevasAlineaciones)) {
+          await Store.guardarResultado(p.id, payloadLimbo);
           marcadores++;
           itemDiag.actualizado = true;
-          itemDiag.accion = 'Iniciando (periodo de gracia)';
+          itemDiag.accion = `Iniciando (periodo de gracia)${nuevasAlineaciones ? ' · XI confirmado' : ''}`;
         }
+      } else if (nuevasAlineaciones) {
+        // Partido aún programado (<= 65 min antes del pitazo): publica alineaciones sin cerrar pronósticos
+        await Store.guardarResultado(p.id, {
+          ...resAnterior,
+          apiId: ap.apiId || resAnterior.apiId || null,
+          alineaciones: nuevasAlineaciones
+        });
+        detallesSync++;
+        itemDiag.actualizado = true;
+        itemDiag.accion = 'Alineaciones confirmadas publicadas';
       }
 
       detalle.push(itemDiag);
@@ -1100,6 +1264,7 @@ const ApiFutbol = {
     return {
       calendario,
       marcadores,
+      detallesSync,
       total: partidosApi.length,
       totalGlobal: opciones.totalGlobal ?? partidosApi.length,
       emparejados,
@@ -1109,6 +1274,27 @@ const ApiFutbol = {
       fuente: opciones.fuente || 'api',
       timestamp: Date.now()
     };
+  },
+
+  /* Sincroniza goles, tarjetas y alineaciones de partidos en vivo y próximos de hoy (<= 65 min) */
+  async sincronizarDetallesActivos(opciones = {}) {
+    if (!this.disponible()) throw new Error('API_FUTBOL no está configurada.');
+    const hoy = this.fechaLocal(0);
+    const [enVivo, delDia] = await Promise.all([
+      this.traerEnVivoDetallado(),
+      this.traerPartidosDelDiaDetallado(hoy, true)
+    ]);
+    const mapa = new Map();
+    [...enVivo.partidos, ...delDia.partidos].forEach(p => { if (p?.apiId) mapa.set(p.apiId, p); });
+    const sinCodigo = [...enVivo.sinCodigo, ...delDia.sinCodigo];
+    return this._procesarPartidosApi([...mapa.values()], false, {
+      ...opciones,
+      incluirDetalles: true,
+      forzarDetalles: true,
+      sinCodigo,
+      totalGlobal: Math.max(enVivo.totalGlobal, delDia.totalGlobal),
+      fuente: `detalles+xi:${hoy}`
+    });
   },
 
   /* Sincronización rápida EN VIVO (1 petición `/fixtures?live=all`, +1 fallback solo si un partido acaba de terminar) */
@@ -1313,7 +1499,10 @@ const ApiFutbol = {
 
           if (puedeSync) {
             try {
-              const r = await this.sincronizarSoloVivos({ incluirDetalles: !!opciones.incluirDetalles });
+              const incDet = typeof opciones.incluirDetalles === 'function'
+                ? !!opciones.incluirDetalles()
+                : !!opciones.incluirDetalles;
+              const r = await this.sincronizarSoloVivos({ incluirDetalles: incDet });
               alTerminarCadaCiclo && alTerminarCadaCiclo(r);
             } catch (e) {
               console.warn('Sincronización en vivo:', e.message);
@@ -1351,14 +1540,33 @@ const ApiFutbol = {
   /* Simulador minuto a minuto (solo modo demo / pruebas). */
   simular(pid, alAvanzar) {
     const Store = _store();
+    const p = (_fix().partidos || []).find(x => x.id === pid) || {};
+    const nombresDemoL = ['C. Bacca', 'L. Castro', 'D. Ruiz', 'A. Morelos', 'J. Quintero'];
+    const nombresDemoV = ['D. Pabón', 'H. Rodallega', 'Y. Chará', 'F. Uribe', 'M. Borja'];
     let minuto = 0, gl = 0, gv = 0, parado = false;
+    const eventos = [];
     const paso = async () => {
       if (parado) return;
       minuto = Math.min(90, minuto + 5 + Math.floor(Math.random() * 4));
-      if (Math.random() < 0.16) gl++;
-      if (Math.random() < 0.13) gv++;
+      if (Math.random() < 0.16) {
+        gl++;
+        const jug = nombresDemoL[gl % nombresDemoL.length];
+        const esPen = Math.random() < 0.18;
+        eventos.push({ min: minuto, extra: null, equipo: 'local', tipo: esPen ? 'penal' : 'gol', jugador: jug, asistencia: null, m: minuto, x: null, eq: p.local || '', j: jug, t: 'gol', subtipo: esPen ? 'penal' : 'normal' });
+      }
+      if (Math.random() < 0.13) {
+        gv++;
+        const jug = nombresDemoV[gv % nombresDemoV.length];
+        eventos.push({ min: minuto, extra: null, equipo: 'visitante', tipo: 'gol', jugador: jug, asistencia: null, m: minuto, x: null, eq: p.visitante || '', j: jug, t: 'gol', subtipo: 'normal' });
+      }
+      if (Math.random() < 0.12) {
+        const lado = Math.random() < 0.5 ? 'local' : 'visitante';
+        const jug = (lado === 'local' ? nombresDemoL : nombresDemoV)[Math.floor(Math.random() * 5)];
+        const roja = Math.random() < 0.15;
+        eventos.push({ min: minuto, extra: null, equipo: lado, tipo: roja ? 'roja' : 'amarilla', jugador: jug, asistencia: null, m: minuto, x: null, eq: lado === 'local' ? (p.local || '') : (p.visitante || ''), j: jug, t: roja ? 'roja' : 'amarilla', subtipo: '' });
+      }
       const fin = minuto >= 90;
-      await Store.guardarResultado(pid, { estado: fin ? 'finalizado' : 'en_juego', minuto: fin ? 90 : minuto, gl, gv });
+      await Store.guardarResultado(pid, { estado: fin ? 'finalizado' : 'en_juego', minuto: fin ? 90 : minuto, minutoAt: Date.now(), periodo: fin ? 'FT' : (minuto <= 45 ? '1H' : '2H'), gl, gv, eventos: [...eventos] });
       alAvanzar && alAvanzar({ minuto, gl, gv, fin });
       if (!fin) setTimeout(paso, 2500);
     };

@@ -10,7 +10,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="css/estilos.css?v=32">
+  <link rel="stylesheet" href="css/estilos.css?v=33">
 </head>
 <body>
 
@@ -55,6 +55,7 @@
     <button data-tab="correos" type="button">✉️ Comunicaciones</button>
     <button data-tab="pronosticos" type="button">🔮 Pronósticos</button>
     <button data-tab="ia" type="button">🤖 Análisis IA</button>
+    <button data-tab="salud" type="button"><svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Salud y Métricas</button>
   </div>
 
   <!-- ====== RESULTADOS ====== -->
@@ -103,6 +104,10 @@
           <button class="boton boton--fantasma boton--mini" id="b-sync-fecha" type="button" style="font-weight:700;">🔎 Fecha (1 req)</button>
         </div>
         <button class="boton boton--fantasma boton--mini" id="b-sync-card" type="button" style="font-weight:700;">🔄 Hoy + Mañana (2 req)</button>
+        <button class="boton boton--verde boton--mini" id="b-sync-detalles" type="button" style="font-weight:700;" title="Trae goles, tarjetas y alineaciones confirmadas (<= 65 min o en vivo) y las publica a todos vía Firestore.">
+          <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Goles, tarjetas y XI
+        </button>
       </div>
 
       <div class="api-ctrl-bar">
@@ -118,9 +123,9 @@
               <option value="300">300s (ultra ahorro)</option>
             </select>
           </label>
-          <label class="api-chk-lbl" title="Trae goleadores, tarjetas y estadísticas al haber gol o finalizar (consume +1-2 req por partido).">
-            <input type="checkbox" id="api-detalles-chk">
-            <span>Eventos y estadísticas detalladas (+1–2 req/partido)</span>
+          <label class="api-chk-lbl" title="Trae goles, tarjetas y alineaciones públicas (XI consultado máx. 1 sola vez por partido <= 65 min antes del inicio).">
+            <input type="checkbox" id="api-detalles-chk" checked>
+            <span>Incluir goles, tarjetas y alineaciones XI (modo ahorro)</span>
           </label>
         </div>
         <div id="api-auto-estado" style="font-size:12px; color:var(--tinta-3);">
@@ -465,6 +470,11 @@
     </div>
   </section>
 
+  <!-- ====== SALUD Y MÉTRICAS (SUSTENTACIÓN PICS) ====== -->
+  <section id="tab-salud" class="oculto">
+    <div id="auditoria-pics-root"></div>
+  </section>
+
   <!-- ====== ZONA DE CONTROL ====== -->
   <div class="panel panel--relleno" style="margin-top:26px">
     <h2>🏁 Zona de Control</h2>
@@ -570,17 +580,19 @@
   </footer>
 </main>
 
-<script type="module" src="js/config.js?v=32"></script>
-<script type="module" src="js/fixture.js?v=32"></script>
-<script type="module" src="js/utils.js?v=32"></script>
-<script type="module" src="js/store.js?v=32"></script>
-<script type="module" src="js/puntos.js?v=32"></script>
-<script type="module" src="js/equipos-info.js?v=32"></script>
-<script type="module" src="js/api-futbol.js?v=32"></script>
-<script type="module" src="js/email.js?v=32"></script>
-<script type="module" src="js/ia.js?v=32"></script>
+<script type="module" src="js/config.js?v=33"></script>
+<script type="module" src="js/fixture.js?v=33"></script>
+<script type="module" src="js/utils.js?v=33"></script>
+<script type="module" src="js/store.js?v=33"></script>
+<script type="module" src="js/puntos.js?v=33"></script>
+<script type="module" src="js/equipos-info.js?v=33"></script>
+<script type="module" src="js/api-futbol.js?v=33"></script>
+<script type="module" src="js/email.js?v=33"></script>
+<script type="module" src="js/ia.js?v=33"></script>
+<script type="module" src="js/auditoria-pics.js?v=33"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=32';
+import { CONFIG } from './js/config.js?v=33';
+import { AuditoriaPICS } from './js/auditoria-pics.js?v=33';
 (async () => {
   await Store.init();
   const yo = await Store.sesion();
@@ -666,7 +678,7 @@ import { CONFIG } from './js/config.js?v=32';
   }
 
   /* ============ TABS ============ */
-  const TABS = ['resultados', 'gente', 'calendario', 'correos', 'pronosticos', 'ia'];
+  const TABS = ['resultados', 'gente', 'calendario', 'correos', 'pronosticos', 'ia', 'salud'];
   const tabsRendered = { resultados: true };
   document.querySelectorAll('.tabs button').forEach(b => b.onclick = async () => {
     document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('activo', x === b));
@@ -689,6 +701,10 @@ import { CONFIG } from './js/config.js?v=32';
       pintarPron();
     } else if (tabName === 'ia') {
       pintarIA();
+    } else if (tabName === 'salud') {
+      await AuditoriaPICS.render(document.getElementById('auditoria-pics-root'), {
+        Store, CONFIG, FIXTURE, Puntos, U, ApiFutbol
+      });
     }
   });
 
@@ -1117,6 +1133,16 @@ import { CONFIG } from './js/config.js?v=32';
     const f = elFechaApi?.value || ApiFutbol.fechaLocal(0);
     ejecutarSyncApi(bSyncFecha, (o) => ApiFutbol.sincronizarFecha(f, o), `Fecha ${f}`);
   };
+  const bSyncDetalles = document.getElementById('b-sync-detalles');
+  if (bSyncDetalles) bSyncDetalles.onclick = () => ejecutarSyncApi(bSyncDetalles, (o) => ApiFutbol.sincronizarDetallesActivos(o), 'Goles, tarjetas y XI');
+
+  if (elDetallesApi) {
+    const prefDet = localStorage.getItem('sc_api_detalles');
+    if (prefDet !== null) elDetallesApi.checked = prefDet === '1';
+    elDetallesApi.onchange = () => {
+      localStorage.setItem('sc_api_detalles', elDetallesApi.checked ? '1' : '0');
+    };
+  }
 
   let pararVivo = null;
   function toggleVivo() {
@@ -1131,7 +1157,7 @@ import { CONFIG } from './js/config.js?v=32';
     }
     if (!ApiFutbol.disponible()) { U.toast('Configura primero apiKey en js/config.js.', 'error'); return; }
     const seg = Number(elIntervaloApi?.value) || 120;
-    const incluirDetalles = !!(elDetallesApi && elDetallesApi.checked);
+    const incluirDetallesFn = () => !!(elDetallesApi && elDetallesApi.checked);
     pararVivo = ApiFutbol.cicloEnVivo(async (r) => {
       if (r?.pausadoPorCuota) {
         if (elAutoEstado) elAutoEstado.textContent = `⚠️ ${r.mensaje}`;
@@ -1149,7 +1175,7 @@ import { CONFIG } from './js/config.js?v=32';
       if (elAutoEstado) elAutoEstado.textContent = `🟢 Activo cada ${seg}s · Último ciclo: ${new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
       await cargar();
       await refrescarEstadoApi(false);
-    }, { modo: 'admin', intervaloSegundos: seg, incluirDetalles });
+    }, { modo: 'admin', intervaloSegundos: seg, incluirDetalles: incluirDetallesFn });
 
     if (bVivo) { bVivo.textContent = `📡 Automático (${seg}s): ON`; bVivo.classList.remove('boton--fantasma'); }
     if (bVivoCard) { bVivoCard.textContent = `📡 Automático: ON (${seg}s)`; bVivoCard.classList.remove('boton--fantasma'); }
