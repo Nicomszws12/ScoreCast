@@ -5,8 +5,8 @@
    de las 7 competiciones disponibles en la plataforma.
    ============================================================ */
 
-import { FIXTURE, COMPETICIONES } from './fixture.js?v=34';
-import { U } from './utils.js?v=34';
+import { FIXTURE, COMPETICIONES } from './fixture.js?v=35';
+import { U } from './utils.js?v=35';
 
 const COMPETICIONES_DATA = {
   betplay: {

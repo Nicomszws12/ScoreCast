@@ -11,10 +11,10 @@
      - Copa Sudamericana (🥈)
    ============================================================ */
 
-import { FIXTURE, COMPETICIONES } from './fixture.js?v=34';
-import { U } from './utils.js?v=34';
-import { EquiposInfo } from './equipos-info.js?v=34';
-import { CompeticionesInfo } from './competiciones-info.js?v=34';
+import { FIXTURE, COMPETICIONES } from './fixture.js?v=35';
+import { U } from './utils.js?v=35';
+import { EquiposInfo } from './equipos-info.js?v=35';
+import { CompeticionesInfo } from './competiciones-info.js?v=35';
 
 /* Íconos SVG minimalistas (stroke-width="1.75", cero emojis) para el Simulador */
 const SIM_ICO = {

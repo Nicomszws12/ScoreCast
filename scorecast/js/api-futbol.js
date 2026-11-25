@@ -980,12 +980,30 @@ const ApiFutbol = {
       .filter(j => j.nombre)
       .sort((a, b) => (ord[a.pos] ?? 9) - (ord[b.pos] ?? 9));
 
-    const mapEquipo = (eq) => ({
-      formacion: String(eq?.formation || '').trim(),
-      dt: String(eq?.coach?.name || '').trim(),
-      titulares: mapJug(eq?.startXI),
-      suplentes: mapJug(eq?.substitutes)
-    });
+    const inferirFormacion = (startXI, titMapeados) => {
+      const filasGrid = {};
+      for (const item of (startXI || [])) {
+        const g = String(item?.player?.grid || item?.grid || '');
+        const r = parseInt(g.split(':')[0], 10);
+        if (r >= 2) filasGrid[r] = (filasGrid[r] || 0) + 1;
+      }
+      const cols = Object.keys(filasGrid).sort((a, b) => Number(a) - Number(b)).map(k => filasGrid[k]);
+      if (cols.length >= 2 && cols.reduce((s, n) => s + n, 0) === 10) return cols.join('-');
+      const d = titMapeados.filter(j => j.pos === 'D').length;
+      const m = titMapeados.filter(j => j.pos === 'M').length;
+      const f = titMapeados.filter(j => j.pos === 'F').length;
+      return (d && m && f && (d + m + f === 10)) ? `${d}-${m}-${f}` : '';
+    };
+
+    const mapEquipo = (eq) => {
+      const tit = mapJug(eq?.startXI);
+      return {
+        formacion: String(eq?.formation || '').trim() || inferirFormacion(eq?.startXI, tit),
+        dt: String(eq?.coach?.name || '').trim(),
+        titulares: tit,
+        suplentes: mapJug(eq?.substitutes)
+      };
+    };
 
     let idxLocal = resp.findIndex(eq => this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'local');
     let idxVis = resp.findIndex((eq, idx) => idx !== idxLocal && this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'visitante');

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/estilos.css?v=34">
+  <link rel="stylesheet" href="css/estilos.css?v=35">
 </head>
 <body>
 
@@ -330,30 +330,30 @@
 <audio id="sonido-gol" src="sounds/gol.mp3" preload="auto"></audio>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script type="module" src="js/config.js?v=34"></script>
-<script type="module" src="js/fixture.js?v=34"></script>
-<script type="module" src="js/utils.js?v=34"></script>
-<script type="module" src="js/store.js?v=34"></script>
-<script type="module" src="js/puntos.js?v=34"></script>
-<script type="module" src="js/api-futbol.js?v=34"></script>
-<script type="module" src="js/ia.js?v=34"></script>
-<script type="module" src="js/email.js?v=34"></script>
-<script type="module" src="js/grupos-api.js?v=34"></script>
-<script type="module" src="js/notificaciones.js?v=34"></script>
-<script type="module" src="js/equipos-info.js?v=34"></script>
-<script type="module" src="js/competiciones-info.js?v=34"></script>
-<script type="module" src="js/tablas-cuadros.js?v=34"></script>
-<script type="module" src="js/en-vivo-beta.js?v=34"></script>
-<script type="module" src="js/tribuna-social.js?v=34"></script>
-<script type="module" src="js/compartir-card.js?v=34"></script>
+<script type="module" src="js/config.js?v=35"></script>
+<script type="module" src="js/fixture.js?v=35"></script>
+<script type="module" src="js/utils.js?v=35"></script>
+<script type="module" src="js/store.js?v=35"></script>
+<script type="module" src="js/puntos.js?v=35"></script>
+<script type="module" src="js/api-futbol.js?v=35"></script>
+<script type="module" src="js/ia.js?v=35"></script>
+<script type="module" src="js/email.js?v=35"></script>
+<script type="module" src="js/grupos-api.js?v=35"></script>
+<script type="module" src="js/notificaciones.js?v=35"></script>
+<script type="module" src="js/equipos-info.js?v=35"></script>
+<script type="module" src="js/competiciones-info.js?v=35"></script>
+<script type="module" src="js/tablas-cuadros.js?v=35"></script>
+<script type="module" src="js/en-vivo-beta.js?v=35"></script>
+<script type="module" src="js/tribuna-social.js?v=35"></script>
+<script type="module" src="js/compartir-card.js?v=35"></script>
 <script type="module">
-import { CONFIG } from './js/config.js?v=34';
-import { EquiposInfo } from './js/equipos-info.js?v=34';
-import { CompeticionesInfo } from './js/competiciones-info.js?v=34';
-import { TablasCuadros } from './js/tablas-cuadros.js?v=34';
-import { EnVivoBeta } from './js/en-vivo-beta.js?v=34';
-import { TribunaSocial } from './js/tribuna-social.js?v=34';
-import { CompartirCard } from './js/compartir-card.js?v=34';
+import { CONFIG } from './js/config.js?v=35';
+import { EquiposInfo } from './js/equipos-info.js?v=35';
+import { CompeticionesInfo } from './js/competiciones-info.js?v=35';
+import { TablasCuadros } from './js/tablas-cuadros.js?v=35';
+import { EnVivoBeta } from './js/en-vivo-beta.js?v=35';
+import { TribunaSocial } from './js/tribuna-social.js?v=35';
+import { CompartirCard } from './js/compartir-card.js?v=35';
 
 (async () => {
   try {
@@ -881,9 +881,21 @@ import { CompartirCard } from './js/compartir-card.js?v=34';
       </div>`;
   }
 
+  function inferirFormacionDesdeTitulares(titulares) {
+    if (!Array.isArray(titulares) || titulares.length < 10) return '';
+    const d = titulares.filter(j => j.pos === 'D').length;
+    const m = titulares.filter(j => j.pos === 'M').length;
+    const f = titulares.filter(j => j.pos === 'F').length;
+    return (d && m && f && (d + m + f === 10)) ? `${d}-${m}-${f}` : '';
+  }
+
   function normalizarAlineacionesPartido(p, res) {
     if (res?.alineaciones && (res.alineaciones.local?.titulares?.length || res.alineaciones.visitante?.titulares?.length)) {
-      return res.alineaciones;
+      const fixEq = (eq) => eq ? {
+        ...eq,
+        formacion: eq.formacion || inferirFormacionDesdeTitulares(eq.titulares)
+      } : eq;
+      return { local: fixEq(res.alineaciones.local), visitante: fixEq(res.alineaciones.visitante) };
     }
     if (Array.isArray(res?.alineacion) && res.alineacion.length >= 2) {
       const [eqL, eqV] = res.alineacion[0].cod === p.local
