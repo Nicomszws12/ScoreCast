@@ -10,8 +10,8 @@
    • Reproductor Watch Party (solo enlaces legales/oficiales)
    ============================================================ */
 
-import { FIXTURE, COMPETICIONES } from './fixture.js?v=31';
-import { U } from './utils.js?v=31';
+import { FIXTURE, COMPETICIONES } from './fixture.js?v=34';
+import { U } from './utils.js?v=34';
 
 const CANALES_GUIA = {
   betplay: { tv: 'Win Sports+ / Win Play', yt: 'https://www.youtube.com/@WinSportsTV/streams', label: 'Win Sports Oficial' },
@@ -342,15 +342,36 @@ export const EnVivoBeta = {
     }
 
     if (this.subTabStats === 'timeline') {
+      if (!usaSim && window.ApiFutbol?.asegurarDetallesPartido) {
+        window.ApiFutbol.asegurarDetallesPartido(partido.id).catch(() => {});
+      }
       const mom = usaSim ? this.simData.momentum : [18, 25, -14, 30, 12, -22, -35, 16, 40, -18, 22, -12, 28, 10, -26, 32];
       const evs = usaSim
         ? this.simData.eventos
-        : (res?.eventos || []).map(e => ({
-            m: e.m,
-            t: e.t,
-            eq: e.eq,
-            txt: `${e.j || 'Jugador'} (${e.detail || e.t})`
-          }));
+        : (res?.eventos || []).map(e => {
+            const minTxt = `${e.min ?? e.m ?? 0}${e.extra || e.x ? '+' + (e.extra || e.x) : ''}`;
+            const tipo = e.tipo || e.t;
+            let txt = e.jugador || e.j || 'Jugador';
+            if (tipo === 'cambio') {
+              txt = `${e.entra ? '▲ ' + e.entra : ''}${e.entra && e.sale ? ' · ' : ''}${e.sale ? '▼ ' + e.sale : ''}`.trim() || txt;
+            } else if (tipo === 'gol' || tipo === 'penal' || tipo === 'autogol') {
+              if (tipo === 'penal') txt += ' (Penal)';
+              if (tipo === 'autogol') txt += ' (Autogol)';
+              if (e.asistencia || e.a) txt += ` · Asist: ${e.asistencia || e.a}`;
+            } else if (tipo === 'doble_amarilla') {
+              txt += ' (Doble amarilla)';
+            } else if (tipo === 'amarilla') {
+              txt += ' (Tarjeta amarilla)';
+            } else if (tipo === 'roja') {
+              txt += ' (Tarjeta roja)';
+            }
+            return {
+              m: minTxt,
+              t: (tipo === 'penal' || tipo === 'autogol') ? 'gol' : (tipo === 'doble_amarilla' ? 'roja' : tipo),
+              eq: e.eq || (e.equipo === 'visitante' ? partido.visitante : partido.local),
+              txt
+            };
+          });
 
       return `
         <div class="ev-mom-wrap">
@@ -377,22 +398,43 @@ export const EnVivoBeta = {
                 <span class="ev-tl-ico">${ico}</span>
                 <span class="ev-tl-txt">${U.esc(e.txt)}</span>
               </div>`;
-          }).join('') : '<div class="sub centro" style="padding:16px;font-size:12.5px;">Aún no hay incidencias registradas. Activa <b>⚡ Simulador Live Demo</b> para previsualizar el minuto a minuto en vivo.</div>'}
+          }).join('') : '<div class="sub centro" style="padding:16px;font-size:12.5px;">Los eventos del partido aparecerán aquí cuando inicie el encuentro.</div>'}
         </div>`;
     }
 
     if (this.subTabStats === 'lineups') {
+      if (!usaSim && window.ApiFutbol?.asegurarDetallesPartido) {
+        window.ApiFutbol.asegurarDetallesPartido(partido.id).catch(() => {});
+      }
+      const alinPub = res?.alineaciones;
+      if (alinPub && (alinPub.local?.titulares?.length || alinPub.visitante?.titulares?.length)) {
+        const posM = { G: 'POR', D: 'DEF', M: 'MED', F: 'DEL' };
+        const colHtml = (datos, eqObj) => `
+          <div class="ev-lu-col">
+            <div class="ev-lu-head">${eqObj.b} <b>${U.esc(eqObj.n)}</b> ${datos?.formacion ? `<span class="etiqueta">${U.esc(datos.formacion)}</span>` : ''}</div>
+            ${datos?.dt ? `<div style="font-size:11.5px;color:var(--tinta-3);margin-bottom:6px;">DT: <b style="color:var(--tinta-2)">${U.esc(datos.dt)}</b></div>` : ''}
+            ${(datos?.titulares || []).map(j => `<div class="ev-lu-row"><span>#${U.esc(j.num ?? '—')}</span><b>${U.esc(j.nombre)}</b><small>${U.esc(posM[j.pos] || j.pos || '')}</small></div>`).join('')}
+            ${(datos?.suplentes || []).length ? `
+              <details style="margin-top:8px;font-size:12px;">
+                <summary style="cursor:pointer;color:var(--oro);font-weight:600;">Suplentes (${datos.suplentes.length})</summary>
+                <div style="margin-top:6px;">
+                  ${datos.suplentes.map(j => `<div class="ev-lu-row" style="opacity:.85"><span>#${U.esc(j.num ?? '—')}</span><b>${U.esc(j.nombre)}</b><small>${U.esc(posM[j.pos] || j.pos || '')}</small></div>`).join('')}
+                </div>
+              </details>` : ''}
+          </div>`;
+        return `<div class="ev-lineups-grid">${colHtml(alinPub.local, L)}${colHtml(alinPub.visitante, V)}</div>`;
+      }
       const alin = res?.alineacion;
       if (alin && alin.length === 2) {
         const [eqL, eqV] = alin[0].cod === partido.local ? [alin[0], alin[1]] : [alin[1], alin[0]];
         return `
           <div class="ev-lineups-grid">
             <div class="ev-lu-col">
-              <div class="ev-lu-head">${L.b} <b>${U.esc(L.n)}</b> <span class="etiqueta">${U.esc(eqL.f || '4-3-3')}</span></div>
+              <div class="ev-lu-head">${L.b} <b>${U.esc(L.n)}</b> ${eqL.f ? `<span class="etiqueta">${U.esc(eqL.f)}</span>` : ''}</div>
               ${(eqL.xi || []).map(j => `<div class="ev-lu-row"><span>#${j.num}</span><b>${U.esc(j.n)}</b><small>${j.pos}</small></div>`).join('')}
             </div>
             <div class="ev-lu-col">
-              <div class="ev-lu-head">${V.b} <b>${U.esc(V.n)}</b> <span class="etiqueta">${U.esc(eqV.f || '4-2-3-1')}</span></div>
+              <div class="ev-lu-head">${V.b} <b>${U.esc(V.n)}</b> ${eqV.f ? `<span class="etiqueta">${U.esc(eqV.f)}</span>` : ''}</div>
               ${(eqV.xi || []).map(j => `<div class="ev-lu-row"><span>#${j.num}</span><b>${U.esc(j.n)}</b><small>${j.pos}</small></div>`).join('')}
             </div>
           </div>`;
@@ -400,13 +442,13 @@ export const EnVivoBeta = {
       return `
         <div class="ev-lineups-grid">
           <div class="ev-lu-col">
-            <div class="ev-lu-head">${L.b} <b>${U.esc(L.n)}</b> <span class="etiqueta etiqueta--dorada">Esquema 4-3-3</span></div>
-            <p class="sub" style="font-size:12.5px;margin:8px 0;">Alineación oficial disponible ~1 hora antes del pitazo inicial.</p>
+            <div class="ev-lu-head">${L.b} <b>${U.esc(L.n)}</b></div>
+            <p class="sub" style="font-size:12.5px;margin:8px 0;">Alineaciones disponibles cerca del inicio del partido.</p>
             <div class="ev-lu-stat">🏟 Localía · ${stL.pj} PJ · ${stL.pts} pts (${stL.pg}G-${stL.pe}E-${stL.pp}P)</div>
           </div>
           <div class="ev-lu-col">
-            <div class="ev-lu-head">${V.b} <b>${U.esc(V.n)}</b> <span class="etiqueta">Esquema 4-2-3-1</span></div>
-            <p class="sub" style="font-size:12.5px;margin:8px 0;">Alineación oficial disponible ~1 hora antes del pitazo inicial.</p>
+            <div class="ev-lu-head">${V.b} <b>${U.esc(V.n)}</b></div>
+            <p class="sub" style="font-size:12.5px;margin:8px 0;">Alineaciones disponibles cerca del inicio del partido.</p>
             <div class="ev-lu-stat">✈ Visita · ${stV.pj} PJ · ${stV.pts} pts (${stV.pg}G-${stV.pe}E-${stV.pp}P)</div>
           </div>
         </div>`;

@@ -54,6 +54,9 @@ const ApiFutbol = {
     sudamericana: 'Copa Sudamericana'
   },
 
+  /* Temporada activa oficial 2026-2027 */
+  SEASON_ACTIVA: 2026,
+
   _estadoCuenta: {
     usuario: '',
     correo: '',
@@ -65,11 +68,21 @@ const ApiFutbol = {
 
   _equiposPorCompCache: null,
   _lineupsIntentadosAt: {},
+  _detallesConsultadosAt: {},
+  _inflightDetalles: {},
+  _cacheFechaDia: {},
+  _timestampsMinuto: [],
+  _colaReq: Promise.resolve(),
+  _ultimoError: null,
   _adminCicloActivo: false,
 
   disponible() {
     const cfg = _cfg();
     return !!((cfg.API_FUTBOL?.apiKey || '').trim() || (cfg.API_FUTBOL?.proxyUrl || '').trim());
+  },
+
+  ultimoError() {
+    return this._ultimoError;
   },
 
   esPlanGratis() {
@@ -80,6 +93,17 @@ const ApiFutbol = {
     const st = this._estadoCuenta;
     if (st.peticionesHoy === null || st.peticionesHoy === undefined) return null;
     return Math.max(0, (st.limiteDiario || 100) - st.peticionesHoy);
+  },
+
+  /* Ventana exacta de 3 días UTC permitida por API-Football en Plan Free */
+  fechasPermitidasPlanFree() {
+    const base = Date.now();
+    return [-1, 0, 1].map(off => new Date(base + off * 86400000).toISOString().slice(0, 10));
+  },
+
+  fechaPermitidaEnPlan(fechaYmd) {
+    if (!this.esPlanGratis()) return true;
+    return this.fechasPermitidasPlanFree().includes(String(fechaYmd || '').slice(0, 10));
   },
 
   _tz() {
@@ -99,6 +123,30 @@ const ApiFutbol = {
     }
   },
 
+  /* Respeta el límite de 10 peticiones/minuto del Plan Free sin perder llamadas */
+  async _esperarTurnoRateLimit(endpoint) {
+    if (endpoint === '/status') return;
+    const ejecutarTurno = async () => {
+      const ahora = Date.now();
+      this._timestampsMinuto = this._timestampsMinuto.filter(t => ahora - t < 62000);
+      const topeMin = this.esPlanGratis() ? 8 : 28;
+      if (this._timestampsMinuto.length >= topeMin) {
+        const masViejo = this._timestampsMinuto[0];
+        const esperaMs = Math.max(1200, 62500 - (ahora - masViejo));
+        await new Promise(res => setTimeout(res, esperaMs));
+      } else if (this._timestampsMinuto.length > 0) {
+        const ultimo = this._timestampsMinuto[this._timestampsMinuto.length - 1];
+        const gap = Date.now() - ultimo;
+        if (gap < 1100) {
+          await new Promise(res => setTimeout(res, 1100 - gap));
+        }
+      }
+      this._timestampsMinuto.push(Date.now());
+    };
+    this._colaReq = this._colaReq.then(ejecutarTurno, ejecutarTurno);
+    return this._colaReq;
+  },
+
   /* Despachador central de peticiones a API-Football (directo con API Key o vía proxy) */
   async _request(endpoint, params = {}) {
     let url;
@@ -113,7 +161,9 @@ const ApiFutbol = {
     } else if (proxyUrl) {
       url = new URL(proxyUrl.replace(/\/$/, '') + endpoint);
     } else {
-      throw new Error('API_FUTBOL no está configurada (falta apiKey en js/config.js).');
+      const err = new Error('API_FUTBOL no está configurada (falta apiKey o proxyUrl en js/config.js).');
+      this._ultimoError = { at: Date.now(), endpoint, mensaje: err.message };
+      throw err;
     }
 
     Object.entries(params).forEach(([k, v]) => {
@@ -122,8 +172,22 @@ const ApiFutbol = {
       }
     });
 
-    const r = await fetch(url.toString(), { headers });
-    if (!r.ok) throw new Error(`API respondió con estado HTTP ${r.status}`);
+    await this._esperarTurnoRateLimit(endpoint);
+
+    let r;
+    try {
+      r = await fetch(url.toString(), { headers });
+    } catch (netErr) {
+      const msg = `Error de red o CORS al conectar con API-Football (${endpoint}): ${netErr.message || netErr}`;
+      this._ultimoError = { at: Date.now(), endpoint, mensaje: msg };
+      throw new Error(msg);
+    }
+
+    if (!r.ok) {
+      const msg = `API-Football respondió con estado HTTP ${r.status} en ${endpoint}`;
+      this._ultimoError = { at: Date.now(), endpoint, mensaje: msg };
+      throw new Error(msg);
+    }
 
     // Actualizar contador de cuota si la API expone headers de rate-limit
     try {
@@ -142,9 +206,12 @@ const ApiFutbol = {
 
     const data = await r.json();
     if (data.errors && !Array.isArray(data.errors) && Object.keys(data.errors).length > 0) {
-      const detalle = Object.values(data.errors).join(' · ');
-      throw new Error('API-Football: ' + detalle);
+      const detalle = Object.entries(data.errors).map(([k, v]) => `[${k}] ${v}`).join(' · ');
+      const msg = 'API-Football: ' + detalle;
+      this._ultimoError = { at: Date.now(), endpoint, codigo: Object.keys(data.errors)[0], mensaje: msg };
+      throw new Error(msg);
     }
+    this._ultimoError = null;
     return data;
   },
 
@@ -223,7 +290,84 @@ const ApiFutbol = {
       'fc barcelona': 'bar',
       'racing': 'rac_s',
       'racing santander': 'rac_s',
-      'racing de santander': 'rac_s'
+      'racing de santander': 'rac_s',
+      'deportivo': 'dep',
+      'deportivo la coruna': 'dep',
+      'rc deportivo': 'dep'
+    },
+    ucl: {
+      'barcelona': 'bar',
+      'fc barcelona': 'bar',
+      'liverpool': 'liv',
+      'liverpool fc': 'liv',
+      'arsenal': 'ars',
+      'arsenal fc': 'ars',
+      'aston villa': 'avl',
+      'manchester city': 'mci',
+      'manchester united': 'mun',
+      'real madrid': 'rma',
+      'atletico madrid': 'atm',
+      'atletico de madrid': 'atm',
+      'real betis': 'bet',
+      'villarreal': 'vil',
+      'villarreal cf': 'vil',
+      'bayern munich': 'bay',
+      'bayern munchen': 'bay',
+      'fc bayern munich': 'bay',
+      'borussia dortmund': 'bvb',
+      'rb leipzig': 'rbl',
+      'vfb stuttgart': 'vfb',
+      'inter': 'int',
+      'internazionale': 'int',
+      'inter milan': 'int',
+      'as roma': 'rom',
+      'roma': 'rom',
+      'napoli': 'nap',
+      'ssc napoli': 'nap',
+      'como': 'com',
+      'como 1907': 'com',
+      'fc porto': 'por',
+      'porto': 'por',
+      'sporting cp': 'spo',
+      'sporting': 'spo',
+      'feyenoord': 'fey',
+      'feyenoord rotterdam': 'fey',
+      'psv': 'psv',
+      'psv eindhoven': 'psv',
+      'paris saint germain': 'psg',
+      'paris saint-germain': 'psg',
+      'lille': 'lil',
+      'losc lille': 'lil',
+      'lens': 'len',
+      'rc lens': 'len',
+      'club brugge': 'bru',
+      'club brugge kv': 'bru',
+      'galatasaray': 'gal',
+      'fenerbahce': 'fen',
+      'shakhtar donetsk': 'sha',
+      'shakhtar': 'sha',
+      'slavia praha': 'sla',
+      'slavia prague': 'sla',
+      'slovan bratislava': 'svb',
+      'bodo/glimt': 'bod',
+      'bodo glimt': 'bod',
+      'viking': 'vik',
+      'viking fk': 'vik',
+      'lask': 'lsk',
+      'lask linz': 'lsk',
+      'aek athens': 'aek',
+      'aek athens fc': 'aek',
+      'sabah': 'sab',
+      'sabah fa': 'sab',
+      'sabah fk': 'sab',
+      'lyon': 'lyo',
+      'olympique lyonnais': 'lyo',
+      'levski sofia': 'lev_sof',
+      'hapoel beer sheva': 'hbs',
+      "hapoel be'er sheva": 'hbs',
+      'nec nijmegen': 'nec',
+      'nk celje': 'cel_svn',
+      'celje': 'cel_svn'
     },
     libertadores: {
       'barcelona': 'bsc',
@@ -361,6 +505,22 @@ const ApiFutbol = {
     'midtjylland': 'fcm', 'fc midtjylland': 'fcm',
     'dynamo kyiv': 'dyn', 'dynamo kiev': 'dyn',
     'girona': 'gir', 'girona fc': 'gir',
+    'as roma': 'rom', 'roma': 'rom',
+    'napoli': 'nap', 'ssc napoli': 'nap',
+    'como': 'com', 'como 1907': 'com',
+    'fc porto': 'por', 'porto': 'por',
+    'lens': 'len', 'rc lens': 'len',
+    'fenerbahce': 'fen', 'fenerbahce sk': 'fen',
+    'shakhtar donetsk': 'sha', 'shakhtar': 'sha', 'fc shakhtar donetsk': 'sha',
+    'viking': 'vik', 'viking fk': 'vik',
+    'lask': 'lsk', 'lask linz': 'lsk',
+    'aek athens': 'aek', 'aek athens fc': 'aek',
+    'sabah': 'sab', 'sabah fa': 'sab', 'sabah fk': 'sab',
+    'lyon': 'lyo', 'olympique lyonnais': 'lyo',
+    'levski sofia': 'lev_sof', 'pfc levski sofia': 'lev_sof',
+    'hapoel beer sheva': 'hbs', "hapoel be'er sheva": 'hbs',
+    'nec nijmegen': 'nec', 'nec': 'nec',
+    'nk celje': 'cel_svn', 'celje': 'cel_svn',
 
     // Liga BetPlay Dimayor 2026 (Colombia)
     'millonarios': 'mfc', 'millonarios fc': 'mfc',
@@ -555,7 +715,7 @@ const ApiFutbol = {
 
   _estado(corto) {
     if (['1H', '2H', 'HT', 'ET', 'BT', 'P', 'LIVE'].includes(corto)) return 'en_juego';
-    if (['FT', 'AET', 'PEN'].includes(corto)) return 'finalizado';
+    if (['FT', 'AET', 'PEN', 'AWD', 'WO'].includes(corto)) return 'finalizado';
     if (['PST', 'SUSP', 'INT', 'CANC', 'ABD'].includes(corto)) return 'aplazado';
     return null;
   },
@@ -583,6 +743,7 @@ const ApiFutbol = {
       apiId:              f?.fixture?.id || null,
       competicion:        comp,
       leagueId,
+      season:             f?.league?.season || this.SEASON_ACTIVA,
       leagueName:         f?.league?.name || (comp ? this.COMP_NOMBRES[comp] : ''),
       round:              f?.league?.round || '',
       homeRaw,
@@ -597,6 +758,7 @@ const ApiFutbol = {
       estado:             this._estado(f?.fixture?.status?.short),
       periodo:            f?.fixture?.status?.short || null,
       minuto:             f?.fixture?.status?.elapsed ?? null,
+      extra:              f?.fixture?.status?.extra ?? null,
       gl:                 f?.goals?.home ?? null,
       gv:                 f?.goals?.away ?? null,
       penalesHome:        f?.score?.penalty?.home ?? null,
@@ -690,85 +852,90 @@ const ApiFutbol = {
     return null;
   },
 
-  /* Trae goles y tarjetas normalizados de un partido por su ID de API. */
+  _parseEventosRaw(rawEvents, comp = null, ctxEquipos = {}) {
+    const ape = n => (n || '').trim().split(/\s+/).slice(-1)[0] || '';
+    const lista = [];
+
+    for (const ev of (rawEvents || [])) {
+      const rawType = String(ev.type || '');
+      const typeLow = rawType.toLowerCase();
+      const rawDetail = String(ev.detail || '');
+      const detLower = rawDetail.toLowerCase();
+
+      let tipo = null, tLegacy = null, subtipo = '';
+
+      if (typeLow === 'goal') {
+        if (detLower.includes('missed penalty')) continue;
+        tLegacy = 'gol';
+        if (detLower.includes('own goal')) { tipo = 'autogol'; subtipo = 'autogol'; }
+        else if (detLower.includes('penalty')) { tipo = 'penal'; subtipo = 'penal'; }
+        else { tipo = 'gol'; subtipo = detLower.includes('free kick') ? 'tiro_libre' : detLower.includes('header') ? 'cabeza' : 'normal'; }
+      } else if (typeLow === 'card') {
+        if (detLower.includes('second yellow')) { tipo = 'doble_amarilla'; tLegacy = 'roja'; }
+        else if (detLower.includes('red card')) { tipo = 'roja'; tLegacy = 'roja'; }
+        else if (detLower.includes('yellow card')) { tipo = 'amarilla'; tLegacy = 'amarilla'; }
+      } else if (typeLow === 'subst') {
+        tipo = 'cambio'; tLegacy = 'cambio'; subtipo = 'cambio';
+      }
+
+      if (!tipo) continue;
+
+      const min = Number(ev.time?.elapsed) || 0;
+      const extra = (ev.time?.extra !== undefined && ev.time?.extra !== null && Number(ev.time.extra) > 0)
+        ? Number(ev.time.extra) : null;
+      const codEq = this._codigo(ev.team?.name, comp) || '';
+      const lado = this._ladoEquipoEvento(ev.team, comp, ctxEquipos)
+        || (codEq && codEq === ctxEquipos.localCod ? 'local' : codEq && codEq === ctxEquipos.visitanteCod ? 'visitante' : 'local');
+
+      const saleNom = this._nombreJugadorCorto(ev.player?.name) || ape(ev.player?.name) || '';
+      const assistNom = ev.assist?.name ? (this._nombreJugadorCorto(ev.assist.name) || ape(ev.assist.name)) : null;
+      const jugadorNom = tipo === 'cambio' ? (assistNom || saleNom || 'Cambio') : (saleNom || 'Jugador');
+      const asistenciaNom = (tLegacy === 'gol' && assistNom) ? assistNom : null;
+
+      lista.push({
+        min, extra, equipo: lado, tipo, jugador: jugadorNom, asistencia: asistenciaNom,
+        entra: tipo === 'cambio' ? (assistNom || null) : null,
+        sale: tipo === 'cambio' ? (saleNom || null) : null,
+        m: min, x: extra,
+        eq: lado === 'local' ? (ctxEquipos.localCod || codEq) : (ctxEquipos.visitanteCod || codEq),
+        j: ape(ev.player?.name) || jugadorNom, n: String(ev.player?.name || ''),
+        a: asistenciaNom, t: tLegacy, subtipo, detail: rawDetail
+      });
+    }
+
+    lista.sort((a, b) => (a.min - b.min) || ((a.extra || 0) - (b.extra || 0)));
+    return lista;
+  },
+
+  _parseEstadisticasRaw(rawStats, teamIdMap = {}, comp = null) {
+    const res = {};
+    (rawStats || []).forEach(eq => {
+      const cod = teamIdMap[eq.team?.id] || this._codigo(eq.team?.name, comp) || null;
+      if (!cod) return;
+      const st = eq.statistics || [];
+      const g = t => st.find(s => s.type === t)?.value ?? null;
+      res[cod] = {
+        amarillas:      g('Yellow Cards') || 0,
+        rojas:          g('Red Cards') || 0,
+        posesion:       g('Ball Possession'),
+        tirosArc:       g('Shots on Goal') ?? 0,
+        tirosTot:       g('Total Shots') ?? 0,
+        corners:        g('Corner Kicks') ?? 0,
+        faltas:         g('Fouls') ?? 0,
+        fueras:         g('Offsides') ?? 0,
+        precisionPases: g('Passes %'),
+        paradas:        g('Goalkeeper Saves') ?? 0
+      };
+    });
+    return res;
+  },
+
+  /* Trae goles, tarjetas y cambios normalizados de un partido por su ID de API. */
   async traerEventos(apiFixtureId, comp = null, ctxEquipos = {}) {
     if (!apiFixtureId || !this.disponible()) return [];
     try {
       const data = await this._request('/fixtures/events', { fixture: apiFixtureId });
-      const ape = n => (n || '').trim().split(/\s+/).slice(-1)[0] || '';
-      const lista = [];
-
-      for (const ev of (data.response || [])) {
-        const rawType = String(ev.type || '');
-        const rawDetail = String(ev.detail || '');
-        const detLower = rawDetail.toLowerCase();
-
-        let tipo = null;
-        let tLegacy = null;
-        let subtipo = '';
-
-        if (rawType === 'Goal') {
-          if (detLower.includes('missed penalty')) continue;
-          tLegacy = 'gol';
-          if (detLower.includes('own goal')) {
-            tipo = 'autogol';
-            subtipo = 'autogol';
-          } else if (detLower.includes('penalty')) {
-            tipo = 'penal';
-            subtipo = 'penal';
-          } else {
-            tipo = 'gol';
-            subtipo = detLower.includes('free kick') ? 'tiro_libre' : detLower.includes('header') ? 'cabeza' : 'normal';
-          }
-        } else if (rawType === 'Card') {
-          if (detLower.includes('second yellow')) {
-            tipo = 'doble_amarilla';
-            tLegacy = 'roja';
-          } else if (detLower.includes('red card')) {
-            tipo = 'roja';
-            tLegacy = 'roja';
-          } else if (detLower.includes('yellow card')) {
-            tipo = 'amarilla';
-            tLegacy = 'amarilla';
-          }
-        }
-
-        if (!tipo) continue;
-
-        const min = Number(ev.time?.elapsed) || 0;
-        const extra = (ev.time?.extra !== undefined && ev.time?.extra !== null && Number(ev.time.extra) > 0)
-          ? Number(ev.time.extra)
-          : null;
-        const codEq = this._codigo(ev.team?.name, comp) || '';
-        const lado = this._ladoEquipoEvento(ev.team, comp, ctxEquipos)
-          || (codEq && codEq === ctxEquipos.localCod ? 'local' : codEq && codEq === ctxEquipos.visitanteCod ? 'visitante' : 'local');
-        const jugadorNom = this._nombreJugadorCorto(ev.player?.name) || ape(ev.player?.name) || 'Jugador';
-        const asistenciaNom = (tLegacy === 'gol' && ev.assist?.name)
-          ? this._nombreJugadorCorto(ev.assist.name)
-          : null;
-
-        lista.push({
-          min,
-          extra,
-          equipo: lado,
-          tipo,
-          jugador: jugadorNom,
-          asistencia: asistenciaNom,
-          // Campos cortos de compatibilidad con notificaciones y vistas secundarias
-          m: min,
-          x: extra,
-          eq: lado === 'local' ? (ctxEquipos.localCod || codEq) : (ctxEquipos.visitanteCod || codEq),
-          j: ape(ev.player?.name) || jugadorNom,
-          n: String(ev.player?.name || ''),
-          a: asistenciaNom,
-          t: tLegacy,
-          subtipo,
-          detail: rawDetail
-        });
-      }
-
-      lista.sort((a, b) => (a.min - b.min) || ((a.extra || 0) - (b.extra || 0)));
-      return lista;
+      return this._parseEventosRaw(data.response || [], comp, ctxEquipos);
     } catch (_) { return []; }
   },
 
@@ -777,26 +944,7 @@ const ApiFutbol = {
     if (!apiFixtureId || !this.disponible()) return {};
     try {
       const data = await this._request('/fixtures/statistics', { fixture: apiFixtureId });
-      const res = {};
-      (data.response || []).forEach(eq => {
-        const cod = this._codigo(eq.team?.name, comp) || teamIdMap[eq.team?.id] || null;
-        if (!cod) return;
-        const st = eq.statistics || [];
-        const g = t => st.find(s => s.type === t)?.value ?? null;
-        res[cod] = {
-          amarillas:      g('Yellow Cards') || 0,
-          rojas:          g('Red Cards') || 0,
-          posesion:       g('Ball Possession'),
-          tirosArc:       g('Shots on Goal') ?? 0,
-          tirosTot:       g('Total Shots') ?? 0,
-          corners:        g('Corner Kicks') ?? 0,
-          faltas:         g('Fouls') ?? 0,
-          fueras:         g('Offsides') ?? 0,
-          precisionPases: g('Passes %'),
-          paradas:        g('Goalkeeper Saves') ?? 0
-        };
-      });
-      return res;
+      return this._parseEstadisticasRaw(data.response || [], teamIdMap, comp);
     } catch (_) { return {}; }
   },
 
@@ -816,49 +964,181 @@ const ApiFutbol = {
     } catch { return null; }
   },
 
-  /* Alineaciones públicas normalizadas ({ local, visitante }) — se consulta máx. 1 vez por partido. */
+  _parseAlineacionesRaw(rawLineups, comp = null, ctxEquipos = {}) {
+    const resp = rawLineups || [];
+    if (resp.length < 2) return null;
+    const ord = { G: 0, D: 1, M: 2, F: 3 };
+    const mapJug = (arr) => (arr || [])
+      .map(item => {
+        const pl = item?.player || item || {};
+        return {
+          num: pl.number ?? '',
+          nombre: this._nombreJugadorCorto(pl.name) || String(pl.name || '').trim(),
+          pos: String(pl.pos || '').toUpperCase()
+        };
+      })
+      .filter(j => j.nombre)
+      .sort((a, b) => (ord[a.pos] ?? 9) - (ord[b.pos] ?? 9));
+
+    const mapEquipo = (eq) => ({
+      formacion: String(eq?.formation || '').trim(),
+      dt: String(eq?.coach?.name || '').trim(),
+      titulares: mapJug(eq?.startXI),
+      suplentes: mapJug(eq?.substitutes)
+    });
+
+    let idxLocal = resp.findIndex(eq => this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'local');
+    let idxVis = resp.findIndex((eq, idx) => idx !== idxLocal && this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'visitante');
+    if (idxLocal === -1 && idxVis === 0) idxLocal = 1;
+    if (idxLocal === -1 && idxVis === 1) idxLocal = 0;
+    if (idxLocal === -1) idxLocal = 0;
+    if (idxVis === -1) idxVis = idxLocal === 0 ? 1 : 0;
+
+    const localObj = mapEquipo(resp[idxLocal]);
+    const visObj = mapEquipo(resp[idxVis]);
+    if (!localObj.titulares.length && !visObj.titulares.length) return null;
+
+    return { local: localObj, visitante: visObj };
+  },
+
+  /* Alineaciones públicas normalizadas ({ local, visitante }) */
   async traerAlineaciones(apiFixtureId, comp = null, ctxEquipos = {}) {
     if (!apiFixtureId || !this.disponible()) return null;
     try {
       const data = await this._request('/fixtures/lineups', { fixture: apiFixtureId });
-      const resp = data.response || [];
-      if (resp.length < 2) return null;
-      const ord = { G: 0, D: 1, M: 2, F: 3 };
-      const mapJug = (arr) => (arr || [])
-        .map(item => {
-          const pl = item?.player || item || {};
-          return {
-            num: pl.number ?? '',
-            nombre: this._nombreJugadorCorto(pl.name) || String(pl.name || '').trim(),
-            pos: String(pl.pos || '').toUpperCase()
-          };
-        })
-        .filter(j => j.nombre)
-        .sort((a, b) => (ord[a.pos] ?? 9) - (ord[b.pos] ?? 9));
-
-      const mapEquipo = (eq) => ({
-        formacion: String(eq?.formation || '').trim(),
-        dt: String(eq?.coach?.name || '').trim(),
-        titulares: mapJug(eq?.startXI),
-        suplentes: mapJug(eq?.substitutes)
-      });
-
-      let idxLocal = resp.findIndex(eq => this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'local');
-      let idxVis = resp.findIndex((eq, idx) => idx !== idxLocal && this._ladoEquipoEvento(eq?.team, comp, ctxEquipos) === 'visitante');
-      if (idxLocal === -1 && idxVis === 0) idxLocal = 1;
-      if (idxLocal === -1 && idxVis === 1) idxLocal = 0;
-      if (idxLocal === -1) idxLocal = 0;
-      if (idxVis === -1) idxVis = idxLocal === 0 ? 1 : 0;
-
-      const localObj = mapEquipo(resp[idxLocal]);
-      const visObj = mapEquipo(resp[idxVis]);
-      if (!localObj.titulares.length && !visObj.titulares.length) return null;
-
-      return {
-        local: localObj,
-        visitante: visObj
-      };
+      return this._parseAlineacionesRaw(data.response || [], comp, ctxEquipos);
     } catch { return null; }
+  },
+
+  /* Consulta integral 1-en-1 (`/fixtures?id=`) que trae marcador, minuto, alineaciones, eventos y stats en 1 sola petición */
+  async traerPartidoCompleto(apiFixtureId, comp = null, ctxEquipos = {}) {
+    if (!apiFixtureId || !this.disponible()) return null;
+    const data = await this._request('/fixtures', { id: apiFixtureId });
+    const f = (data.response || [])[0];
+    if (!f) return null;
+    const base = this._mapFixture(f, false);
+    const compEf = comp || base?.competicion || null;
+    const ctx = {
+      localCod: ctxEquipos.localCod || base?.local || '',
+      visitanteCod: ctxEquipos.visitanteCod || base?.visitante || '',
+      localApiId: ctxEquipos.localApiId || base?.localApiTeamId || null,
+      visitanteApiId: ctxEquipos.visitanteApiId || base?.visitanteApiTeamId || null
+    };
+    const teamIdMap = {};
+    if (ctx.localApiId && ctx.localCod) teamIdMap[ctx.localApiId] = ctx.localCod;
+    if (ctx.visitanteApiId && ctx.visitanteCod) teamIdMap[ctx.visitanteApiId] = ctx.visitanteCod;
+
+    return {
+      fixture: base,
+      eventos: this._parseEventosRaw(f.events || [], compEf, ctx),
+      alineaciones: this._parseAlineacionesRaw(f.lineups || [], compEf, ctx),
+      tarjetas: this._parseEstadisticasRaw(f.statistics || [], teamIdMap, compEf)
+    };
+  },
+
+  async _resolverApiIdPartido(pBase, m, resAnt, inicioMs, ahora) {
+    let apiId = Number(m.apiId || resAnt.apiId || 0) || null;
+    if (apiId || inicioMs <= 0) return apiId;
+    const fLoc = new Date(inicioMs).toLocaleDateString('en-CA');
+    const fUtc = new Date(inicioMs).toISOString().slice(0, 10);
+    const fUsar = this.fechaPermitidaEnPlan(fLoc) ? fLoc : (this.fechaPermitidaEnPlan(fUtc) ? fUtc : null);
+    if (!fUsar) return null;
+
+    let cacheDia = this._cacheFechaDia[fUsar];
+    if (!cacheDia || (ahora - cacheDia.at) > 180000) {
+      const detDia = await this.traerPartidosDelDiaDetallado(fUsar, true);
+      cacheDia = { at: ahora, partidos: detDia.partidos };
+      this._cacheFechaDia[fUsar] = cacheDia;
+    }
+    const hit = (cacheDia.partidos || []).find(ap =>
+      ap.competicion === pBase.competicion &&
+      ((ap.local === m.local && ap.visitante === m.visitante) || (ap.local === m.visitante && ap.visitante === m.local))
+    );
+    return hit?.apiId || null;
+  },
+
+  /* Carga bajo demanda (y persiste en Firestore) alineaciones, eventos y stats en 1 sola petición */
+  async asegurarDetallesPartido(partidoId, opciones = {}) {
+    if (!partidoId || !this.disponible()) {
+      return { ok: false, estadoDetalle: 'sin_api', mensaje: 'API deportiva no configurada.' };
+    }
+    if (this._inflightDetalles[partidoId]) return this._inflightDetalles[partidoId];
+
+    const tarea = (async () => {
+      const Store = _store();
+      const Puntos = _puntos();
+      const pBase = (_fix().partidos || []).find(x => x.id === partidoId);
+      if (!pBase) return { ok: false, estadoDetalle: 'no_encontrado', mensaje: 'Partido no encontrado.' };
+
+      const [ajustes, resActuales] = await Promise.all([Store.ajustes(), Store.resultados()]);
+      const m = Puntos ? Puntos.conAjustes(pBase, ajustes) : { ...pBase, ...(ajustes[partidoId] || {}) };
+      const resAnt = resActuales[partidoId] || pBase.resultado || {};
+      const ahora = Date.now();
+      const inicioMs = m.utc ? new Date(m.utc).getTime() : 0;
+      const minParaInicio = inicioMs > 0 ? (inicioMs - ahora) / 60000 : 9999;
+
+      const tieneXI = !!(resAnt.alineaciones && (resAnt.alineaciones.local?.titulares?.length || resAnt.alineaciones.visitante?.titulares?.length));
+      const tieneEvs = !!resAnt.detallesCompletos || (Array.isArray(resAnt.eventos) && resAnt.eventos.some(e => e.tipo === 'cambio'));
+
+      if (!opciones.forzar && resAnt.estado === 'finalizado' && tieneXI && tieneEvs) {
+        return { ok: true, cache: true, estadoDetalle: 'completo', resultado: resAnt };
+      }
+      if (!opciones.forzar && resAnt.estado !== 'en_juego' && resAnt.estado !== 'finalizado' && minParaInicio > 75) {
+        return { ok: true, cache: true, estadoDetalle: 'previo_lejano', mensaje: 'Alineaciones disponibles cerca del inicio del partido.', resultado: resAnt };
+      }
+
+      const ult = this._detallesConsultadosAt[partidoId] || 0;
+      const cdMs = resAnt.estado === 'en_juego' ? 120000 : (resAnt.estado === 'finalizado' ? 600000 : 300000);
+      if (!opciones.forzar && ult && (ahora - ult) < cdMs) {
+        return { ok: true, cache: true, estadoDetalle: tieneXI ? 'completo' : 'enfriamiento', resultado: resAnt };
+      }
+
+      const apiId = await this._resolverApiIdPartido(pBase, m, resAnt, inicioMs, ahora);
+      if (!apiId) {
+        return {
+          ok: false,
+          estadoDetalle: 'sin_api_id',
+          mensaje: minParaInicio > -5
+            ? 'Alineaciones disponibles cerca del inicio del partido.'
+            : 'La API aún no publica el detalle extendido para este encuentro.',
+          resultado: resAnt
+        };
+      }
+
+      this._detallesConsultadosAt[partidoId] = ahora;
+      const full = await this.traerPartidoCompleto(apiId, pBase.competicion, { localCod: m.local, visitanteCod: m.visitante });
+      if (!full?.fixture) {
+        return { ok: false, estadoDetalle: 'vacio', mensaje: 'Alineaciones disponibles cerca del inicio del partido.', resultado: resAnt };
+      }
+
+      const ap = full.fixture;
+      const inv = m.local && ap.visitante && m.local === ap.visitante;
+      const glN = ap.gl !== null && ap.gl !== undefined ? (inv ? ap.gv : ap.gl) : (resAnt.gl ?? null);
+      const gvN = ap.gv !== null && ap.gv !== undefined ? (inv ? ap.gl : ap.gv) : (resAnt.gv ?? null);
+
+      const nuevoRes = {
+        ...resAnt,
+        apiId,
+        ...(ap.estado ? { estado: ap.estado } : {}),
+        ...(ap.minuto !== null && ap.minuto !== undefined ? { minuto: ap.minuto, minutoAt: ahora } : {}),
+        extra: ap.extra !== null && ap.extra !== undefined ? ap.extra : null,
+        ...(ap.periodo ? { periodo: ap.periodo } : {}),
+        ...(glN !== null ? { gl: glN } : {}),
+        ...(gvN !== null ? { gv: gvN } : {}),
+        eventos: full.eventos.length ? full.eventos : (resAnt.eventos || []),
+        eventosAt: ahora,
+        ...(full.alineaciones ? { alineaciones: full.alineaciones } : {}),
+        ...(Object.keys(full.tarjetas || {}).length ? { tarjetas: full.tarjetas, statsAt: ahora } : {}),
+        detallesCompletos: ap.estado === 'finalizado' && (!!full.alineaciones || full.eventos.length > 0)
+      };
+
+      await Store.guardarResultado(partidoId, nuevoRes);
+      return { ok: true, cache: false, estadoDetalle: full.alineaciones ? 'completo' : 'pendiente_xi', resultado: nuevoRes };
+    })();
+
+    this._inflightDetalles[partidoId] = tarea;
+    try { return await tarea; }
+    finally { delete this._inflightDetalles[partidoId]; }
   },
 
   /* Compatibilidad con vistas heredadas de alineación */
@@ -1023,8 +1303,8 @@ const ApiFutbol = {
     const forzarDetalles = !!opciones.forzarDetalles;
     let calendario = 0, marcadores = 0, detallesSync = 0, emparejados = 0, sinEmparejar = 0;
     let detallesConsultadosEnLote = 0;
-    const maxDetallesLote = forzarDetalles ? 8 : 6;
-    const tieneCuotaDetalle = () => (this.cuotaRestante() === null) || this.cuotaRestante() > (forzarDetalles ? 5 : 15);
+    const maxDetallesLote = forzarDetalles ? 8 : 5;
+    const tieneCuotaDetalle = () => (this.cuotaRestante() === null) || this.cuotaRestante() > (forzarDetalles ? 5 : 18);
     const detalle = [];
 
     for (const ap of partidosApi) {
@@ -1111,20 +1391,38 @@ const ApiFutbol = {
       const minParaInicio = inicioEfectivoMs > 0 ? (inicioEfectivoMs - ahora) / 60000 : 9999;
       const yaTieneAlineaciones = !!(resAnterior.alineaciones && resAnterior.alineaciones.local?.titulares?.length);
       const recienFinGlobal = ap.estado === 'finalizado' && resAnterior.estado !== 'finalizado';
-      const elegibleLineup =
-        (minParaInicio <= 65 && minParaInicio >= -180) ||
-        ap.estado === 'en_juego' ||
-        recienFinGlobal ||
-        (forzarDetalles && ap.estado === 'finalizado' && minParaInicio >= -1440);
-      const enfriamientoLineup = this._lineupsIntentadosAt[p.id]
-        && (ahora - this._lineupsIntentadosAt[p.id] < (forzarDetalles ? 2 * 60000 : 20 * 60000));
+      const glCand = invertido ? ap.gv : ap.gl;
+      const gvCand = invertido ? ap.gl : ap.gv;
+      const cambioGolGlobal = ((glCand || 0) + (gvCand || 0)) > ((resAnterior.gl || 0) + (resAnterior.gv || 0));
 
-      let nuevasAlineaciones = null;
-      if (incluirDetalles && ap.apiId && !yaTieneAlineaciones && elegibleLineup && !enfriamientoLineup
-          && detallesConsultadosEnLote < maxDetallesLote && tieneCuotaDetalle()) {
+      const necesitaFull = ap.apiId && (
+        ((recienFinGlobal || cambioGolGlobal) && tieneCuotaDetalle()) ||
+        (incluirDetalles && (
+          (!yaTieneAlineaciones && ((minParaInicio <= 65 && minParaInicio >= -180) || ap.estado === 'en_juego' || (forzarDetalles && ap.estado === 'finalizado' && minParaInicio >= -1440))) ||
+          (ap.estado === 'en_juego' && (ahora - (resAnterior.eventosAt || 0) > (forzarDetalles ? 90000 : 5 * 60000)))
+        ))
+      );
+      const enfriamientoFull = this._lineupsIntentadosAt[p.id]
+        && !recienFinGlobal && !cambioGolGlobal
+        && (ahora - this._lineupsIntentadosAt[p.id] < (forzarDetalles ? 90000 : 4 * 60000));
+
+      let nuevasAlineaciones = ap._alineacionesPre || null;
+      let nuevosEventos = ap._eventosPre || null;
+      let nuevasTarjetas = ap._tarjetasPre || null;
+
+      if (!ap._prehidratado && necesitaFull && !enfriamientoFull && detallesConsultadosEnLote < maxDetallesLote && tieneCuotaDetalle()) {
         this._lineupsIntentadosAt[p.id] = ahora;
         detallesConsultadosEnLote++;
-        nuevasAlineaciones = await this.traerAlineaciones(ap.apiId, p.competicion, ctxEquipos);
+        try {
+          const full = await this.traerPartidoCompleto(ap.apiId, p.competicion, ctxEquipos);
+          if (full) {
+            if (full.alineaciones) nuevasAlineaciones = full.alineaciones;
+            if (full.eventos) nuevosEventos = full.eventos;
+            if (full.tarjetas && Object.keys(full.tarjetas).length) nuevasTarjetas = full.tarjetas;
+          }
+        } catch (e) {
+          console.warn(`Detalle integral ${p.id}:`, e.message);
+        }
       }
 
       // 3. Marcadores en vivo / finalizados / aplazados
@@ -1140,40 +1438,29 @@ const ApiFutbol = {
         }
 
         const motivoAplaz = ap.estado === 'aplazado' ? (this._motivoAplazamiento(ap.periodo) || '') : (resAnterior.motivoAplazamiento || '');
-        const golesAnt = (resAnterior.gl || 0) + (resAnterior.gv || 0);
-        const golesNue = (glNuevo || 0) + (gvNuevo || 0);
-        const cambioGol = golesNue > golesAnt;
-        const recienFin = ap.estado === 'finalizado' && resAnterior.estado !== 'finalizado';
-        const tieneGolesGuardados = Array.isArray(resAnterior.eventos)
-          && resAnterior.eventos.some(e => e.tipo === 'gol' || e.tipo === 'penal' || e.tipo === 'autogol' || e.t === 'gol');
-        const faltanEventosGoles = golesNue > 0 && !tieneGolesGuardados && (ap.estado === 'en_juego' || recienFin || (forzarDetalles && minParaInicio >= -1440));
-        const refrescoEventosVivo = ap.estado === 'en_juego'
-          && ((forzarDetalles && ahora - (resAnterior.eventosAt || 0) > 90000) || (ahora - (resAnterior.eventosAt || 0) > 6 * 60000));
-
-        let nuevosEventos = null;
-        if (incluirDetalles && ap.apiId && (ap.estado === 'en_juego' || ap.estado === 'finalizado')
-            && (cambioGol || recienFin || faltanEventosGoles || refrescoEventosVivo)
-            && detallesConsultadosEnLote < maxDetallesLote && tieneCuotaDetalle()) {
-          detallesConsultadosEnLote++;
-          nuevosEventos = await this.traerEventos(ap.apiId, p.competicion, ctxEquipos);
-        }
 
         const cambioReal =
           resAnterior.estado !== ap.estado ||
           resAnterior.gl !== glNuevo ||
           resAnterior.gv !== gvNuevo ||
           resAnterior.minuto !== (ap.minuto ?? null) ||
+          (resAnterior.extra ?? null) !== (ap.extra ?? null) ||
           resAnterior.periodo !== (ap.periodo || null) ||
           Number(resAnterior.apiId || 0) !== Number(ap.apiId || 0) ||
           (ganadorPenales && resAnterior.ganadorPenales !== ganadorPenales);
 
-        const hayNuevosDetalles = !!(nuevasAlineaciones || (nuevosEventos && nuevosEventos.length !== (resAnterior.eventos || []).length));
+        const hayNuevosDetalles = !!(
+          nuevasAlineaciones ||
+          (nuevosEventos && nuevosEventos.length !== (resAnterior.eventos || []).length) ||
+          nuevasTarjetas
+        );
 
         if (cambioReal || hayNuevosDetalles) {
           const resultado = {
             apiId:    ap.apiId || resAnterior.apiId || null,
             estado:   ap.estado,
             minuto:   ap.minuto !== undefined && ap.minuto !== null ? ap.minuto : null,
+            extra:    ap.extra !== undefined && ap.extra !== null ? ap.extra : null,
             minutoAt: ahora,
             periodo:  ap.periodo || null,
             gl:       glNuevo !== undefined && glNuevo !== null ? glNuevo : null,
@@ -1190,26 +1477,14 @@ const ApiFutbol = {
             if (resAnterior.eventosAt) resultado.eventosAt = resAnterior.eventosAt;
           }
 
-          // Estadísticas (posesión, tiros, tarjetas): solo si detalles activos / Pro, cada 10 min o al finalizar
-          if (incluirDetalles && tieneCuotaDetalle() && detallesConsultadosEnLote < maxDetallesLote && (ap.estado === 'en_juego' || recienFin) && ap.apiId) {
-            if (ahora - (resAnterior.statsAt || 0) > 10 * 60000 || recienFin) {
-              detallesConsultadosEnLote++;
-              const teamIdMap = {};
-              if (ap.localApiTeamId)     teamIdMap[ap.localApiTeamId]     = invertido ? ap.visitante : ap.local;
-              if (ap.visitanteApiTeamId) teamIdMap[ap.visitanteApiTeamId] = invertido ? ap.local     : ap.visitante;
-              const tarj = await this.traerTarjetas(ap.apiId, teamIdMap, p.competicion);
-              resultado.tarjetas = Object.keys(tarj).length ? tarj : (resAnterior.tarjetas || {});
-              resultado.statsAt  = ahora;
-            } else {
-              resultado.tarjetas = resAnterior.tarjetas || {};
-              resultado.statsAt  = resAnterior.statsAt  || 0;
-            }
+          if (nuevasTarjetas) {
+            resultado.tarjetas = nuevasTarjetas;
+            resultado.statsAt  = ahora;
           } else {
             if (resAnterior.tarjetas) resultado.tarjetas = resAnterior.tarjetas;
             if (resAnterior.statsAt)  resultado.statsAt  = resAnterior.statsAt;
           }
 
-          // Preservar campos enriquecidos previos + nuevas alineaciones
           if (nuevasAlineaciones) {
             resultado.alineaciones = nuevasAlineaciones;
             detallesSync++;
@@ -1217,6 +1492,11 @@ const ApiFutbol = {
             resultado.alineaciones = resAnterior.alineaciones;
           }
           if (nuevosEventos && nuevosEventos.length) detallesSync++;
+          if (ap.estado === 'finalizado' && (resultado.alineaciones || (resultado.eventos && resultado.eventos.length))) {
+            resultado.detallesCompletos = true;
+          } else if (resAnterior.detallesCompletos) {
+            resultado.detallesCompletos = true;
+          }
           if (resAnterior.prediccion) resultado.prediccion = resAnterior.prediccion;
           if (resAnterior.alineacion) resultado.alineacion = resAnterior.alineacion;
           if (resAnterior.analisisIA) resultado.analisisIA = resAnterior.analisisIA;
@@ -1318,14 +1598,17 @@ const ApiFutbol = {
     const ahora = Date.now();
 
     const fechasFinalizacion = new Set();
+    const huerfanosConApiId = [];
+
     for (const p of (FIXTURE.partidos || [])) {
       const r = resActuales[p.id];
       const m = Puntos ? Puntos.conAjustes(p, ajustes) : { ...p, ...(ajustes[p.id] || {}) };
-      if (r?.estado === 'finalizado') continue;
+      if (r?.estado === 'finalizado' || r?.estado === 'aplazado' || p.estado === 'finalizado') continue;
+      if (!m.local || !m.visitante) continue;
 
       const inicioMs = m.utc ? new Date(m.utc).getTime() : 0;
       const estabaEnJuego = r?.estado === 'en_juego' || r?.estado === 'iniciando';
-      const pasoVentanaJuego = inicioMs > 0 && (ahora - inicioMs) > 105 * 60000 && (ahora - inicioMs) < 240 * 60000;
+      const pasoVentanaJuego = inicioMs > 0 && (ahora - inicioMs) > 105 * 60000 && (ahora - inicioMs) < 20 * 3600000;
 
       if (!estabaEnJuego && !pasoVentanaJuego) continue;
 
@@ -1337,33 +1620,62 @@ const ApiFutbol = {
         const fechaCandidata = inicioMs
           ? new Date(inicioMs).toLocaleDateString('en-CA')
           : this.fechaLocal(0);
-        fechasFinalizacion.add(fechaCandidata);
+        if (this.fechaPermitidaEnPlan(fechaCandidata)) {
+          fechasFinalizacion.add(fechaCandidata);
+        } else if (estabaEnJuego && apiIdLocal) {
+          huerfanosConApiId.push({ p, m, apiId: apiIdLocal });
+        }
       }
     }
 
-    // Si algún partido parece haber terminado, consultar su fecha (1 req) para grabar el FT oficial
-    const cuotaOk = (this.cuotaRestante() === null) || this.cuotaRestante() > 4;
-    if (fechasFinalizacion.size && cuotaOk) {
-      const fechaFt = [...fechasFinalizacion][0];
+    // Consultar todas las fechas permitidas con partidos recién terminados (máx 2 fechas por ciclo)
+    const cuotaOk = () => (this.cuotaRestante() === null) || this.cuotaRestante() > 4;
+    const mapa = new Map(lista.map(x => [x.apiId, x]));
+
+    for (const fechaFt of [...fechasFinalizacion].slice(0, 2)) {
+      if (!cuotaOk()) break;
       try {
         const delDia = await this.traerPartidosDelDiaDetallado(fechaFt, true);
-        const mapa = new Map(lista.map(x => [x.apiId, x]));
+        this._cacheFechaDia[fechaFt] = { at: ahora, partidos: delDia.partidos };
         for (const item of delDia.partidos) {
           if (!mapa.has(item.apiId)) mapa.set(item.apiId, item);
         }
-        lista.length = 0;
-        lista.push(...mapa.values());
         totalGlobal = Math.max(totalGlobal, delDia.totalGlobal);
       } catch (e) {
-        console.warn('Fallback FT en sincronizarSoloVivos:', e.message);
+        console.warn(`Fallback FT (${fechaFt}) en sincronizarSoloVivos:`, e.message);
       }
     }
+
+    // Resolver por ID directo (`/fixtures?id=`) cualquier partido atascado en `en_juego` fuera de ventana de fecha
+    for (const h of huerfanosConApiId.slice(0, 3)) {
+      if (!cuotaOk() || mapa.has(h.apiId)) continue;
+      try {
+        const full = await this.traerPartidoCompleto(h.apiId, h.p.competicion, {
+          localCod: h.m.local,
+          visitanteCod: h.m.visitante
+        });
+        if (full?.fixture) {
+          mapa.set(h.apiId, {
+            ...full.fixture,
+            _prehidratado: true,
+            _alineacionesPre: full.alineaciones,
+            _eventosPre: full.eventos,
+            _tarjetasPre: full.tarjetas
+          });
+        }
+      } catch (e) {
+        console.warn(`Rescate por apiId (${h.apiId}):`, e.message);
+      }
+    }
+
+    lista.length = 0;
+    lista.push(...mapa.values());
 
     return this._procesarPartidosApi(lista, true, {
       ...opciones,
       sinCodigo,
       totalGlobal,
-      fuente: fechasFinalizacion.size ? 'live+ft' : 'live'
+      fuente: (fechasFinalizacion.size || huerfanosConApiId.length) ? 'live+ft' : 'live'
     });
   },
 
@@ -1412,15 +1724,24 @@ const ApiFutbol = {
     }
   },
 
-  /* Evalúa si hay partidos en ventana activa de juego o en vivo */
+  /* Evalúa si hay partidos en ventana activa de juego, en vivo o pendientes de cierre FT hoy */
   _hayPartidosEnVentana(ajFix = {}, resLive = {}, margenPrevioMin = 15, margenPostMin = 165) {
     const ahora = Date.now();
-    const hayEnVivo = Object.values(resLive || {}).some(r => r?.estado === 'en_juego' || r?.estado === 'iniciando');
+    const hayEnVivo = Object.entries(resLive || {}).some(([pid, r]) => {
+      if (r?.estado !== 'en_juego' && r?.estado !== 'iniciando') return false;
+      if (r?.apiId) return true;
+      const p = (_fix().partidos || []).find(x => x.id === pid);
+      const utc = ajFix?.[pid]?.utc || p?.utc;
+      const ini = utc ? new Date(utc).getTime() : 0;
+      return !ini || (ahora - ini) < 6 * 3600000;
+    });
     if (hayEnVivo) return { activo: true, razon: 'en_juego', proximo: null };
 
     let proximo = null;
     for (const p of (_fix().partidos || [])) {
-      if (resLive?.[p.id]?.estado === 'finalizado') continue;
+      const estRes = resLive?.[p.id]?.estado;
+      if (estRes === 'finalizado' || estRes === 'aplazado' || p.estado === 'finalizado') continue;
+      if (!p.local || !p.visitante) continue;
       const utc = ajFix?.[p.id]?.utc || p.utc;
       if (!utc) continue;
       const inicio = new Date(utc).getTime();
@@ -1428,6 +1749,11 @@ const ApiFutbol = {
 
       if (ahora >= inicio - margenPrevioMin * 60000 && ahora <= inicio + margenPostMin * 60000) {
         return { activo: true, razon: 'ventana', proximo: p };
+      }
+      // Si el partido ya superó su ventana hoy/ayer dentro del plan y aún figura sin cerrar -> activar cierre FT
+      const fCand = new Date(inicio).toLocaleDateString('en-CA');
+      if (ahora > inicio + 105 * 60000 && ahora < inicio + 20 * 3600000 && this.fechaPermitidaEnPlan(fCand)) {
+        return { activo: true, razon: 'pendiente_ft', proximo: p };
       }
       if (inicio > ahora && (!proximo || inicio < proximo.inicioMs)) {
         proximo = { id: p.id, inicioMs: inicio, utc, local: p.local, visitante: p.visitante };

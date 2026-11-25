@@ -5,8 +5,8 @@
    partidos jugados y próximos partidos para todos los clubes.
    ============================================================ */
 
-import { FIXTURE } from './fixture.js?v=31';
-import { U } from './utils.js?v=31';
+import { FIXTURE } from './fixture.js?v=34';
+import { U } from './utils.js?v=34';
 
 // Base de datos detallada de clubes principales
 const CLUBES_DATA = {

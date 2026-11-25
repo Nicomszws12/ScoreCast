@@ -1,6 +1,12 @@
 {
   "name": "scorecast",
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check-syntax.mjs",
+    "build": "node scripts/verify-all.mjs"
+  },
   "dependencies": {
     "firebase": "^12.14.0"
   }
 }
+

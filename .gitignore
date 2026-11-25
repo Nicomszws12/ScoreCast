@@ -17,4 +17,6 @@ firestore-debug.log*
 # System files
 .DS_Store
 Thumbs.db
+.clineignore
+
 

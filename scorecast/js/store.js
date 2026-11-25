@@ -6,7 +6,7 @@
    • MODO 'firebase' → Firebase Auth + Cloud Firestore (real).
    Las páginas solo hablan con `Store`, nunca con el motor.
    ============================================================ */
-import { CONFIG } from './config.js?v=31';
+import { CONFIG } from './config.js?v=34';
 
 const Store = (() => {
 
